@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionExtensions", "ReflectionExtensions\ReflectionExtensions.csproj", "{B8342BBA-1535-4749-AEDB-8588F64D349C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionExtensions.Tests", "ReflectionExtensions.Tests\ReflectionExtensions.Tests.csproj", "{701B2380-FF2C-49AA-8889-A20C59AE8659}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{B8342BBA-1535-4749-AEDB-8588F64D349C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8342BBA-1535-4749-AEDB-8588F64D349C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8342BBA-1535-4749-AEDB-8588F64D349C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{701B2380-FF2C-49AA-8889-A20C59AE8659}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{701B2380-FF2C-49AA-8889-A20C59AE8659}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{701B2380-FF2C-49AA-8889-A20C59AE8659}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{701B2380-FF2C-49AA-8889-A20C59AE8659}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
