@@ -3,16 +3,17 @@
 
 #nullable enable
 
+using NUnit.Framework;
 using ReflectionExtensions.Tests.Classes;
 
 namespace ReflectionExtensions.Tests
 {
-    [TestClass]
+    [TestFixture]
     public sealed class TestProperties
     {
         private const int ExpectedInt = 777;
 
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             ReflectionExtensions.ClearCache();
@@ -20,65 +21,65 @@ namespace ReflectionExtensions.Tests
             TestClass_Public.Reset();
         }
 
-        [TestMethod]
+        [Test]
         public void Public_Instance_Property_Get()
         {
             var obj = new TestClass_Public();
             var actual = obj.GetInstanceProperty<int>("Property");
-            Assert.AreEqual(ExpectedInt, actual);
+            Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
-        [TestMethod]
+        [Test]
         public void Public_Instance_Property_Set()
         {
             var obj = new TestClass_Public();
             obj.SetInstanceProperty("Property", 1000);
-            Assert.AreEqual(1000, obj.Property);
+            Assert.That(obj.Property, Is.EqualTo(1000));
         }
 
-        [TestMethod]
+        [Test]
         public void Private_Instance_Property_Get()
         {
             var obj = new TestClass_Private();
             var actual = obj.GetInstanceProperty<int>("Property");
-            Assert.AreEqual(ExpectedInt, actual);
+            Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
-        [TestMethod]
+        [Test]
         public void Private_Instance_Property_Set()
         {
             var obj = new TestClass_Private();
             obj.SetInstanceProperty("Property", 1000);
-            Assert.AreEqual(1000, obj.PropertyPublic);
+            Assert.That(obj.PropertyPublic, Is.EqualTo(1000));
         }
 
-        [TestMethod]
+        [Test]
         public void Public_Static_Property_Get()
         {
             var actual = typeof(TestClass_Public).GetStaticProperty<int>("StaticProperty");
-            Assert.AreEqual(ExpectedInt, actual);
+            Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
-        [TestMethod]
+        [Test]
         public void Public_Static_Property_Set()
         {
             typeof(TestClass_Public).SetStaticProperty("StaticProperty", 1000);
-            Assert.AreEqual(1000, TestClass_Public.StaticProperty);
+            Assert.That(TestClass_Public.StaticProperty, Is.EqualTo(1000));
         }
     
     
-        [TestMethod]
+        [Test]
         public void Private_Static_Property_Get()
         {
             var actual = typeof(TestClass_Private).GetStaticProperty<int>("StaticProperty");
-            Assert.AreEqual(ExpectedInt, actual);
+            Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
-        [TestMethod]
+        [Test]
         public void Private_Static_Property_Set()
         {
             typeof(TestClass_Private).SetStaticProperty("StaticProperty", 1000);
-            Assert.AreEqual(1000, TestClass_Private.StaticPropertyPublic);
+            Assert.That(TestClass_Private.StaticPropertyPublic, Is.EqualTo(1000));
         }
     }
 }

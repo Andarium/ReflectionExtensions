@@ -3,16 +3,17 @@
 
 #nullable enable
 
+using NUnit.Framework;
 using ReflectionExtensions.Tests.Classes;
 
 namespace ReflectionExtensions.Tests
 {
-    [TestClass]
+    [TestFixture]
     public sealed class TestFields
     {
         private const int ExpectedInt = 777;
 
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             ReflectionExtensions.ClearCache();
@@ -20,65 +21,65 @@ namespace ReflectionExtensions.Tests
             TestClass_Public.Reset();
         }
 
-        [TestMethod]
+        [Test]
         public void Public_Instance_Field_Get()
         {
             var obj = new TestClass_Public();
             var actual = obj.GetInstanceField<int>("Field");
-            Assert.AreEqual(ExpectedInt, actual);
+            Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
-        [TestMethod]
+        [Test]
         public void Public_Instance_Field_Set()
         {
             var obj = new TestClass_Public();
             obj.SetInstanceField("Field", 1000);
-            Assert.AreEqual(1000, obj.Field);
+            Assert.That(obj.Field, Is.EqualTo(1000));
         }
 
-        [TestMethod]
+        [Test]
         public void Private_Instance_Field_Get()
         {
             var obj = new TestClass_Private();
             var actual = obj.GetInstanceField<int>("Field");
-            Assert.AreEqual(ExpectedInt, actual);
+            Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
-        [TestMethod]
+        [Test]
         public void Private_Instance_Field_Set()
         {
             var obj = new TestClass_Private();
             obj.SetInstanceField("Field", 1000);
-            Assert.AreEqual(1000, obj.FieldPublic);
+            Assert.That(obj.FieldPublic, Is.EqualTo(1000));
         }
 
-        [TestMethod]
+        [Test]
         public void Public_Static_Field_Get()
         {
             var actual = typeof(TestClass_Public).GetStaticField<int>("StaticField");
-            Assert.AreEqual(ExpectedInt, actual);
+            Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
-        [TestMethod]
+        [Test]
         public void Public_Static_Field_Set()
         {
             typeof(TestClass_Public).SetStaticField("StaticField", 1000);
-            Assert.AreEqual(1000, TestClass_Public.StaticField);
+            Assert.That(TestClass_Public.StaticField, Is.EqualTo(1000));
         }
     
     
-        [TestMethod]
+        [Test]
         public void Private_Static_Field_Get()
         {
             var actual = typeof(TestClass_Private).GetStaticField<int>("StaticField");
-            Assert.AreEqual(ExpectedInt, actual);
+            Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
-        [TestMethod]
+        [Test]
         public void Private_Static_Field_Set()
         {
             typeof(TestClass_Private).SetStaticField("StaticField", 1000);
-            Assert.AreEqual(1000, TestClass_Private.StaticFieldPublic);
+            Assert.That(TestClass_Private.StaticFieldPublic, Is.EqualTo(1000));
         }
     }
 }
