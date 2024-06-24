@@ -115,11 +115,6 @@ namespace ReflectionExtensions
             return CallInstanceMethodInternal(instance, methodName, args, args.Select(x => x.GetType()).ToArray());
         }
 
-        public static void CallInstanceMethod<T, TR>(this T instance, out TR result, string methodName, params object[] args)
-        {
-            result = (TR) CallInstanceMethodInternal(instance, methodName, args, args.Select(x => x.GetType()).ToArray());
-        }
-
         public static TR CallInstanceMethod<T, TR>(this T instance, string methodName, params object[] args)
         {
             return (TR) CallInstanceMethodInternal(instance, methodName, args, args.Select(x => x.GetType()).ToArray());
@@ -128,11 +123,6 @@ namespace ReflectionExtensions
         public static object CallInstanceMethod<T>(this T instance, string methodName, object[] args, Type[] argTypes)
         {
             return CallInstanceMethodInternal(instance, methodName, args, argTypes);
-        }
-
-        public static void CallInstanceMethod<T, TR>(this T instance, out TR result, string methodName, object[] args, Type[] argTypes)
-        {
-            result = (TR) CallInstanceMethodInternal(instance, methodName, args, argTypes);
         }
 
         public static TR CallInstanceMethod<T, TR>(this T instance, string methodName, object[] args, Type[] argTypes)
@@ -153,11 +143,6 @@ namespace ReflectionExtensions
             return CallStaticMethodInternal(type, methodName, args, args.Select(x => x.GetType()).ToArray());
         }
 
-        public static void CallStaticMethod<TR>(this Type type, out TR result, string methodName, params object[] args)
-        {
-            result = (TR) CallStaticMethodInternal(type, methodName, args, args.Select(x => x.GetType()).ToArray());
-        }
-
         public static TR CallStaticMethod<TR>(this Type type, string methodName, params object[] args)
         {
             return (TR) CallStaticMethodInternal(type, methodName, args, args.Select(x => x.GetType()).ToArray());
@@ -166,11 +151,6 @@ namespace ReflectionExtensions
         public static object CallStaticMethod(this Type type, string methodName, object[] args, Type[] argTypes)
         {
             return CallStaticMethodInternal(type, methodName, args, argTypes);
-        }
-
-        public static void CallStaticMethod<TR>(this Type type, out TR result, string methodName, object[] args, Type[] argTypes)
-        {
-            result = (TR) CallStaticMethodInternal(type, methodName, args, argTypes);
         }
 
         public static TR CallStaticMethod<TR>(this Type type, string methodName, object[] args, Type[] argTypes)
