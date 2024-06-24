@@ -1,0 +1,1 @@
+Shortcut extension methods collection designed for faster access of fields, properties and methods with caching.
