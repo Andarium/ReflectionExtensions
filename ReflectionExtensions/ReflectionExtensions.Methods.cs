@@ -14,9 +14,6 @@ namespace ReflectionExtensions
 {
     public static partial class ReflectionExtensions
     {
-        private static readonly Type[] EmptyTypes = Array.Empty<Type>();
-        private static readonly object[] EmptyArgs = Array.Empty<object>();
-
         private static readonly Dictionary<Type, MethodInfo[]> MethodMap = new();
         private static readonly Map<Type, int, MethodInfo> MethodHashMap = new();
 
@@ -105,63 +102,25 @@ namespace ReflectionExtensions
 
         #endregion
 
-        public static object CallInstanceMethod<T>(this T instance, string methodName)
-        {
-            return CallInstanceMethodInternal(instance, methodName, EmptyArgs, EmptyTypes);
-        }
+        public static TR CallInstanceMethod<T, TR>(this T instance, string methodName, Args args = default) => (TR) CallInstanceMethod(instance, methodName, args);
 
-        public static object CallInstanceMethod<T>(this T instance, string methodName, params object[] args)
-        {
-            return CallInstanceMethodInternal(instance, methodName, args, args.Select(x => x.GetType()).ToArray());
-        }
-
-        public static TR CallInstanceMethod<T, TR>(this T instance, string methodName, params object[] args)
-        {
-            return (TR) CallInstanceMethodInternal(instance, methodName, args, args.Select(x => x.GetType()).ToArray());
-        }
-
-        public static object CallInstanceMethod<T>(this T instance, string methodName, object[] args, Type[] argTypes)
-        {
-            return CallInstanceMethodInternal(instance, methodName, args, argTypes);
-        }
-
-        public static TR CallInstanceMethod<T, TR>(this T instance, string methodName, object[] args, Type[] argTypes)
-        {
-            return (TR) CallInstanceMethodInternal(instance, methodName, args, argTypes);
-        }
-
-        private static object CallInstanceMethodInternal<T>(this T? instance, string methodName, object[] args, Type[] argTypes)
+        public static object CallInstanceMethod<T>(this T instance, string methodName, Args args = default)
         {
             var type = typeof(T);
             AssertInstance(instance, type, methodName, MemberType.Method);
-            var method = GetInstanceMethodInfo(type, methodName, argTypes);
-            return method.Invoke(instance, args);
+            var method = GetInstanceMethodInfo(type, methodName, args.Types);
+            return method.Invoke(instance, args.Values);
         }
 
-        public static object CallStaticMethod(this Type type, string methodName, params object[] args)
+        public static TR CallStaticMethod<TR>(this Type type, string methodName, Args args = default)
         {
-            return CallStaticMethodInternal(type, methodName, args, args.Select(x => x.GetType()).ToArray());
+            return (TR) CallStaticMethod(type, methodName, args);
         }
 
-        public static TR CallStaticMethod<TR>(this Type type, string methodName, params object[] args)
+        public static object CallStaticMethod(this Type type, string methodName, Args args = default)
         {
-            return (TR) CallStaticMethodInternal(type, methodName, args, args.Select(x => x.GetType()).ToArray());
-        }
-
-        public static object CallStaticMethod(this Type type, string methodName, object[] args, Type[] argTypes)
-        {
-            return CallStaticMethodInternal(type, methodName, args, argTypes);
-        }
-
-        public static TR CallStaticMethod<TR>(this Type type, string methodName, object[] args, Type[] argTypes)
-        {
-            return (TR) CallStaticMethodInternal(type, methodName, args, argTypes);
-        }
-
-        private static object CallStaticMethodInternal(this Type type, string methodName, object[] args, Type[] argTypes)
-        {
-            var method = GetStaticMethodInfo(type, methodName, argTypes);
-            return method.Invoke(null, args);
+            var method = GetStaticMethodInfo(type, methodName, args.Types);
+            return method.Invoke(null, args.Values);
         }
     }
 }
