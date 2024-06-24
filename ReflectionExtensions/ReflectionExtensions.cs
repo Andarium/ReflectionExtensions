@@ -20,6 +20,7 @@ namespace ReflectionExtensions
         private const string NotFound = "Can't find {0} {1} {2} in {3} type";
         private const string NotFoundMethod = "Can't find {0} {1} {2}({4}) in {3} type";
         private const string NullInstance = "Null instance. {0} {1}, {2} type";
+        private const string Cast = "Can't assign {3} to {0}. {0} {1}, {2} type";
 
         public static void ClearCache()
         {
@@ -57,11 +58,23 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string CastMessage(Type requestedType, string memberName, MemberType memberType, Type actualInstanceType)
+        {
+            var name = requestedType.AssemblyQualifiedName;
+            return string.Format(Cast, memberType, memberName, name, actualInstanceType.AssemblyQualifiedName);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void AssertInstance(object? instance, Type? type, string memberName, MemberType memberType)
         {
             if (instance is null)
             {
                 throw new NullReferenceException(NullInstanceMessage(type, memberName, memberType));
+            }
+
+            if (type?.IsInstanceOfType(instance) is false)
+            {
+                throw new ArgumentException(CastMessage(type, memberName, memberType, instance.GetType()));
             }
         }
 

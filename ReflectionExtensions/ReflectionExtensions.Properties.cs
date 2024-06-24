@@ -67,15 +67,13 @@ namespace ReflectionExtensions
 
         #region Instance Property Value
 
-        public static TR GetInstanceProperty<T, TR>(this T instance, string propName) => GetInstancePropertyInternal<TR>(instance, propName, typeof(T));
+        public static TR GetInstanceProperty<T, TR>(this T instance, string propName) => GetInstanceProperty<TR>(instance, propName, typeof(T));
 
-        public static TR GetInstanceProperty<TR>(this object instance, string propName) => GetInstancePropertyInternal<TR>(instance, propName);
-
-        private static TR GetInstancePropertyInternal<TR>(this object? instance, string propName, Type? type = null)
+        public static TR GetInstanceProperty<TR>(this object? instance, string propName, Type? instanceType = null)
         {
-            AssertInstance(instance, type, propName, MemberType.Property);
-            type ??= instance!.GetType();
-            var prop = GetInstancePropertyInfo(type, propName);
+            AssertInstance(instance, instanceType, propName, MemberType.Property);
+            instanceType ??= instance!.GetType();
+            var prop = GetInstancePropertyInfo(instanceType, propName);
             return (TR) prop.GetValue(instance);
         }
 

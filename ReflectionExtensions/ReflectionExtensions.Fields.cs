@@ -62,15 +62,13 @@ namespace ReflectionExtensions
 
         #region Instance Field Value
 
-        public static TR GetInstanceField<T, TR>(this T instance, string fieldName) => GetInstanceFieldInternal<TR>(instance, fieldName, typeof(T));
+        public static TR GetInstanceField<T, TR>(this T instance, string fieldName) => GetInstanceField<TR>(instance, fieldName, typeof(T));
 
-        public static TR GetInstanceField<TR>(this object instance, string fieldName) => GetInstanceFieldInternal<TR>(instance, fieldName);
-
-        private static TR GetInstanceFieldInternal<TR>(this object? instance, string fieldName, Type? type = null)
+        public static TR GetInstanceField<TR>(this object? instance, string fieldName, Type? instanceType = null)
         {
-            AssertInstance(instance, type, fieldName, MemberType.Field);
-            type ??= instance!.GetType();
-            var field = GetInstanceFieldInfo(type, fieldName);
+            AssertInstance(instance, instanceType, fieldName, MemberType.Field);
+            instanceType ??= instance!.GetType();
+            var field = GetInstanceFieldInfo(instanceType, fieldName);
             return (TR) field.GetValue(instance);
         }
 
