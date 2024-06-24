@@ -88,12 +88,14 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void AssertType(this Type type)
+        private static Type AssertType(this Type type)
         {
             if (type is null)
             {
                 throw new NullReferenceException("Null type.");
             }
+
+            return type;
         }
 
         private static T[] FetchUpToRootBase<T>(this Type type, Func<Type, IEnumerable<T>> fetch)
@@ -121,7 +123,8 @@ namespace ReflectionExtensions
         {
             Field,
             Property,
-            Method
+            Method,
+            FieldOrProperty
         }
     }
 }

@@ -66,8 +66,7 @@ namespace ReflectionExtensions.Tests
             typeof(TestClass_Public).SetStaticField("StaticField", 1000);
             Assert.That(TestClass_Public.StaticField, Is.EqualTo(1000));
         }
-    
-    
+
         [Test]
         public void Private_Static_Field_Get()
         {
@@ -80,6 +79,74 @@ namespace ReflectionExtensions.Tests
         {
             typeof(TestClass_Private).SetStaticField("StaticField", 1000);
             Assert.That(TestClass_Private.StaticFieldPublic, Is.EqualTo(1000));
+        }
+
+        [Test]
+        public void Private_Static_Field_Info_Existing()
+        {
+            var info = typeof(TestClass_Private).GetStaticFieldInfoOrNull("StaticField");
+            Assert.That(info, Is.Not.Null);
+            Assert.That(info.Name, Is.EqualTo("StaticField"));
+            Assert.That(info.IsStatic, Is.True);
+            Assert.That(info.IsPrivate, Is.True);
+        }
+
+        [Test]
+        public void Public_Static_Field_Info_Existing()
+        {
+            var info = typeof(TestClass_Public).GetStaticFieldInfoOrNull("StaticField");
+            Assert.That(info, Is.Not.Null);
+            Assert.That(info.Name, Is.EqualTo("StaticField"));
+            Assert.That(info.IsStatic, Is.True);
+            Assert.That(info.IsPrivate, Is.False);
+        }
+
+        [Test]
+        public void Private_Instance_Field_Info_Existing()
+        {
+            var info = typeof(TestClass_Private).GetInstanceFieldInfoOrNull("Field");
+            Assert.That(info, Is.Not.Null);
+            Assert.That(info.Name, Is.EqualTo("Field"));
+            Assert.That(info.IsStatic, Is.False);
+            Assert.That(info.IsPrivate, Is.True);
+        }
+
+        [Test]
+        public void Public_Instance_Field_Info_Existing()
+        {
+            var info = typeof(TestClass_Public).GetInstanceFieldInfoOrNull("Field");
+            Assert.That(info, Is.Not.Null);
+            Assert.That(info.Name, Is.EqualTo("Field"));
+            Assert.That(info.IsStatic, Is.False);
+            Assert.That(info.IsPrivate, Is.False);
+        }
+
+        [Test]
+        public void Private_Static_Field_Info_NonExisting()
+        {
+            var info = typeof(TestClass_Private).GetStaticFieldInfoOrNull("vvvvvv");
+            Assert.That(info, Is.Null);
+        }
+
+        [Test]
+        public void Public_Static_Field_Info_NonExisting()
+        {
+            var info = typeof(TestClass_Public).GetStaticFieldInfoOrNull("vvvvvv");
+            Assert.That(info, Is.Null);
+        }
+
+        [Test]
+        public void Private_Instance_Field_Info_NonExisting()
+        {
+            var info = typeof(TestClass_Private).GetInstanceFieldInfoOrNull("vvvvvv");
+            Assert.That(info, Is.Null);
+        }
+
+        [Test]
+        public void Public_Instance_Field_Info_NonExisting()
+        {
+            var info = typeof(TestClass_Public).GetInstanceFieldInfoOrNull("vvvvvv");
+            Assert.That(info, Is.Null);
         }
     }
 }

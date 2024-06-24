@@ -15,7 +15,7 @@ namespace ReflectionExtensions
     public static partial class ReflectionExtensions
     {
         private static readonly Dictionary<Type, MethodInfo[]> MethodMap = new();
-        private static readonly Map<Type, int, MethodInfo> MethodHashMap = new();
+        private static readonly Map<Type, int, MethodInfo?> MethodHashMap = new();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetHashCode(string methodName, Type[] argTypes)
@@ -68,7 +68,7 @@ namespace ReflectionExtensions
             return true;
         }
 
-        private static MethodInfo GetMethodInfoInternal(this Type type, string methodName, bool isStatic, params Type[] argTypes)
+        private static MethodInfo? GetMethodInfoInternalOrNull(this Type type, string methodName, bool isStatic, params Type[] argTypes)
         {
             var hash = GetHashCode(methodName, argTypes);
             if (MethodHashMap.TryGetValue(type, hash, out var method))
@@ -77,28 +77,29 @@ namespace ReflectionExtensions
             }
 
             method = GetAllMethods(type).Where(x => x.Name == methodName && x.IsStatic == isStatic).FirstOrDefault(x => IsMatchArguments(x, argTypes));
-
-            MethodHashMap[type, hash] = method ?? throw new InvalidOperationException(NotFoundMethodMessage(type, methodName, isStatic, MemberType.Method, argTypes));
+            MethodHashMap[type, hash] = method;
             return method;
+        }
+
+        private static MethodInfo GetMethodInfoInternal(this Type type, string methodName, bool isStatic, params Type[] argTypes)
+        {
+            var method = GetMethodInfoInternalOrNull(type, methodName, isStatic, argTypes);
+            return method ?? throw new InvalidOperationException(NotFoundMethodMessage(type, methodName, isStatic, MemberType.Method, argTypes));
         }
 
         #region Method Info
 
+        public static MethodInfo? GetInstanceMethodInfoOrNull<T>(string methodName, params Type[] argTypes) => GetInstanceMethodInfoOrNull(typeof(T), methodName, argTypes);
         public static MethodInfo GetInstanceMethodInfo<T>(string methodName, params Type[] argTypes) => GetInstanceMethodInfo(typeof(T), methodName, argTypes);
 
-        public static MethodInfo GetInstanceMethodInfo(this Type type, string methodName, params Type[] argTypes)
-        {
-            AssertType(type);
-            return GetMethodInfoInternal(type, methodName, false, argTypes);
-        }
+        public static MethodInfo? GetInstanceMethodInfoOrNull(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternalOrNull(type.AssertType(), methodName, false, argTypes);
+        public static MethodInfo GetInstanceMethodInfo(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternal(type.AssertType(), methodName, false, argTypes);
 
+        public static MethodInfo? GetStaticMethodInfoOrNull<T>(string methodName, params Type[] argTypes) => GetStaticMethodInfoOrNull(typeof(T), methodName, argTypes);
         public static MethodInfo GetStaticMethodInfo<T>(string methodName, params Type[] argTypes) => GetStaticMethodInfo(typeof(T), methodName, argTypes);
 
-        public static MethodInfo GetStaticMethodInfo(this Type type, string methodName, params Type[] argTypes)
-        {
-            AssertType(type);
-            return GetMethodInfoInternal(type, methodName, true, argTypes);
-        }
+        public static MethodInfo? GetStaticMethodInfoOrNull(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternalOrNull(type.AssertType(), methodName, true, argTypes);
+        public static MethodInfo GetStaticMethodInfo(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternal(type.AssertType(), methodName, true, argTypes);
 
         #endregion
 

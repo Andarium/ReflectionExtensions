@@ -144,5 +144,73 @@ namespace ReflectionExtensions.Tests
             Assert.That(actual, Is.Null);
             Assert.That(TestClass_Private.ChangedBy, Is.EqualTo("StaticVoidMethod"));
         }
+
+        [Test]
+        public void Private_Static_Method_Info_Existing()
+        {
+            var info = typeof(TestClass_Private).GetStaticMethodInfoOrNull("StaticMethod");
+            Assert.That(info, Is.Not.Null);
+            Assert.That(info.Name, Is.EqualTo("StaticMethod"));
+            Assert.That(info.IsStatic, Is.True);
+            Assert.That(info.IsPrivate, Is.True);
+        }
+
+        [Test]
+        public void Public_Static_Method_Info_Existing()
+        {
+            var info = typeof(TestClass_Public).GetStaticMethodInfoOrNull("StaticMethod");
+            Assert.That(info, Is.Not.Null);
+            Assert.That(info.Name, Is.EqualTo("StaticMethod"));
+            Assert.That(info.IsStatic, Is.True);
+            Assert.That(info.IsPrivate, Is.False);
+        }
+
+        [Test]
+        public void Private_Instance_Method_Info_Existing()
+        {
+            var info = typeof(TestClass_Private).GetInstanceMethodInfoOrNull("Method");
+            Assert.That(info, Is.Not.Null);
+            Assert.That(info.Name, Is.EqualTo("Method"));
+            Assert.That(info.IsStatic, Is.False);
+            Assert.That(info.IsPrivate, Is.True);
+        }
+
+        [Test]
+        public void Public_Instance_Method_Info_Existing()
+        {
+            var info = typeof(TestClass_Public).GetInstanceMethodInfoOrNull("Method");
+            Assert.That(info, Is.Not.Null);
+            Assert.That(info.Name, Is.EqualTo("Method"));
+            Assert.That(info.IsStatic, Is.False);
+            Assert.That(info.IsPrivate, Is.False);
+        }
+
+        [Test]
+        public void Private_Static_Method_Info_NonExisting()
+        {
+            var info = typeof(TestClass_Private).GetStaticMethodInfoOrNull("vvvvvv");
+            Assert.That(info, Is.Null);
+        }
+
+        [Test]
+        public void Public_Static_Method_Info_NonExisting()
+        {
+            var info = typeof(TestClass_Public).GetStaticMethodInfoOrNull("vvvvvv");
+            Assert.That(info, Is.Null);
+        }
+
+        [Test]
+        public void Private_Instance_Method_Info_NonExisting()
+        {
+            var info = typeof(TestClass_Private).GetInstanceMethodInfoOrNull("vvvvvv");
+            Assert.That(info, Is.Null);
+        }
+
+        [Test]
+        public void Public_Instance_Method_Info_NonExisting()
+        {
+            var info = typeof(TestClass_Public).GetInstanceMethodInfoOrNull("vvvvvv");
+            Assert.That(info, Is.Null);
+        }
     }
 }

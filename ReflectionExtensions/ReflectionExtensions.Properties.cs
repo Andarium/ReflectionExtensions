@@ -14,7 +14,7 @@ namespace ReflectionExtensions
     public static partial class ReflectionExtensions
     {
         private static readonly Dictionary<Type, PropertyInfo[]> PropertyMap = new();
-        private static readonly Map<Type, string, PropertyInfo> PropertyNameMap = new();
+        private static readonly Map<Type, string, PropertyInfo?> PropertyNameMap = new();
 
         private static IReadOnlyList<PropertyInfo> GetAllProperties(this Type type)
         {
@@ -28,7 +28,7 @@ namespace ReflectionExtensions
             return value;
         }
 
-        private static PropertyInfo GetPropertyInfoInternal(this Type type, string propName, bool isStatic)
+        private static PropertyInfo? GetPropertyInfoInternalOrNull(this Type type, string propName, bool isStatic)
         {
             if (PropertyNameMap.TryGetValue(type, propName, out var prop))
             {
@@ -36,8 +36,14 @@ namespace ReflectionExtensions
             }
 
             prop = GetAllProperties(type).FirstOrDefault(x => x.Name == propName && x.IsStatic() == isStatic);
-            PropertyNameMap[type, propName] = prop ?? throw new InvalidOperationException(NotFoundMessage(type, propName, isStatic, MemberType.Property));
+            PropertyNameMap[type, propName] = prop;
             return prop;
+        }
+
+        private static PropertyInfo GetPropertyInfoInternal(this Type type, string propName, bool isStatic)
+        {
+            var prop = GetPropertyInfoInternalOrNull(type, propName, isStatic);
+            return prop ?? throw new InvalidOperationException(NotFoundMessage(type, propName, isStatic, MemberType.Property));
         }
 
         private static bool IsStatic(this PropertyInfo p)
@@ -47,21 +53,17 @@ namespace ReflectionExtensions
 
         #region Property Info
 
+        public static PropertyInfo? GetInstancePropertyInfoOrNull<T>(string propName) => GetInstancePropertyInfoOrNull(typeof(T), propName);
         public static PropertyInfo GetInstancePropertyInfo<T>(string propName) => GetInstancePropertyInfo(typeof(T), propName);
 
-        public static PropertyInfo GetInstancePropertyInfo(this Type type, string propName)
-        {
-            AssertType(type);
-            return GetPropertyInfoInternal(type, propName, false);
-        }
+        public static PropertyInfo? GetInstancePropertyInfoOrNull(this Type type, string propName) => GetPropertyInfoInternalOrNull(type.AssertType(), propName, false);
+        public static PropertyInfo GetInstancePropertyInfo(this Type type, string propName) => GetPropertyInfoInternal(type.AssertType(), propName, false);
 
+        public static PropertyInfo? GetStaticPropertyInfoOrNull<T>(string propName) => GetStaticPropertyInfoOrNull(typeof(T), propName);
         public static PropertyInfo GetStaticPropertyInfo<T>(string propName) => GetStaticPropertyInfo(typeof(T), propName);
 
-        public static PropertyInfo GetStaticPropertyInfo(this Type type, string propName)
-        {
-            AssertType(type);
-            return GetPropertyInfoInternal(type, propName, true);
-        }
+        public static PropertyInfo? GetStaticPropertyInfoOrNull(this Type type, string propName) => GetPropertyInfoInternalOrNull(type.AssertType(), propName, true);
+        public static PropertyInfo GetStaticPropertyInfo(this Type type, string propName) => GetPropertyInfoInternal(type.AssertType(), propName, true);
 
         #endregion
 
