@@ -20,7 +20,7 @@ namespace ReflectionExtensions
         private const string NotFound = "Can't find {0} {1} {2} in {3} type";
         private const string NotFoundMethod = "Can't find {0} {1} {2}({4}) in {3} type";
         private const string NullInstance = "Null instance. {0} {1}, {2} type";
-        private const string Cast = "Can't assign {3} to {0}. {0} {1}, {2} type";
+        private const string CastString = "Can't assign {3} to {0}. {0} {1}, {2} type";
 
         public static void ClearCache()
         {
@@ -61,7 +61,7 @@ namespace ReflectionExtensions
         private static string CastMessage(Type requestedType, string memberName, MemberType memberType, Type actualInstanceType)
         {
             var name = requestedType.AssemblyQualifiedName;
-            return string.Format(Cast, memberType, memberName, name, actualInstanceType.AssemblyQualifiedName);
+            return string.Format(CastString, memberType, memberName, name, actualInstanceType.AssemblyQualifiedName);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -119,7 +119,7 @@ namespace ReflectionExtensions
             }
         }
 
-        private enum MemberType
+        internal enum MemberType
         {
             Field,
             Property,

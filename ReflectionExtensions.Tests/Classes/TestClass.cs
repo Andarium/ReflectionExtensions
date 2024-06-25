@@ -74,4 +74,6 @@ namespace ReflectionExtensions.Tests.Classes
             ChangedBy = null;
         }
     }
+
+    public sealed class TestObject;
 }
