@@ -13,6 +13,9 @@
         <PackageReadmeFile>docs\README.md</PackageReadmeFile>
         <PackageProjectUrl>https://github.com/Andarium/ReflectionExtensions/</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Andarium/ReflectionExtensions/</RepositoryUrl>
+        <AssemblyVersion>1.1.0</AssemblyVersion>
+        <Version>$(AssemblyVersion)</Version>
+        <FileVersion>$(AssemblyVersion)</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
