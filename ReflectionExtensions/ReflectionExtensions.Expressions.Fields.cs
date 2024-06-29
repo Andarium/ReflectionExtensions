@@ -56,7 +56,7 @@ namespace ReflectionExtensions
             var valueExp = Expression.Parameter(typeof(TValue), "value");
 
             var castTargetExp = targetExp.Cast(field.DeclaringType!);
-            var castValueExp = Expression.Convert(valueExp, field.FieldType);
+            var castValueExp = valueExp.Cast(field.FieldType);
 
             var fieldExp = Expression.Field(castTargetExp, field);
             var assignExp = Expression.Assign(fieldExp, castValueExp);
@@ -73,7 +73,7 @@ namespace ReflectionExtensions
 
             var valueExp = Expression.Parameter(typeof(TValue), "value");
             var fieldExp = Expression.Field(Expression.Constant(constInstance), field);
-            Expression castValueExp = Expression.Convert(valueExp, field.FieldType);
+            var castValueExp = valueExp.Cast(field.FieldType);
             var assignExp = Expression.Assign(fieldExp, castValueExp);
             return Expression.Lambda<Action<TValue>>(assignExp, valueExp).Compile();
         }
@@ -88,7 +88,7 @@ namespace ReflectionExtensions
 
             var valueExp = Expression.Parameter(typeof(TValue), "value");
             var fieldExp = Expression.Field(Expression.Constant(constInstance), field);
-            Expression castValueExp = Expression.Convert(valueExp, field.FieldType);
+            var castValueExp = valueExp.Cast(field.FieldType);
             var assignExp = Expression.Assign(fieldExp, castValueExp);
             return Expression.Lambda<Action<TValue>>(assignExp, valueExp).Compile();
         }
@@ -98,7 +98,7 @@ namespace ReflectionExtensions
         {
             var valueExp = Expression.Parameter(typeof(TValue), "value");
             var fieldExp = Expression.Field(null, field);
-            Expression castValueExp = Expression.Convert(valueExp, field.FieldType);
+            var castValueExp = valueExp.Cast(field.FieldType);
             var assignExp = Expression.Assign(fieldExp, castValueExp);
             return Expression.Lambda<Action<TValue>>(assignExp, valueExp).Compile();
         }
