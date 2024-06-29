@@ -56,7 +56,7 @@ namespace ReflectionExtensions
             var valueExp = Expression.Parameter(typeof(TValue), "value");
 
             var castTargetExp = targetExp.Cast(prop.DeclaringType!);
-            var castValueExp = Expression.Convert(valueExp, prop.PropertyType);
+            var castValueExp = valueExp.Cast(prop.PropertyType);
 
             var propExp = Expression.Property(castTargetExp, prop);
             var assignExp = Expression.Assign(propExp, castValueExp);
@@ -73,7 +73,7 @@ namespace ReflectionExtensions
 
             var valueExp = Expression.Parameter(typeof(TValue), "value");
             var fieldExp = Expression.Property(Expression.Constant(constInstance), prop);
-            Expression castValueExp = Expression.Convert(valueExp, prop.PropertyType);
+            var castValueExp = valueExp.Cast(prop.PropertyType);
             var assignExp = Expression.Assign(fieldExp, castValueExp);
             return Expression.Lambda<Action<TValue>>(assignExp, valueExp).Compile();
         }
@@ -88,7 +88,7 @@ namespace ReflectionExtensions
 
             var valueExp = Expression.Parameter(typeof(TValue), "value");
             var fieldExp = Expression.Property(Expression.Constant(constInstance), prop);
-            Expression castValueExp = Expression.Convert(valueExp, prop.PropertyType);
+            var castValueExp = valueExp.Cast(prop.PropertyType);
             var assignExp = Expression.Assign(fieldExp, castValueExp);
             return Expression.Lambda<Action<TValue>>(assignExp, valueExp).Compile();
         }
@@ -98,7 +98,7 @@ namespace ReflectionExtensions
         {
             var valueExp = Expression.Parameter(typeof(TValue), "value");
             var fieldExp = Expression.Property(null, prop);
-            Expression castValueExp = Expression.Convert(valueExp, prop.PropertyType);
+            var castValueExp = valueExp.Cast(prop.PropertyType);
             var assignExp = Expression.Assign(fieldExp, castValueExp);
             return Expression.Lambda<Action<TValue>>(assignExp, valueExp).Compile();
         }

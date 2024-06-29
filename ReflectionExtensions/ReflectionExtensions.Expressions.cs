@@ -9,12 +9,16 @@ namespace ReflectionExtensions
     {
         private static Expression Cast<T>(this Expression input) => input.Cast(typeof(T));
 
-        private static Expression Cast(this Expression input, Type type)
+        private static Expression Cast(this Expression input, Type targetType)
         {
-            var typeIsValueType = type.IsValueType;
-            return typeIsValueType
-                ? Expression.Unbox(input, type)
-                : Expression.Convert(input, type);
+            if (input.Type == targetType)
+            {
+                return input;
+            }
+
+            return targetType.IsValueType && (input.Type == typeof(object) || input.Type.IsInterface)
+                ? Expression.Unbox(input, targetType)
+                : Expression.Convert(input, targetType);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
