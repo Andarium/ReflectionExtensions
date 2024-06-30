@@ -87,6 +87,7 @@ namespace ReflectionExtensions.Tests
             var info = typeof(TestClass_Private).GetStaticPropertyInfoOrNull("StaticProperty");
             Assert.That(info, Is.Not.Null);
             Assert.That(info.Name, Is.EqualTo("StaticProperty"));
+            Assert.That(info.GetMethod, Is.Not.Null);
             Assert.That(info.GetMethod.IsStatic, Is.True);
             Assert.That(info.GetMethod.IsPrivate, Is.True);
         }
@@ -97,6 +98,7 @@ namespace ReflectionExtensions.Tests
             var info = typeof(TestClass_Public).GetStaticPropertyInfoOrNull("StaticProperty");
             Assert.That(info, Is.Not.Null);
             Assert.That(info.Name, Is.EqualTo("StaticProperty"));
+            Assert.That(info.GetMethod, Is.Not.Null);
             Assert.That(info.GetMethod.IsStatic, Is.True);
             Assert.That(info.GetMethod.IsPrivate, Is.False);
         }
@@ -107,6 +109,7 @@ namespace ReflectionExtensions.Tests
             var info = typeof(TestClass_Private).GetInstancePropertyInfoOrNull("Property");
             Assert.That(info, Is.Not.Null);
             Assert.That(info.Name, Is.EqualTo("Property"));
+            Assert.That(info.GetMethod, Is.Not.Null);
             Assert.That(info.GetMethod.IsStatic, Is.False);
             Assert.That(info.GetMethod.IsPrivate, Is.True);
         }
@@ -117,6 +120,7 @@ namespace ReflectionExtensions.Tests
             var info = typeof(TestClass_Public).GetInstancePropertyInfoOrNull("Property");
             Assert.That(info, Is.Not.Null);
             Assert.That(info.Name, Is.EqualTo("Property"));
+            Assert.That(info.GetMethod, Is.Not.Null);
             Assert.That(info.GetMethod.IsStatic, Is.False);
             Assert.That(info.GetMethod.IsPrivate, Is.False);
         }
