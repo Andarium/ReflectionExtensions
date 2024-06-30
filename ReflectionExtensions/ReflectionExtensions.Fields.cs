@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -28,8 +29,9 @@ namespace ReflectionExtensions
             return value;
         }
 
-        private static FieldInfo? GetFieldInfoInternalOrNull(this Type type, string fieldName, bool isStatic)
+        private static FieldInfo? GetFieldInfoInternalOrNull([NotNull] this Type? type, string fieldName, bool isStatic)
         {
+            type.AssertType();
             if (FieldNameMap.TryGetValue(type, fieldName, out var field))
             {
                 return field;
@@ -40,7 +42,7 @@ namespace ReflectionExtensions
             return field;
         }
 
-        private static FieldInfo GetFieldInfoInternal(this Type type, string fieldName, bool isStatic)
+        private static FieldInfo GetFieldInfoInternal([NotNull] this Type? type, string fieldName, bool isStatic)
         {
             var field = GetFieldInfoInternalOrNull(type, fieldName, isStatic);
             return field ?? throw new InvalidOperationException(NotFoundMessage(type, fieldName, isStatic, MemberType.Field));
@@ -51,14 +53,14 @@ namespace ReflectionExtensions
         public static FieldInfo? GetInstanceFieldInfoOrNull<T>(string fieldName) => GetInstanceFieldInfoOrNull(typeof(T), fieldName);
         public static FieldInfo GetInstanceFieldInfo<T>(string fieldName) => GetInstanceFieldInfo(typeof(T), fieldName);
 
-        public static FieldInfo? GetInstanceFieldInfoOrNull(this Type type, string fieldName) => GetFieldInfoInternalOrNull(type.AssertType(), fieldName, false);
-        public static FieldInfo GetInstanceFieldInfo(this Type type, string fieldName) => GetFieldInfoInternal(type.AssertType(), fieldName, false);
+        public static FieldInfo? GetInstanceFieldInfoOrNull(this Type type, string fieldName) => GetFieldInfoInternalOrNull(type, fieldName, false);
+        public static FieldInfo GetInstanceFieldInfo(this Type type, string fieldName) => GetFieldInfoInternal(type, fieldName, false);
 
         public static FieldInfo? GetStaticFieldInfoOrNull<T>(string fieldName) => GetStaticFieldInfoOrNull(typeof(T), fieldName);
         public static FieldInfo GetStaticFieldInfo<T>(string fieldName) => GetStaticFieldInfo(typeof(T), fieldName);
 
-        public static FieldInfo? GetStaticFieldInfoOrNull(this Type type, string fieldName) => GetFieldInfoInternalOrNull(type.AssertType(), fieldName, true);
-        public static FieldInfo GetStaticFieldInfo(this Type type, string fieldName) => GetFieldInfoInternal(type.AssertType(), fieldName, true);
+        public static FieldInfo? GetStaticFieldInfoOrNull(this Type type, string fieldName) => GetFieldInfoInternalOrNull(type, fieldName, true);
+        public static FieldInfo GetStaticFieldInfo(this Type type, string fieldName) => GetFieldInfoInternal(type, fieldName, true);
 
         #endregion
 
@@ -68,16 +70,16 @@ namespace ReflectionExtensions
 
         public static TR GetInstanceField<TR>(this object? instance, string fieldName, Type? instanceType = null)
         {
-            AssertInstance(instance, instanceType, fieldName, MemberType.Field);
-            instanceType ??= instance!.GetType();
+            AssertInstance(instance, ref instanceType, fieldName, MemberType.Field);
             var field = GetInstanceFieldInfo(instanceType, fieldName);
             return (TR) field.GetValue(instance);
         }
 
         public static void SetInstanceField<T, TR>(this T? instance, string fieldName, TR? value)
         {
-            AssertInstance<T>(instance, fieldName, MemberType.Field);
-            var field = GetInstanceFieldInfo(typeof(T), fieldName);
+            var instanceType = typeof(T);
+            AssertInstance(instance, ref instanceType, fieldName, MemberType.Field);
+            var field = GetInstanceFieldInfo(instanceType, fieldName);
             field.SetValue(instance, value);
         }
 

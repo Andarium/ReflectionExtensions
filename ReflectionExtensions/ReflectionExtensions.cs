@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -65,30 +66,23 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void AssertInstance(object? instance, Type? type, string memberName, MemberType memberType)
+        private static void AssertInstance([NotNull] object? instance, [NotNull] ref Type? instanceType, string memberName, MemberType memberType)
         {
             if (instance is null)
             {
-                throw new NullReferenceException(NullInstanceMessage(type, memberName, memberType));
+                throw new NullReferenceException(NullInstanceMessage(instanceType, memberName, memberType));
             }
 
-            if (type?.IsInstanceOfType(instance) is false)
+            instanceType ??= instance.GetType();
+
+            if (instanceType.IsInstanceOfType(instance) is false)
             {
-                throw new ArgumentException(CastMessage(type, memberName, memberType, instance.GetType()));
+                throw new ArgumentException(CastMessage(instanceType, memberName, memberType, instance.GetType()));
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void AssertInstance<T>(object? instance, string memberName, MemberType memberType)
-        {
-            if (instance is null)
-            {
-                throw new NullReferenceException(NullInstanceMessage(typeof(T), memberName, memberType));
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Type AssertType(this Type type)
+        private static Type AssertType([NotNull] this Type? type)
         {
             if (type is null)
             {

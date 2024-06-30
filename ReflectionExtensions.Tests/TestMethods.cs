@@ -26,7 +26,7 @@ namespace ReflectionExtensions.Tests
         {
             var obj = new TestClass_Public();
             obj.CallInstanceMethod(out int actual, "Method");
-            Assert.That(ExpectedInt, Is.EqualTo(actual));
+            Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
         [Test]

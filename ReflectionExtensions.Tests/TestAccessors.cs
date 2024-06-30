@@ -9,20 +9,20 @@ public sealed class TestAccessors
 {
     private TestClass _instance = default!;
 
-    private InstanceAccessor<int> _instanceValueField;
-    private InstanceAccessor<TestObject> _instanceRefField;
-    private InstanceAccessor<TestClass, int> _instanceValueProperty;
-    private InstanceAccessor<TestClass, TestObject> _instanceRefProperty;
+    private InstanceAccessor<int> _instanceValueField = default!;
+    private InstanceAccessor<TestObject> _instanceRefField = default!;
+    private InstanceAccessor<TestClass, int> _instanceValueProperty = default!;
+    private InstanceAccessor<TestClass, TestObject> _instanceRefProperty = default!;
 
-    private ConstAccessor<int> _constInstanceValueField;
-    private ConstAccessor<TestObject> _constInstanceRefField;
-    private ConstAccessor<int> _constInstanceValueProperty;
-    private ConstAccessor<TestObject> _constInstanceRefProperty;
+    private ConstAccessor<int> _constInstanceValueField = default!;
+    private ConstAccessor<TestObject> _constInstanceRefField = default!;
+    private ConstAccessor<int> _constInstanceValueProperty = default!;
+    private ConstAccessor<TestObject> _constInstanceRefProperty = default!;
 
-    private ConstAccessor<int> _staticValueField;
-    private ConstAccessor<TestObject> _staticRefField;
-    private ConstAccessor<int> _staticValueProperty;
-    private ConstAccessor<TestObject> _staticRefProperty;
+    private ConstAccessor<int> _staticValueField = default!;
+    private ConstAccessor<TestObject> _staticRefField = default!;
+    private ConstAccessor<int> _staticValueProperty = default!;
+    private ConstAccessor<TestObject> _staticRefProperty = default!;
 
     [SetUp]
     public void Setup()

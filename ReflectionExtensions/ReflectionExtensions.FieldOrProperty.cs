@@ -1,12 +1,14 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace ReflectionExtensions
 {
     public static partial class ReflectionExtensions
     {
-        private static MemberInfo? GetFieldOrPropertyInfoInternalOrNull(this Type type, string propName, bool isStatic)
+        private static MemberInfo? GetFieldOrPropertyInfoInternalOrNull([NotNull] this Type? type, string propName, bool isStatic)
         {
+            type.AssertType();
             return GetFieldInfoInternalOrNull(type, propName, isStatic) ??
                    GetPropertyInfoInternalOrNull(type, propName, isStatic) as MemberInfo;
         }
@@ -22,14 +24,14 @@ namespace ReflectionExtensions
         public static MemberInfo? GetInstanceFieldOrPropertyInfoOrNull<T>(string propName) => GetInstanceFieldOrPropertyInfoOrNull(typeof(T), propName);
         public static MemberInfo GetInstanceFieldOrPropertyInfo<T>(string propName) => GetInstanceFieldOrPropertyInfo(typeof(T), propName);
 
-        public static MemberInfo? GetInstanceFieldOrPropertyInfoOrNull(this Type type, string propName) => GetFieldOrPropertyInfoInternalOrNull(type.AssertType(), propName, false);
-        public static MemberInfo GetInstanceFieldOrPropertyInfo(this Type type, string propName) => GetFieldOrPropertyInfoInternal(type.AssertType(), propName, false);
+        public static MemberInfo? GetInstanceFieldOrPropertyInfoOrNull(this Type type, string propName) => GetFieldOrPropertyInfoInternalOrNull(type, propName, false);
+        public static MemberInfo GetInstanceFieldOrPropertyInfo(this Type type, string propName) => GetFieldOrPropertyInfoInternal(type, propName, false);
 
         public static MemberInfo? GetStaticFieldOrPropertyInfoOrNull<T>(string propName) => GetStaticFieldOrPropertyInfoOrNull(typeof(T), propName);
         public static MemberInfo GetStaticFieldOrPropertyInfo<T>(string propName) => GetStaticFieldOrPropertyInfo(typeof(T), propName);
 
-        public static MemberInfo? GetStaticFieldOrPropertyInfoOrNull(this Type type, string propName) => GetFieldOrPropertyInfoInternalOrNull(type.AssertType(), propName, true);
-        public static MemberInfo GetStaticFieldOrPropertyInfo(this Type type, string propName) => GetFieldOrPropertyInfoInternal(type.AssertType(), propName, true);
+        public static MemberInfo? GetStaticFieldOrPropertyInfoOrNull(this Type type, string propName) => GetFieldOrPropertyInfoInternalOrNull(type, propName, true);
+        public static MemberInfo GetStaticFieldOrPropertyInfo(this Type type, string propName) => GetFieldOrPropertyInfoInternal(type, propName, true);
 
         #endregion
 
@@ -37,10 +39,9 @@ namespace ReflectionExtensions
 
         public static TR GetInstanceFieldOrProperty<T, TR>(this T instance, string propName) => GetInstanceFieldOrProperty<TR>(instance, propName, typeof(T));
 
-        public static TR GetInstanceFieldOrProperty<TR>(this object? instance, string propName, Type? instanceType = null)
+        public static TR GetInstanceFieldOrProperty<TR>([NotNull] this object? instance, string propName, Type? instanceType = null)
         {
-            AssertInstance(instance, instanceType, propName, MemberType.FieldOrProperty);
-            instanceType ??= instance!.GetType();
+            AssertInstance(instance, ref instanceType, propName, MemberType.FieldOrProperty);
             var info = GetInstanceFieldOrPropertyInfo(instanceType, propName);
             return info switch
             {
@@ -52,8 +53,9 @@ namespace ReflectionExtensions
 
         public static void SetInstanceFieldOrProperty<T, TR>(this T? instance, string propName, TR? value)
         {
-            AssertInstance<T>(instance, propName, MemberType.FieldOrProperty);
-            var info = GetInstanceFieldOrPropertyInfo(typeof(T), propName);
+            var instanceType = typeof(T);
+            AssertInstance(instance, ref instanceType, propName, MemberType.FieldOrProperty);
+            var info = GetInstanceFieldOrPropertyInfo(instanceType, propName);
             switch (info)
             {
                 case FieldInfo field:

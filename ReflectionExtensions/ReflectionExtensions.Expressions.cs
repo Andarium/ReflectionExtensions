@@ -85,27 +85,27 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>(this object instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>([NotNull] this object? instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
             return CreateConstInstanceAccessor<TValue>(instance?.GetType(), instance, memberName, accessor);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>(this object instance, Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>([NotNull] this object? instance, Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
             return CreateConstInstanceAccessor<TValue>(instanceType, instance, memberName, accessor);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TTarget, TValue>(this TTarget instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TTarget, TValue>([NotNull] this TTarget? instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
             return CreateConstInstanceAccessor<TValue>(typeof(TTarget), instance, memberName, accessor);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>(this Type type, object instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>([NotNull] this Type? type, [NotNull] object? instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
-            AssertInstance(instance, type, memberName, accessor.ToMemberType());
+            AssertInstance(instance, ref type, memberName, accessor.ToMemberType());
 
             if (accessor is AccessorTarget.Field or AccessorTarget.FieldOrProperty)
             {

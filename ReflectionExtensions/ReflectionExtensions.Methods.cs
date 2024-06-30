@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -17,24 +18,48 @@ namespace ReflectionExtensions
         private static readonly Dictionary<Type, MethodInfo[]> MethodMap = new();
         private static readonly Map<Type, int, MethodInfo?> MethodHashMap = new();
 
+#if NETSTANDARD2_1
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetHashCode(string methodName, Type[] argTypes)
         {
             var a = argTypes;
-            return a.Length switch
+            switch (a.Length)
             {
-                0 => HashCode.Combine(methodName),
-                1 => HashCode.Combine(methodName, a[0]),
-                2 => HashCode.Combine(methodName, a[0], a[1]),
-                3 => HashCode.Combine(methodName, a[0], a[1], a[2]),
-                4 => HashCode.Combine(methodName, a[0], a[1], a[2], a[3]),
-                5 => HashCode.Combine(methodName, a[0], a[1], a[2], a[3], a[4]),
-                6 => HashCode.Combine(methodName, a[0], a[1], a[2], a[3], a[4], a[5]),
-                7 => HashCode.Combine(methodName, a[0], a[1], a[2], a[3], a[4], a[5], a[6]),
-                8 => HashCode.Combine(GetHashCode(methodName, a.Take(7).ToArray()), a[7]),
-                _ => HashCode.Combine(GetHashCode(methodName, a.Take(7).ToArray()), HashCode.Combine(a[7], a.Skip(8).ToArray()))
-            };
+                case 0: return HashCode.Combine(methodName);
+                case 1: return HashCode.Combine(methodName, a[0]);
+                case 2: return HashCode.Combine(methodName, a[0], a[1]);
+            }
+
+            var hash = new HashCode();
+            hash.Add(methodName);
+            foreach (var t in a)
+            {
+                hash.Add(t);
+            }
+
+            return hash.ToHashCode();
         }
+#else
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int GetHashCode(string methodName, Type[] argTypes)
+        {
+            if (argTypes.Length == 0)
+            {
+                return methodName.GetHashCode();
+            }
+
+            unchecked
+            {
+                var hash = 17 + methodName.GetHashCode();
+                foreach (var t in argTypes)
+                {
+                    hash = hash * 31 + t.GetHashCode();
+                }
+
+                return hash;
+            }
+        }
+#endif
 
         private static IReadOnlyList<MethodInfo> GetAllMethods(this Type type)
         {
@@ -68,8 +93,9 @@ namespace ReflectionExtensions
             return true;
         }
 
-        private static MethodInfo? GetMethodInfoInternalOrNull(this Type type, string methodName, bool isStatic, params Type[] argTypes)
+        private static MethodInfo? GetMethodInfoInternalOrNull([NotNull] this Type? type, string methodName, bool isStatic, params Type[] argTypes)
         {
+            type.AssertType();
             var hash = GetHashCode(methodName, argTypes);
             if (MethodHashMap.TryGetValue(type, hash, out var method))
             {
@@ -92,14 +118,14 @@ namespace ReflectionExtensions
         public static MethodInfo? GetInstanceMethodInfoOrNull<T>(string methodName, params Type[] argTypes) => GetInstanceMethodInfoOrNull(typeof(T), methodName, argTypes);
         public static MethodInfo GetInstanceMethodInfo<T>(string methodName, params Type[] argTypes) => GetInstanceMethodInfo(typeof(T), methodName, argTypes);
 
-        public static MethodInfo? GetInstanceMethodInfoOrNull(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternalOrNull(type.AssertType(), methodName, false, argTypes);
-        public static MethodInfo GetInstanceMethodInfo(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternal(type.AssertType(), methodName, false, argTypes);
+        public static MethodInfo? GetInstanceMethodInfoOrNull(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternalOrNull(type, methodName, false, argTypes);
+        public static MethodInfo GetInstanceMethodInfo(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternal(type, methodName, false, argTypes);
 
         public static MethodInfo? GetStaticMethodInfoOrNull<T>(string methodName, params Type[] argTypes) => GetStaticMethodInfoOrNull(typeof(T), methodName, argTypes);
         public static MethodInfo GetStaticMethodInfo<T>(string methodName, params Type[] argTypes) => GetStaticMethodInfo(typeof(T), methodName, argTypes);
 
-        public static MethodInfo? GetStaticMethodInfoOrNull(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternalOrNull(type.AssertType(), methodName, true, argTypes);
-        public static MethodInfo GetStaticMethodInfo(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternal(type.AssertType(), methodName, true, argTypes);
+        public static MethodInfo? GetStaticMethodInfoOrNull(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternalOrNull(type, methodName, true, argTypes);
+        public static MethodInfo GetStaticMethodInfo(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternal(type, methodName, true, argTypes);
 
         #endregion
 
@@ -107,9 +133,9 @@ namespace ReflectionExtensions
 
         public static object CallInstanceMethod<T>(this T instance, string methodName, Args args = default)
         {
-            var type = typeof(T);
-            AssertInstance(instance, type, methodName, MemberType.Method);
-            var method = GetInstanceMethodInfo(type, methodName, args.Types);
+            var instanceType = typeof(T);
+            AssertInstance(instance, ref instanceType, methodName, MemberType.Method);
+            var method = GetInstanceMethodInfo(instanceType, methodName, args.Types);
             return method.Invoke(instance, args.Values);
         }
 
