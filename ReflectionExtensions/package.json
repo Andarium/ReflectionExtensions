@@ -1,8 +1,8 @@
 {
   "name": "com.andarium.reflectionextensions",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "displayName": "Reflection Extensions",
-  "unity": "2021.2",
+  "unity": "2019.4",
   "documentationUrl": "https://github.com/Andarium/ReflectionExtensions",
   "changelogUrl": "https://github.com/Andarium/ReflectionExtensions/releases",
   "licensesUrl": "https://github.com/Andarium/ReflectionExtensions/blob/main/LICENSE",
