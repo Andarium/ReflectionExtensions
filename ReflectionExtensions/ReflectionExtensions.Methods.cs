@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -68,8 +69,9 @@ namespace ReflectionExtensions
             return true;
         }
 
-        private static MethodInfo? GetMethodInfoInternalOrNull(this Type type, string methodName, bool isStatic, params Type[] argTypes)
+        private static MethodInfo? GetMethodInfoInternalOrNull([NotNull] this Type? type, string methodName, bool isStatic, params Type[] argTypes)
         {
+            type.AssertType();
             var hash = GetHashCode(methodName, argTypes);
             if (MethodHashMap.TryGetValue(type, hash, out var method))
             {
@@ -92,14 +94,14 @@ namespace ReflectionExtensions
         public static MethodInfo? GetInstanceMethodInfoOrNull<T>(string methodName, params Type[] argTypes) => GetInstanceMethodInfoOrNull(typeof(T), methodName, argTypes);
         public static MethodInfo GetInstanceMethodInfo<T>(string methodName, params Type[] argTypes) => GetInstanceMethodInfo(typeof(T), methodName, argTypes);
 
-        public static MethodInfo? GetInstanceMethodInfoOrNull(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternalOrNull(type.AssertType(), methodName, false, argTypes);
-        public static MethodInfo GetInstanceMethodInfo(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternal(type.AssertType(), methodName, false, argTypes);
+        public static MethodInfo? GetInstanceMethodInfoOrNull(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternalOrNull(type, methodName, false, argTypes);
+        public static MethodInfo GetInstanceMethodInfo(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternal(type, methodName, false, argTypes);
 
         public static MethodInfo? GetStaticMethodInfoOrNull<T>(string methodName, params Type[] argTypes) => GetStaticMethodInfoOrNull(typeof(T), methodName, argTypes);
         public static MethodInfo GetStaticMethodInfo<T>(string methodName, params Type[] argTypes) => GetStaticMethodInfo(typeof(T), methodName, argTypes);
 
-        public static MethodInfo? GetStaticMethodInfoOrNull(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternalOrNull(type.AssertType(), methodName, true, argTypes);
-        public static MethodInfo GetStaticMethodInfo(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternal(type.AssertType(), methodName, true, argTypes);
+        public static MethodInfo? GetStaticMethodInfoOrNull(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternalOrNull(type, methodName, true, argTypes);
+        public static MethodInfo GetStaticMethodInfo(this Type type, string methodName, params Type[] argTypes) => GetMethodInfoInternal(type, methodName, true, argTypes);
 
         #endregion
 
@@ -107,9 +109,9 @@ namespace ReflectionExtensions
 
         public static object CallInstanceMethod<T>(this T instance, string methodName, Args args = default)
         {
-            var type = typeof(T);
-            AssertInstance(instance, type, methodName, MemberType.Method);
-            var method = GetInstanceMethodInfo(type, methodName, args.Types);
+            var instanceType = typeof(T);
+            AssertInstance(instance, ref instanceType, methodName, MemberType.Method);
+            var method = GetInstanceMethodInfo(instanceType, methodName, args.Types);
             return method.Invoke(instance, args.Values);
         }
 

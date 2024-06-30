@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -28,8 +29,9 @@ namespace ReflectionExtensions
             return value;
         }
 
-        private static PropertyInfo? GetPropertyInfoInternalOrNull(this Type type, string propName, bool isStatic)
+        private static PropertyInfo? GetPropertyInfoInternalOrNull([NotNull] this Type? type, string propName, bool isStatic)
         {
+            type.AssertType();
             if (PropertyNameMap.TryGetValue(type, propName, out var prop))
             {
                 return prop;
@@ -40,7 +42,7 @@ namespace ReflectionExtensions
             return prop;
         }
 
-        private static PropertyInfo GetPropertyInfoInternal(this Type type, string propName, bool isStatic)
+        private static PropertyInfo GetPropertyInfoInternal([NotNull] this Type? type, string propName, bool isStatic)
         {
             var prop = GetPropertyInfoInternalOrNull(type, propName, isStatic);
             return prop ?? throw new InvalidOperationException(NotFoundMessage(type, propName, isStatic, MemberType.Property));
@@ -56,14 +58,14 @@ namespace ReflectionExtensions
         public static PropertyInfo? GetInstancePropertyInfoOrNull<T>(string propName) => GetInstancePropertyInfoOrNull(typeof(T), propName);
         public static PropertyInfo GetInstancePropertyInfo<T>(string propName) => GetInstancePropertyInfo(typeof(T), propName);
 
-        public static PropertyInfo? GetInstancePropertyInfoOrNull(this Type type, string propName) => GetPropertyInfoInternalOrNull(type.AssertType(), propName, false);
-        public static PropertyInfo GetInstancePropertyInfo(this Type type, string propName) => GetPropertyInfoInternal(type.AssertType(), propName, false);
+        public static PropertyInfo? GetInstancePropertyInfoOrNull(this Type type, string propName) => GetPropertyInfoInternalOrNull(type, propName, false);
+        public static PropertyInfo GetInstancePropertyInfo(this Type type, string propName) => GetPropertyInfoInternal(type, propName, false);
 
         public static PropertyInfo? GetStaticPropertyInfoOrNull<T>(string propName) => GetStaticPropertyInfoOrNull(typeof(T), propName);
         public static PropertyInfo GetStaticPropertyInfo<T>(string propName) => GetStaticPropertyInfo(typeof(T), propName);
 
-        public static PropertyInfo? GetStaticPropertyInfoOrNull(this Type type, string propName) => GetPropertyInfoInternalOrNull(type.AssertType(), propName, true);
-        public static PropertyInfo GetStaticPropertyInfo(this Type type, string propName) => GetPropertyInfoInternal(type.AssertType(), propName, true);
+        public static PropertyInfo? GetStaticPropertyInfoOrNull(this Type type, string propName) => GetPropertyInfoInternalOrNull(type, propName, true);
+        public static PropertyInfo GetStaticPropertyInfo(this Type type, string propName) => GetPropertyInfoInternal(type, propName, true);
 
         #endregion
 
@@ -71,18 +73,18 @@ namespace ReflectionExtensions
 
         public static TR GetInstanceProperty<T, TR>(this T instance, string propName) => GetInstanceProperty<TR>(instance, propName, typeof(T));
 
-        public static TR GetInstanceProperty<TR>(this object? instance, string propName, Type? instanceType = null)
+        public static TR GetInstanceProperty<TR>([NotNull] this object? instance, string propName, Type? instanceType = null)
         {
-            AssertInstance(instance, instanceType, propName, MemberType.Property);
-            instanceType ??= instance!.GetType();
+            AssertInstance(instance, ref instanceType, propName, MemberType.Property);
             var prop = GetInstancePropertyInfo(instanceType, propName);
             return (TR) prop.GetValue(instance);
         }
 
-        public static void SetInstanceProperty<T, TR>(this T? instance, string propName, TR? value)
+        public static void SetInstanceProperty<T, TR>([NotNull] this T? instance, string propName, TR? value)
         {
-            AssertInstance<T>(instance, propName, MemberType.Property);
-            var prop = GetInstancePropertyInfo(typeof(T), propName);
+            var instanceType = typeof(T);
+            AssertInstance(instance, ref instanceType, propName, MemberType.Property);
+            var prop = GetInstancePropertyInfo(instanceType, propName);
             prop.SetValue(instance, value);
         }
 
