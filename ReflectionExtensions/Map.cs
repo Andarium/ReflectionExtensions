@@ -41,7 +41,6 @@ namespace ReflectionExtensions
 
             value = default;
             return false;
-
         }
 
         public bool TryAdd(TK1 key1, TK2 key2, TV value)
