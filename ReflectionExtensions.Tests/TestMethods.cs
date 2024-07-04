@@ -22,192 +22,192 @@ namespace ReflectionExtensions.Tests
         }
 
         [Test]
-        public void Public_Instance_Method_No_Args()
+        public void Public_Instance_Function_No_Args()
         {
             var obj = new TestClass_Public();
-            obj.CallInstanceMethod(out int actual, "Method");
+            obj.CallInstanceMethod(out int actual, "Function");
             Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
         [Test]
-        public void Public_Instance_Method_Arg1()
+        public void Public_Instance_Function_Arg1()
         {
             var obj = new TestClass_Public();
-            obj.CallInstanceMethod(out int actual, "Method", Args.Of(7));
+            obj.CallInstanceMethod(out int actual, "Function", Args.Of(7));
             Assert.That(actual, Is.EqualTo(ExpectedInt * 7));
         }
 
         [Test]
-        public void Public_Instance_Method_Arg2()
+        public void Public_Instance_Function_Arg2()
         {
             var obj = new TestClass_Public();
-            obj.CallInstanceMethod(out int actual, "Method", Args.Of(7, 10));
-            Assert.That(actual, Is.EqualTo(ExpectedInt * 7 + 10));
+            obj.CallInstanceMethod(out string actual, "Function", Args.Of(7, 10f));
+            Assert.That(actual, Is.EqualTo("5449"));
         }
 
         [Test]
-        public void Public_Instance_VoidMethod()
+        public void Public_Instance_Procedure()
         {
             var obj = new TestClass_Public();
-            obj.CallInstanceMethod(out object actual, "VoidMethod");
+            obj.CallInstanceMethod(out object actual, "Procedure");
             Assert.That(actual, Is.Null);
-            Assert.That(TestClass_Public.ChangedBy, Is.EqualTo("VoidMethod"));
+            Assert.That(TestClass_Public.ChangedBy, Is.EqualTo("Procedure"));
         }
 
         [Test]
-        public void Public_Static_Method_No_Args()
+        public void Public_Static_Function_No_Args()
         {
-            typeof(TestClass_Public).CallStaticMethod(out int actual, "StaticMethod");
+            typeof(TestClass_Public).CallStaticMethod(out int actual, "StaticFunction");
             Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
         [Test]
-        public void Public_Static_Method_Args1()
+        public void Public_Static_Function_Args1()
         {
-            typeof(TestClass_Public).CallStaticMethod(out int actual, "StaticMethod", Args.Of(7));
+            typeof(TestClass_Public).CallStaticMethod(out int actual, "StaticFunction", Args.Of(7));
             Assert.That(actual, Is.EqualTo(ExpectedInt * 7));
         }
 
         [Test]
-        public void Public_Static_Method_Args2()
+        public void Public_Static_Function_Args2()
         {
-            typeof(TestClass_Public).CallStaticMethod(out int actual, "StaticMethod", Args.Of(7, 10));
-            Assert.That(actual, Is.EqualTo(ExpectedInt * 7 + 10));
+            typeof(TestClass_Public).CallStaticMethod(out string actual, "StaticFunction", Args.Of(7, 10f));
+            Assert.That(actual, Is.EqualTo("5449"));
         }
 
         [Test]
-        public void Public_Static_VoidMethod()
+        public void Public_Static_Procedure()
         {
-            typeof(TestClass_Public).CallStaticMethod(out object actual, "StaticVoidMethod");
+            typeof(TestClass_Public).CallStaticMethod(out object actual, "StaticProcedure");
             Assert.That(actual, Is.Null);
-            Assert.That(TestClass_Public.ChangedBy, Is.EqualTo("StaticVoidMethod"));
+            Assert.That(TestClass_Public.ChangedBy, Is.EqualTo("StaticProcedure"));
         }
 
         [Test]
-        public void Private_Instance_Method_No_Args()
+        public void Private_Instance_Function_No_Args()
         {
             var obj = new TestClass_Private();
-            obj.CallInstanceMethod(out int actual, "Method");
+            obj.CallInstanceMethod(out int actual, "Function");
             Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
         [Test]
-        public void Private_Instance_Method_Arg1()
+        public void Private_Instance_Function_Arg1()
         {
             var obj = new TestClass_Private();
-            obj.CallInstanceMethod(out int actual, "Method", Args.Of(7));
+            obj.CallInstanceMethod(out int actual, "Function", Args.Of(7));
             Assert.That(actual, Is.EqualTo(ExpectedInt * 7));
         }
 
         [Test]
-        public void Private_Instance_Method_Arg2()
+        public void Private_Instance_Function_Arg2()
         {
             var obj = new TestClass_Private();
-            obj.CallInstanceMethod(out int actual, "Method", Args.Of(7, 10));
-            Assert.That(actual, Is.EqualTo(ExpectedInt * 7 + 10));
+            obj.CallInstanceMethod(out string actual, "Function", Args.Of(7, 10f));
+            Assert.That(actual, Is.EqualTo("5449"));
         }
 
         [Test]
-        public void Private_Instance_VoidMethod()
+        public void Private_Instance_Procedure()
         {
             var obj = new TestClass_Private();
-            obj.CallInstanceMethod(out object actual, "VoidMethod");
+            obj.CallInstanceMethod(out object actual, "Procedure");
             Assert.That(actual, Is.Null);
-            Assert.That(TestClass_Private.ChangedBy, Is.EqualTo("VoidMethod"));
+            Assert.That(TestClass_Private.ChangedBy, Is.EqualTo("Procedure"));
         }
 
         [Test]
-        public void Private_Static_Method_No_Args()
+        public void Private_Static_Function_No_Args()
         {
-            typeof(TestClass_Private).CallStaticMethod(out int actual, "StaticMethod");
+            typeof(TestClass_Private).CallStaticMethod(out int actual, "StaticFunction");
             Assert.That(actual, Is.EqualTo(ExpectedInt));
         }
 
         [Test]
-        public void Private_Static_Method_Args1()
+        public void Private_Static_Function_Args1()
         {
-            typeof(TestClass_Private).CallStaticMethod(out int actual, "StaticMethod", Args.Of(7));
+            typeof(TestClass_Private).CallStaticMethod(out int actual, "StaticFunction", Args.Of(7));
             Assert.That(actual, Is.EqualTo(ExpectedInt * 7));
         }
 
         [Test]
-        public void Private_Static_Method_Args2()
+        public void Private_Static_Function_Args2()
         {
-            typeof(TestClass_Private).CallStaticMethod(out int actual, "StaticMethod", Args.Of(7, 10));
-            Assert.That(actual, Is.EqualTo(ExpectedInt * 7 + 10));
+            typeof(TestClass_Private).CallStaticMethod(out string actual, "StaticFunction", Args.Of(7, 10f));
+            Assert.That(actual, Is.EqualTo("5449"));
         }
 
         [Test]
-        public void Private_Static_VoidMethod()
+        public void Private_Static_Procedure()
         {
-            typeof(TestClass_Private).CallStaticMethod(out object actual, "StaticVoidMethod");
+            typeof(TestClass_Private).CallStaticMethod(out object actual, "StaticProcedure");
             Assert.That(actual, Is.Null);
-            Assert.That(TestClass_Private.ChangedBy, Is.EqualTo("StaticVoidMethod"));
+            Assert.That(TestClass_Private.ChangedBy, Is.EqualTo("StaticProcedure"));
         }
 
         [Test]
-        public void Private_Static_Method_Info_Existing()
+        public void Private_Static_Function_Info_Existing()
         {
-            var info = typeof(TestClass_Private).GetStaticMethodInfoOrNull("StaticMethod");
+            var info = typeof(TestClass_Private).GetStaticMethodInfoOrNull("StaticFunction");
             Assert.That(info, Is.Not.Null);
-            Assert.That(info.Name, Is.EqualTo("StaticMethod"));
+            Assert.That(info.Name, Is.EqualTo("StaticFunction"));
             Assert.That(info.IsStatic, Is.True);
             Assert.That(info.IsPrivate, Is.True);
         }
 
         [Test]
-        public void Public_Static_Method_Info_Existing()
+        public void Public_Static_Function_Info_Existing()
         {
-            var info = typeof(TestClass_Public).GetStaticMethodInfoOrNull("StaticMethod");
+            var info = typeof(TestClass_Public).GetStaticMethodInfoOrNull("StaticFunction");
             Assert.That(info, Is.Not.Null);
-            Assert.That(info.Name, Is.EqualTo("StaticMethod"));
+            Assert.That(info.Name, Is.EqualTo("StaticFunction"));
             Assert.That(info.IsStatic, Is.True);
             Assert.That(info.IsPrivate, Is.False);
         }
 
         [Test]
-        public void Private_Instance_Method_Info_Existing()
+        public void Private_Instance_Function_Info_Existing()
         {
-            var info = typeof(TestClass_Private).GetInstanceMethodInfoOrNull("Method");
+            var info = typeof(TestClass_Private).GetInstanceMethodInfoOrNull("Function");
             Assert.That(info, Is.Not.Null);
-            Assert.That(info.Name, Is.EqualTo("Method"));
+            Assert.That(info.Name, Is.EqualTo("Function"));
             Assert.That(info.IsStatic, Is.False);
             Assert.That(info.IsPrivate, Is.True);
         }
 
         [Test]
-        public void Public_Instance_Method_Info_Existing()
+        public void Public_Instance_Function_Info_Existing()
         {
-            var info = typeof(TestClass_Public).GetInstanceMethodInfoOrNull("Method");
+            var info = typeof(TestClass_Public).GetInstanceMethodInfoOrNull("Function");
             Assert.That(info, Is.Not.Null);
-            Assert.That(info.Name, Is.EqualTo("Method"));
+            Assert.That(info.Name, Is.EqualTo("Function"));
             Assert.That(info.IsStatic, Is.False);
             Assert.That(info.IsPrivate, Is.False);
         }
 
         [Test]
-        public void Private_Static_Method_Info_NonExisting()
+        public void Private_Static_Function_Info_NonExisting()
         {
             var info = typeof(TestClass_Private).GetStaticMethodInfoOrNull("vvvvvv");
             Assert.That(info, Is.Null);
         }
 
         [Test]
-        public void Public_Static_Method_Info_NonExisting()
+        public void Public_Static_Function_Info_NonExisting()
         {
             var info = typeof(TestClass_Public).GetStaticMethodInfoOrNull("vvvvvv");
             Assert.That(info, Is.Null);
         }
 
         [Test]
-        public void Private_Instance_Method_Info_NonExisting()
+        public void Private_Instance_Function_Info_NonExisting()
         {
             var info = typeof(TestClass_Private).GetInstanceMethodInfoOrNull("vvvvvv");
             Assert.That(info, Is.Null);
         }
 
         [Test]
-        public void Public_Instance_Method_Info_NonExisting()
+        public void Public_Instance_Function_Info_NonExisting()
         {
             var info = typeof(TestClass_Public).GetInstanceMethodInfoOrNull("vvvvvv");
             Assert.That(info, Is.Null);

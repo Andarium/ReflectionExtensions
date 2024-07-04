@@ -82,6 +82,15 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void AssertInstance([NotNull] object? instance, string memberName, MemberType memberType)
+        {
+            if (instance is null)
+            {
+                throw new NullReferenceException(NullInstanceMessage(null, memberName, memberType));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Type AssertType([NotNull] this Type? type)
         {
             if (type is null)
