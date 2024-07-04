@@ -82,11 +82,59 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void AssertInstance([NotNull] object? instance, string memberName, MemberType memberType)
+        {
+            if (instance is null)
+            {
+                throw new NullReferenceException(NullInstanceMessage(null, memberName, memberType));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Type AssertType([NotNull] this Type? type)
         {
             if (type is null)
             {
                 throw new NullReferenceException("Null type.");
+            }
+
+            return type;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Type AssertType<T>([NotNull] this Type? type)
+        {
+            if (type is null)
+            {
+                throw new NullReferenceException("Null type.");
+            }
+
+            if (type != typeof(T))
+            {
+                throw new ArgumentException($"Type mismatch. {type.AssemblyQualifiedName} != {typeof(T).AssemblyQualifiedName}");
+            }
+
+            return type;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Type AssertConstructor<T>([NotNull] this ConstructorInfo? info)
+        {
+            if (info is null)
+            {
+                throw new NullReferenceException("Null constructor info.");
+            }
+
+            var type = info.DeclaringType;
+
+            if (type is null)
+            {
+                throw new NullReferenceException($"Null constructor declaring type. T = {typeof(T).AssemblyQualifiedName}");
+            }
+
+            if (type != typeof(T))
+            {
+                throw new ArgumentException($"Type mismatch. {type.AssemblyQualifiedName} != {typeof(T).AssemblyQualifiedName}");
             }
 
             return type;
@@ -113,11 +161,32 @@ namespace ReflectionExtensions
             }
         }
 
+        private static bool IsMatchArguments(this MethodBase method, params Type[] argTypes)
+        {
+            var parameters = method.GetParameters();
+
+            if (parameters.Length != argTypes.Length)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                if (parameters[i].ParameterType != argTypes[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         internal enum MemberType
         {
             Field,
             Property,
             Method,
+            Constructor,
             FieldOrProperty
         }
     }

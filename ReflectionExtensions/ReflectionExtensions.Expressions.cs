@@ -63,6 +63,15 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static TDelegate LogAndCompile<TDelegate>(this Expression<TDelegate> input)
+        {
+#if DEBUG
+            Console.WriteLine(input.ToString());
+#endif
+            return input.Compile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static InstanceAccessor<TValue> CreateInstanceAccessor<TValue>(this Type type, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
             if (TryGetInstanceAccessors<object, TValue>(type, memberName, accessor, out var getter, out var setter))
