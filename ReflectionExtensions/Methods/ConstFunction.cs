@@ -16,6 +16,20 @@ namespace ReflectionExtensions
         public static implicit operator Func<object[], object>(ConstFunctionX m) => m._method;
     }
 
+    public readonly struct ConstFunctionX<TR>
+    {
+        private readonly Func<object[], TR> _method;
+
+        public ConstFunctionX(Func<object[], TR> method)
+        {
+            _method = method;
+        }
+
+        public TR Invoke(params object[] args) => _method.Invoke(args);
+        public static implicit operator ConstFunctionX<TR>(Func<object[], TR> m) => new(m);
+        public static implicit operator Func<object[], TR>(ConstFunctionX<TR> m) => m._method;
+    }
+
     public readonly struct ConstFunction<TResult>
     {
         private readonly Func<TResult> _method;

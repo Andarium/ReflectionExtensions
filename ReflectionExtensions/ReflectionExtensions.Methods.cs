@@ -32,16 +32,16 @@ namespace ReflectionExtensions
 
             var hash = new HashCode();
             hash.Add(methodName);
-            foreach (var t in a)
+            for (var i = 0; i < a.Length; i++)
             {
-                hash.Add(t);
+                hash.Add(a[i]);
             }
 
             return hash.ToHashCode();
         }
 #else
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int GetHashCode(string methodName, Type[] argTypes)
+        private static int GetHashCode(string methodName, params Type[] argTypes)
         {
             if (argTypes.Length == 0)
             {
@@ -51,9 +51,9 @@ namespace ReflectionExtensions
             unchecked
             {
                 var hash = 17 + methodName.GetHashCode();
-                foreach (var t in argTypes)
+                for (var i = 0; i < argTypes.Length; i++)
                 {
-                    hash = hash * 31 + t.GetHashCode();
+                    hash = hash * 31 + argTypes[i].GetHashCode();
                 }
 
                 return hash;
@@ -71,26 +71,6 @@ namespace ReflectionExtensions
             value = FetchUpToRootBase(type, t => t.GetMethods(FetchAllDeclared));
             MethodMap.Add(type, value);
             return value;
-        }
-
-        private static bool IsMatchArguments(this MethodInfo method, params Type[] argTypes)
-        {
-            var parameters = method.GetParameters();
-
-            if (parameters.Length != argTypes.Length)
-            {
-                return false;
-            }
-
-            for (var i = 0; i < parameters.Length; i++)
-            {
-                if (parameters[i].ParameterType != argTypes[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         private static MethodInfo? GetMethodInfoInternalOrNull([NotNull] this Type? type, string methodName, bool isStatic, params Type[] argTypes)

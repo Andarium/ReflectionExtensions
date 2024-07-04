@@ -10,6 +10,15 @@ namespace ReflectionExtensions.Tests.Classes
 {
     public class TestClass_Public
     {
+        public TestClass_Public()
+        {
+        }
+
+        private TestClass_Public(int a, float b)
+        {
+            Field = (int) (a * b);
+        }
+
         private const int Result = 777;
         public static string? ChangedBy;
 
