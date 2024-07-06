@@ -12,40 +12,40 @@ namespace ReflectionExtensions
 
         #region Instance Procedures
 
-        public static InstanceProcedure<TTarget> CreateInstanceProcedure<TTarget>(string methodName)
+        public static InstanceProcedure<TInstance> CreateInstanceProcedure<TInstance>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName);
-            return info.CreateInstanceProcedure<TTarget>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName);
+            return info.CreateInstanceProcedure<TInstance>();
         }
 
-        public static InstanceProcedure<TTarget, T0> CreateInstanceProcedure<TTarget, T0>(string methodName)
+        public static InstanceProcedure<TInstance, T0> CreateInstanceProcedure<TInstance, T0>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0));
-            return info.CreateInstanceProcedure<TTarget, T0>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0));
+            return info.CreateInstanceProcedure<TInstance, T0>();
         }
 
-        public static InstanceProcedure<TTarget, T0, T1> CreateInstanceProcedure<TTarget, T0, T1>(string methodName)
+        public static InstanceProcedure<TInstance, T0, T1> CreateInstanceProcedure<TInstance, T0, T1>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1));
-            return info.CreateInstanceProcedure<TTarget, T0, T1>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1));
+            return info.CreateInstanceProcedure<TInstance, T0, T1>();
         }
 
-        public static InstanceProcedure<TTarget, T0, T1, T2> CreateInstanceProcedure<TTarget, T0, T1, T2>(string methodName)
+        public static InstanceProcedure<TInstance, T0, T1, T2> CreateInstanceProcedure<TInstance, T0, T1, T2>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
-            return info.CreateInstanceProcedure<TTarget, T0, T1, T2>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2));
+            return info.CreateInstanceProcedure<TInstance, T0, T1, T2>();
         }
 
-        public static InstanceProcedure<TTarget, T0, T1, T2, T3> CreateInstanceProcedure<TTarget, T0, T1, T2, T3>(string methodName)
+        public static InstanceProcedure<TInstance, T0, T1, T2, T3> CreateInstanceProcedure<TInstance, T0, T1, T2, T3>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
-            return info.CreateInstanceProcedure<TTarget, T0, T1, T2, T3>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            return info.CreateInstanceProcedure<TInstance, T0, T1, T2, T3>();
         }
 
-        public static InstanceProcedure<TTarget, T0, T1, T2, T3, T4> CreateInstanceProcedure<TTarget, T0, T1, T2, T3, T4>(string methodName)
+        public static InstanceProcedure<TInstance, T0, T1, T2, T3, T4> CreateInstanceProcedure<TInstance, T0, T1, T2, T3, T4>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
-            return info.CreateInstanceProcedure<TTarget, T0, T1, T2, T3, T4>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            return info.CreateInstanceProcedure<TInstance, T0, T1, T2, T3, T4>();
         }
 
         ////////// Instance Procedure X //////////
@@ -65,57 +65,46 @@ namespace ReflectionExtensions
 
         public static ConstProcedure CreateConstInstanceProcedure<TInstance>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName);
+            var info = GetInstanceMethodInfo<TInstance>(methodName);
             return info.CreateConstInstanceProcedure<TInstance>(constInstance);
         }
 
         public static ConstProcedure<T0> CreateConstInstanceProcedure<TInstance, T0>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName, typeof(T0));
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0));
             return info.CreateConstInstanceProcedure<TInstance, T0>(constInstance);
         }
 
         public static ConstProcedure<T0, T1> CreateConstInstanceProcedure<TInstance, T0, T1>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1));
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1));
             return info.CreateConstInstanceProcedure<TInstance, T0, T1>(constInstance);
         }
 
         public static ConstProcedure<T0, T1, T2> CreateConstInstanceProcedure<TInstance, T0, T1, T2>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2));
             return info.CreateConstInstanceProcedure<TInstance, T0, T1, T2>(constInstance);
         }
 
         public static ConstProcedure<T0, T1, T2, T3> CreateConstInstanceProcedure<TInstance, T0, T1, T2, T3>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             return info.CreateConstInstanceProcedure<TInstance, T0, T1, T2, T3>(constInstance);
         }
 
         public static ConstProcedure<T0, T1, T2, T3, T4> CreateConstInstanceProcedure<TInstance, T0, T1, T2, T3, T4>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             return info.CreateConstInstanceProcedure<TInstance, T0, T1, T2, T3, T4>(constInstance);
         }
 
         ////////// Const Instance Procedure X //////////
-        public static ConstProcedureX CreateConstInstanceProcedureX(this object constInstance, Type instanceType, string methodName, params Type[] argTypes)
-        {
-            AssertInstance(constInstance, ref instanceType, methodName, MemberType.Method);
-            var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateConstInstanceProcedureX(constInstance, instanceType, argTypes);
-        }
-
         public static ConstProcedureX CreateConstInstanceProcedureX(this object constInstance, string methodName, params Type[] argTypes)
         {
-            return constInstance.CreateConstInstanceProcedureX(constInstance.GetType(), methodName, argTypes);
+            AssertInstance(constInstance, out var instanceType, methodName, MemberType.Method);
+            var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
+            return info.CreateConstInstanceProcedureX(constInstance, instanceType, argTypes);
         }
 
         #endregion
@@ -191,37 +180,37 @@ namespace ReflectionExtensions
 
         public static InstanceFunction<TTarget, TR> CreateInstanceFunction<TTarget, TR>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName);
+            var info = GetInstanceMethodInfo<TTarget>(methodName);
             return info.CreateInstanceFunction<TTarget, TR>();
         }
 
         public static InstanceFunction<TTarget, T0, TR> CreateInstanceFunction<TTarget, T0, TR>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0));
+            var info = GetInstanceMethodInfo<TTarget>(methodName, typeof(T0));
             return info.CreateInstanceFunction<TTarget, T0, TR>();
         }
 
         public static InstanceFunction<TTarget, T0, T1, TR> CreateInstanceFunction<TTarget, T0, T1, TR>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1));
+            var info = GetInstanceMethodInfo<TTarget>(methodName, typeof(T0), typeof(T1));
             return info.CreateInstanceFunction<TTarget, T0, T1, TR>();
         }
 
         public static InstanceFunction<TTarget, T0, T1, T2, TR> CreateInstanceFunction<TTarget, T0, T1, T2, TR>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
+            var info = GetInstanceMethodInfo<TTarget>(methodName, typeof(T0), typeof(T1), typeof(T2));
             return info.CreateInstanceFunction<TTarget, T0, T1, T2, TR>();
         }
 
         public static InstanceFunction<TTarget, T0, T1, T2, T3, TR> CreateInstanceFunction<TTarget, T0, T1, T2, T3, TR>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            var info = GetInstanceMethodInfo<TTarget>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             return info.CreateInstanceFunction<TTarget, T0, T1, T2, T3, TR>();
         }
 
         public static InstanceFunction<TTarget, T0, T1, T2, T3, T4, TR> CreateInstanceFunction<TTarget, T0, T1, T2, T3, T4, TR>(string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            var info = GetInstanceMethodInfo<TTarget>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             return info.CreateInstanceFunction<TTarget, T0, T1, T2, T3, T4, TR>();
         }
 
@@ -242,57 +231,46 @@ namespace ReflectionExtensions
 
         public static ConstFunction<TR> CreateConstInstanceFunction<TInstance, TR>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName);
+            var info = GetInstanceMethodInfo<TInstance>(methodName);
             return info.CreateConstInstanceFunction<TInstance, TR>(constInstance);
         }
 
         public static ConstFunction<T0, TR> CreateConstInstanceFunction<TInstance, T0, TR>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName, typeof(T0));
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0));
             return info.CreateConstInstanceFunction<TInstance, T0, TR>(constInstance);
         }
 
         public static ConstFunction<T0, T1, TR> CreateConstInstanceFunction<TInstance, T0, T1, TR>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1));
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1));
             return info.CreateConstInstanceFunction<TInstance, T0, T1, TR>(constInstance);
         }
 
         public static ConstFunction<T0, T1, T2, TR> CreateConstInstanceFunction<TInstance, T0, T1, T2, TR>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2));
             return info.CreateConstInstanceFunction<TInstance, T0, T1, T2, TR>(constInstance);
         }
 
         public static ConstFunction<T0, T1, T2, T3, TR> CreateConstInstanceFunction<TInstance, T0, T1, T2, T3, TR>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             return info.CreateConstInstanceFunction<TInstance, T0, T1, T2, T3, TR>(constInstance);
         }
 
         public static ConstFunction<T0, T1, T2, T3, T4, TR> CreateConstInstanceFunction<TInstance, T0, T1, T2, T3, T4, TR>(this TInstance constInstance, string methodName)
         {
-            AssertInstance(constInstance, methodName, MemberType.Method);
-            var info = typeof(TInstance).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             return info.CreateConstInstanceFunction<TInstance, T0, T1, T2, T3, T4, TR>(constInstance);
         }
 
         ////////// Const Instance Function X //////////
-        public static ConstFunctionX CreateConstInstanceFunctionX(this object constInstance, Type instanceType, string methodName, params Type[] argTypes)
-        {
-            AssertInstance(constInstance, ref instanceType, methodName, MemberType.Method);
-            var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateConstInstanceFunctionX(constInstance, instanceType, argTypes);
-        }
-
         public static ConstFunctionX CreateConstInstanceFunctionX(this object constInstance, string methodName, params Type[] argTypes)
         {
-            return constInstance.CreateConstInstanceFunctionX(constInstance.GetType(), methodName, argTypes);
+            AssertInstance(constInstance, out var instanceType, methodName, MemberType.Method);
+            var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
+            return info.CreateConstInstanceFunctionX(constInstance, argTypes);
         }
 
         #endregion

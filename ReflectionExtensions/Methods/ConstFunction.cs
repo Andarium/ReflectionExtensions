@@ -1,6 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace ReflectionExtensions
 {
+    // public delegate object ConstFunction();
     public delegate object ConstFunctionX(params object[] args);
     public delegate TResult ConstFunctionR<out TResult>(params object[] args);
 

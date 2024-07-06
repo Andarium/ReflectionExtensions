@@ -70,7 +70,7 @@ namespace ReflectionExtensions
 
         public static TR GetInstanceField<TR>(this object? instance, string fieldName, Type? instanceType = null)
         {
-            AssertInstance(instance, ref instanceType, fieldName, MemberType.Field);
+            AssertInstanceAndType(instance, ref instanceType, fieldName, MemberType.Field);
             var field = GetInstanceFieldInfo(instanceType, fieldName);
             return (TR) field.GetValue(instance);
         }
@@ -78,7 +78,7 @@ namespace ReflectionExtensions
         public static void SetInstanceField<T, TR>(this T? instance, string fieldName, TR? value)
         {
             var instanceType = typeof(T);
-            AssertInstance(instance, ref instanceType, fieldName, MemberType.Field);
+            AssertInstanceAndType(instance, ref instanceType, fieldName, MemberType.Field);
             var field = GetInstanceFieldInfo(instanceType, fieldName);
             field.SetValue(instance, value);
         }

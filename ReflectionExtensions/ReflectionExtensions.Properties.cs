@@ -75,7 +75,7 @@ namespace ReflectionExtensions
 
         public static TR GetInstanceProperty<TR>([NotNull] this object? instance, string propName, Type? instanceType = null)
         {
-            AssertInstance(instance, ref instanceType, propName, MemberType.Property);
+            AssertInstanceAndType(instance, ref instanceType, propName, MemberType.Property);
             var prop = GetInstancePropertyInfo(instanceType, propName);
             return (TR) prop.GetValue(instance);
         }
@@ -83,7 +83,7 @@ namespace ReflectionExtensions
         public static void SetInstanceProperty<T, TR>([NotNull] this T? instance, string propName, TR? value)
         {
             var instanceType = typeof(T);
-            AssertInstance(instance, ref instanceType, propName, MemberType.Property);
+            AssertInstanceAndType(instance, ref instanceType, propName, MemberType.Property);
             var prop = GetInstancePropertyInfo(instanceType, propName);
             prop.SetValue(instance, value);
         }

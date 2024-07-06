@@ -114,7 +114,7 @@ namespace ReflectionExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>([NotNull] this Type? type, [NotNull] object? instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
-            AssertInstance(instance, ref type, memberName, accessor.ToMemberType());
+            AssertInstanceAndType(instance, ref type, memberName, accessor.ToMemberType());
 
             if (accessor is AccessorTarget.Field or AccessorTarget.FieldOrProperty)
             {
