@@ -119,9 +119,9 @@ namespace ReflectionExtensions
 
         ////////// Instance Procedure X //////////
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static InstanceProcedureX CreateInstanceProcedureX(this MethodInfo methodInfo, Type instanceType, params Type[] argTypes)
+        public static InstanceProcedureX CreateInstanceProcedureX(this MethodInfo methodInfo, Type instanceType)
         {
-            var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, argTypes);
+            var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, methodInfo.GetArgs());
             var instExp = targetExp.Cast(instanceType);
             var callExp = Expression.Call(instExp, methodInfo, argList);
             return Expression.Lambda<Action<object, object[]>>(callExp, targetExp, arrayArgsExp).LogAndCompile().Invoke;
@@ -191,11 +191,11 @@ namespace ReflectionExtensions
 
         ////////// Const Instance Procedure X //////////
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstProcedureX CreateConstInstanceProcedureX(this MethodInfo methodInfo, object constInstance, Type instanceType, params Type[] argTypes)
+        public static ConstProcedureX CreateConstInstanceProcedureX(this MethodInfo methodInfo, object constInstance)
         {
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
-            var argList = CreateArgumentsX(out var arrayArgsExp, argTypes);
-            var instExp = Expression.Constant(constInstance).Cast(instanceType);
+            var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = Expression.Constant(constInstance).Cast(constInstance.GetType());
             var callExp = Expression.Call(instExp, methodInfo, argList);
             return Expression.Lambda<Action<object[]>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
         }
@@ -323,9 +323,9 @@ namespace ReflectionExtensions
 
         ////////// Instance Function X //////////
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static InstanceFunctionX CreateInstanceFunctionX(this MethodInfo methodInfo, Type instanceType, params Type[] argTypes)
+        public static InstanceFunctionX CreateInstanceFunctionX(this MethodInfo methodInfo, Type instanceType)
         {
-            var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, argTypes);
+            var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, methodInfo.GetArgs());
             var instExp = targetExp.Cast(instanceType);
             var callExp = BoxCall(instExp, methodInfo, argList);
             return Expression.Lambda<Func<object, object[], object>>(callExp, targetExp, arrayArgsExp).LogAndCompile().Invoke;
@@ -395,10 +395,10 @@ namespace ReflectionExtensions
 
         ////////// Const Instance Function X //////////
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstFunctionX CreateConstInstanceFunctionX(this MethodInfo methodInfo, object constInstance, params Type[] argTypes)
+        public static ConstFunctionX CreateConstInstanceFunctionX(this MethodInfo methodInfo, object constInstance)
         {
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
-            var argList = CreateArgumentsX(out var arrayArgsExp, argTypes);
+            var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var instExp = Expression.Constant(constInstance).Cast(constInstance.GetType());
             var callExp = BoxCall(instExp, methodInfo, argList);
             return Expression.Lambda<Func<object[], object>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
@@ -462,9 +462,9 @@ namespace ReflectionExtensions
 
         ////////// Static Function X //////////
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstFunctionX CreateStaticFunctionX(this MethodInfo methodInfo, params Type[] argTypes)
+        public static ConstFunctionX CreateStaticFunctionX(this MethodInfo methodInfo)
         {
-            var argList = CreateArgumentsX(out var arrayArgsExp, argTypes);
+            var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var callExp = BoxCall(null, methodInfo, argList);
             return Expression.Lambda<Func<object[], object>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
         }

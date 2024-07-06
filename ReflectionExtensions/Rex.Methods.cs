@@ -52,7 +52,7 @@ namespace ReflectionExtensions
         public static InstanceProcedureX CreateInstanceProcedureX(this Type instanceType, string methodName, params Type[] argTypes)
         {
             var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateInstanceProcedureX(instanceType, argTypes);
+            return info.CreateInstanceProcedureX(instanceType);
         }
 
         #endregion
@@ -104,7 +104,7 @@ namespace ReflectionExtensions
         {
             AssertInstance(constInstance, out var instanceType, methodName, MemberType.Method);
             var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateConstInstanceProcedureX(constInstance, instanceType, argTypes);
+            return info.CreateConstInstanceProcedureX(constInstance);
         }
 
         #endregion
@@ -218,7 +218,7 @@ namespace ReflectionExtensions
         public static InstanceFunctionX CreateInstanceFunctionX(this Type instanceType, string methodName, params Type[] argTypes)
         {
             var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateInstanceFunctionX(instanceType, argTypes);
+            return info.CreateInstanceFunctionX(instanceType);
         }
 
         #endregion
@@ -270,7 +270,7 @@ namespace ReflectionExtensions
         {
             AssertInstance(constInstance, out var instanceType, methodName, MemberType.Method);
             var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateConstInstanceFunctionX(constInstance, argTypes);
+            return info.CreateConstInstanceFunctionX(constInstance);
         }
 
         #endregion
@@ -333,7 +333,7 @@ namespace ReflectionExtensions
         public static ConstFunctionX CreateStaticFunctionX(this Type targetType, string methodName, params Type[] argTypes)
         {
             var info = targetType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateStaticFunctionX(argTypes);
+            return info.CreateStaticFunctionX();
         }
 
         #endregion

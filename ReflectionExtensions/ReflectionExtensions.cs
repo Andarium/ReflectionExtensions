@@ -214,6 +214,17 @@ namespace ReflectionExtensions
             return true;
         }
 
+        private static Type[] GetArgs(this MethodBase method)
+        {
+            var p = method.GetParameters();
+            if (p.Length is 0)
+            {
+                return Array.Empty<Type>();
+            }
+
+            return p.Select(x => x.ParameterType).ToArray();
+        }
+
         internal enum MemberType
         {
             Field,
