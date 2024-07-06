@@ -126,41 +126,53 @@ namespace ReflectionExtensions
 
         #region Static Procedures
 
-        public static ConstProcedure CreateStaticProcedure<TTarget>(string methodName)
+        public static ConstProcedure CreateStaticProcedure(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName);
+            var info = targetType.GetStaticMethodInfo(methodName);
             return info.CreateStaticProcedure();
         }
 
-        public static ConstProcedure<T0> CreateStaticProcedure<TTarget, T0>(string methodName)
+        public static ConstProcedure<T0> CreateStaticProcedure<T0>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0));
+            var info = targetType.GetStaticMethodInfo(methodName, typeof(T0));
             return info.CreateStaticProcedure<T0>();
         }
 
-        public static ConstProcedure<T0, T1> CreateStaticProcedure<TTarget, T0, T1>(string methodName)
+        public static ConstProcedure<T0, T1> CreateStaticProcedure<T0, T1>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1));
+            var info = targetType.GetStaticMethodInfo(methodName, typeof(T0), typeof(T1));
             return info.CreateStaticProcedure<T0, T1>();
         }
 
-        public static ConstProcedure<T0, T1, T2> CreateStaticProcedure<TTarget, T0, T1, T2>(string methodName)
+        public static ConstProcedure<T0, T1, T2> CreateStaticProcedure<T0, T1, T2>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
+            var info = targetType.GetStaticMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
             return info.CreateStaticProcedure<T0, T1, T2>();
         }
 
-        public static ConstProcedure<T0, T1, T2, T3> CreateStaticProcedure<TTarget, T0, T1, T2, T3>(string methodName)
+        public static ConstProcedure<T0, T1, T2, T3> CreateStaticProcedure<T0, T1, T2, T3>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            var info = targetType.GetStaticMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             return info.CreateStaticProcedure<T0, T1, T2, T3>();
         }
 
-        public static ConstProcedure<T0, T1, T2, T3, T4> CreateStaticProcedure<TTarget, T0, T1, T2, T3, T4>(string methodName)
+        public static ConstProcedure<T0, T1, T2, T3, T4> CreateStaticProcedure<T0, T1, T2, T3, T4>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            var info = targetType.GetStaticMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             return info.CreateStaticProcedure<T0, T1, T2, T3, T4>();
         }
+
+        public static ConstProcedure CreateStaticProcedure<TTarget>(string methodName) => typeof(TTarget).CreateStaticProcedure(methodName);
+
+        public static ConstProcedure<T0> CreateStaticProcedure<TTarget, T0>(string methodName) => typeof(TTarget).CreateStaticProcedure<T0>(methodName);
+
+        public static ConstProcedure<T0, T1> CreateStaticProcedure<TTarget, T0, T1>(string methodName) => typeof(TTarget).CreateStaticProcedure<T0, T1>(methodName);
+
+        public static ConstProcedure<T0, T1, T2> CreateStaticProcedure<TTarget, T0, T1, T2>(string methodName) => typeof(TTarget).CreateStaticProcedure<T0, T1, T2>(methodName);
+
+        public static ConstProcedure<T0, T1, T2, T3> CreateStaticProcedure<TTarget, T0, T1, T2, T3>(string methodName) => typeof(TTarget).CreateStaticProcedure<T0, T1, T2, T3>(methodName);
+
+        public static ConstProcedure<T0, T1, T2, T3, T4> CreateStaticProcedure<TTarget, T0, T1, T2, T3, T4>(string methodName) => typeof(TTarget).CreateStaticProcedure<T0, T1, T2, T3, T4>(methodName);
 
         ////////// Instance Procedure X //////////
         public static ConstProcedureX CreateStaticProcedureX(this Type targetType, string methodName, params Type[] argTypes)
@@ -291,41 +303,53 @@ namespace ReflectionExtensions
 
         #region Static Functions
 
-        public static ConstFunction<TR> CreateStaticFunction<TTarget, TR>(string methodName)
+        public static ConstFunction<TR> CreateStaticFunction<TR>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName);
+            var info = targetType.GetStaticMethodInfo(methodName);
             return info.CreateStaticFunction<TR>();
         }
 
-        public static ConstFunction<T0, TR> CreateStaticFunction<TTarget, T0, TR>(string methodName)
+        public static ConstFunction<T0, TR> CreateStaticFunction<T0, TR>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0));
+            var info = targetType.GetStaticMethodInfo(methodName, typeof(T0));
             return info.CreateStaticFunction<T0, TR>();
         }
 
-        public static ConstFunction<T0, T1, TR> CreateStaticFunction<TTarget, T0, T1, TR>(string methodName)
+        public static ConstFunction<T0, T1, TR> CreateStaticFunction<T0, T1, TR>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1));
+            var info = targetType.GetStaticMethodInfo(methodName, typeof(T0), typeof(T1));
             return info.CreateStaticFunction<T0, T1, TR>();
         }
 
-        public static ConstFunction<T0, T1, T2, TR> CreateStaticFunction<TTarget, T0, T1, T2, TR>(string methodName)
+        public static ConstFunction<T0, T1, T2, TR> CreateStaticFunction<T0, T1, T2, TR>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
+            var info = targetType.GetStaticMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
             return info.CreateStaticFunction<T0, T1, T2, TR>();
         }
 
-        public static ConstFunction<T0, T1, T2, T3, TR> CreateStaticFunction<TTarget, T0, T1, T2, T3, TR>(string methodName)
+        public static ConstFunction<T0, T1, T2, T3, TR> CreateStaticFunction<T0, T1, T2, T3, TR>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            var info = targetType.GetStaticMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             return info.CreateStaticFunction<T0, T1, T2, T3, TR>();
         }
 
-        public static ConstFunction<T0, T1, T2, T3, T4, TR> CreateStaticFunction<TTarget, T0, T1, T2, T3, T4, TR>(string methodName)
+        public static ConstFunction<T0, T1, T2, T3, T4, TR> CreateStaticFunction<T0, T1, T2, T3, T4, TR>(this Type targetType, string methodName)
         {
-            var info = typeof(TTarget).GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            var info = targetType.GetStaticMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             return info.CreateStaticFunction<T0, T1, T2, T3, T4, TR>();
         }
+
+        public static ConstFunction<TR> CreateStaticFunction<TTarget, TR>(string methodName) => typeof(TTarget).CreateStaticFunction<TR>(methodName);
+
+        public static ConstFunction<T0, TR> CreateStaticFunction<TTarget, T0, TR>(string methodName) => typeof(TTarget).CreateStaticFunction<T0, TR>(methodName);
+
+        public static ConstFunction<T0, T1, TR> CreateStaticFunction<TTarget, T0, T1, TR>(string methodName) => typeof(TTarget).CreateStaticFunction<T0, T1, TR>(methodName);
+
+        public static ConstFunction<T0, T1, T2, TR> CreateStaticFunction<TTarget, T0, T1, T2, TR>(string methodName) => typeof(TTarget).CreateStaticFunction<T0, T1, T2, TR>(methodName);
+
+        public static ConstFunction<T0, T1, T2, T3, TR> CreateStaticFunction<TTarget, T0, T1, T2, T3, TR>(string methodName) => typeof(TTarget).CreateStaticFunction<T0, T1, T2, T3, TR>(methodName);
+
+        public static ConstFunction<T0, T1, T2, T3, T4, TR> CreateStaticFunction<TTarget, T0, T1, T2, T3, T4, TR>(string methodName) => typeof(TTarget).CreateStaticFunction<T0, T1, T2, T3, T4, TR>(methodName);
 
         ////////// Static Function X //////////
         public static ConstFunctionX CreateStaticFunctionX(this Type targetType, string methodName, params Type[] argTypes)
