@@ -68,7 +68,7 @@ namespace ReflectionExtensions
             return Expression.Lambda<Func<T0, T1, T2, T3, T4, TTarget>>(newExp, arguments).LogAndCompile().Invoke;
         }
 
-        public static ConstructorXR<TTarget> CreateConstructorX<TTarget>(this ConstructorInfo constructorInfo, params Type[] argTypes)
+        public static ConstructorT<TTarget> CreateConstructorX<TTarget>(this ConstructorInfo constructorInfo, params Type[] argTypes)
         {
             constructorInfo.AssertConstructor<TTarget>();
             var arguments = CreateArgumentsX(out var arrayArgsExp, argTypes);
@@ -121,7 +121,7 @@ namespace ReflectionExtensions
             return info.CreateConstructor<TTarget, T0, T1, T2, T3, T4>();
         }
 
-        public static ConstructorXR<TTarget> CreateConstructorX<TTarget>(params Type[] argTypes)
+        public static ConstructorT<TTarget> CreateConstructorX<TTarget>(params Type[] argTypes)
         {
             var info = typeof(TTarget).GetConstructorInfo(argTypes);
             return info.CreateConstructorX<TTarget>(argTypes);

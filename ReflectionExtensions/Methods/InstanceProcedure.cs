@@ -1,4 +1,5 @@
-﻿namespace ReflectionExtensions
+﻿// ReSharper disable InconsistentNaming
+namespace ReflectionExtensions
 {
     public delegate void InstanceProcedureX(object instance, params object[] args);
     public delegate void InstanceProcedureT<in TInstance>(TInstance instance, params object[] args);
