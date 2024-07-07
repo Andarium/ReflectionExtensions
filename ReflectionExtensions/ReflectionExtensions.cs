@@ -96,9 +96,9 @@ namespace ReflectionExtensions
                 throw new NullReferenceException(NullInstanceMessage(typeof(T), memberName, memberType));
             }
 
-            instanceType = typeof(T);
+            instanceType = instance.GetType();
 
-            if (instanceType.IsInstanceOfType(instance) is false)
+            if (instance is not T)
             {
                 throw new ArgumentException(CastMessage(instanceType, memberName, memberType, instance.GetType()));
             }

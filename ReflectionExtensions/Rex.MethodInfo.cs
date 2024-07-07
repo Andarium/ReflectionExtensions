@@ -52,15 +52,22 @@ namespace ReflectionExtensions
             return argList;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Expression BoxCall(Expression? instance, MethodInfo info, IEnumerable<Expression> args)
         {
             Expression call = Expression.Call(instance, info, arguments: args);
-            if (info.ReturnType.IsValueType)
+            return call.Box();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Expression Box(this Expression exp)
+        {
+            if (exp.Type.IsValueType)
             {
-                call = Expression.TypeAs(call, typeof(object));
+                exp = Expression.TypeAs(exp, typeof(object));
             }
 
-            return call;
+            return exp;
         }
 
         /////////////////////////////////////////////////
@@ -195,7 +202,7 @@ namespace ReflectionExtensions
         {
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
-            var instExp = Expression.Constant(constInstance).Cast(constInstance.GetType());
+            var instExp = Expression.Constant(constInstance);
             var callExp = Expression.Call(instExp, methodInfo, argList);
             return Expression.Lambda<Action<object[]>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
         }
@@ -399,7 +406,7 @@ namespace ReflectionExtensions
         {
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
-            var instExp = Expression.Constant(constInstance).Cast(constInstance.GetType());
+            var instExp = Expression.Constant(constInstance);
             var callExp = BoxCall(instExp, methodInfo, argList);
             return Expression.Lambda<Func<object[], object>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
         }
