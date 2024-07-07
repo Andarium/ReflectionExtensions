@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using ReflectionExtensions.Tests.Classes;
+using static ReflectionExtensions.ReflectionExtensions;
 using TestClass = ReflectionExtensions.Tests.Classes.ExpressionTestClass;
 
 namespace ReflectionExtensions.Tests;
@@ -24,9 +25,13 @@ public sealed class TestAccessors
     private ConstAccessor<int> _staticValueProperty = default!;
     private ConstAccessor<TestObject> _staticRefProperty = default!;
 
+    private ConstAccessorX _staticValueFieldX1 = default!;
+    private ConstAccessorX _staticValueFieldX2 = default!;
+
     [SetUp]
     public void Setup()
     {
+        TestClass.Reset();
         _instance = new();
         var t = typeof(TestClass);
 
@@ -40,10 +45,13 @@ public sealed class TestAccessors
         _constInstanceValueProperty = _instance.CreateConstInstanceAccessor<int>("ValueProperty");
         _constInstanceRefProperty = _instance.CreateConstInstanceAccessor<TestObject>("RefProperty");
 
-        _staticValueField = t.CreateStaticAccessor<int>("StaticValueField");
+        _staticValueField = CreateStaticAccessor<TestClass, int>("StaticValueField");
         _staticRefField = t.CreateStaticAccessor<TestObject>("StaticRefField");
         _staticValueProperty = t.CreateStaticAccessor<int>("StaticValueProperty");
         _staticRefProperty = t.CreateStaticAccessor<TestObject>("StaticRefProperty");
+
+        _staticValueFieldX1 = t.CreateStaticAccessor("StaticValueField");
+        _staticValueFieldX2 = CreateStaticAccessor<TestClass>("StaticValueField");
     }
 
     [Test]
@@ -209,6 +217,40 @@ public sealed class TestAccessors
 
         Assert.That(TestClass.StaticValueField, Is.EqualTo(20));
         Assert.That(_staticValueField.GetValue(), Is.EqualTo(20));
+    }
+
+    [Test]
+    public void Static_Field_X1()
+    {
+        Assert.That(TestClass.StaticValueField, Is.EqualTo(77));
+        Assert.That(_staticValueFieldX1.GetValue(), Is.EqualTo(77));
+
+        _staticValueField.SetValue(10);
+
+        Assert.That(TestClass.StaticValueField, Is.EqualTo(10));
+        Assert.That(_staticValueFieldX1.GetValue(), Is.EqualTo(10));
+
+        TestClass.StaticValueField = 20;
+
+        Assert.That(TestClass.StaticValueField, Is.EqualTo(20));
+        Assert.That(_staticValueFieldX1.GetValue(), Is.EqualTo(20));
+    }
+
+    [Test]
+    public void Static_Field_X2()
+    {
+        Assert.That(TestClass.StaticValueField, Is.EqualTo(77));
+        Assert.That(_staticValueFieldX2.GetValue(), Is.EqualTo(77));
+
+        _staticValueField.SetValue(10);
+
+        Assert.That(TestClass.StaticValueField, Is.EqualTo(10));
+        Assert.That(_staticValueFieldX2.GetValue(), Is.EqualTo(10));
+
+        TestClass.StaticValueField = 20;
+
+        Assert.That(TestClass.StaticValueField, Is.EqualTo(20));
+        Assert.That(_staticValueFieldX2.GetValue(), Is.EqualTo(20));
     }
 
     [Test]

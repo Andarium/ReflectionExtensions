@@ -63,6 +63,42 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool TryGetStaticAccessors<TValue>(
+            this Type type,
+            string memberName,
+            AccessorTarget accessor,
+            [NotNullWhen(true)] out Func<TValue>? getter,
+            [NotNullWhen(true)] out Action<TValue>? setter
+        )
+        {
+            if (accessor is AccessorTarget.Field or AccessorTarget.FieldOrProperty)
+            {
+                var field = type.GetStaticFieldInfoOrNull(memberName);
+                if (field is not null)
+                {
+                    getter = field.CreateStaticGetter<TValue>();
+                    setter = field.CreateStaticSetter<TValue>();
+                    return true;
+                }
+            }
+
+            if (accessor is AccessorTarget.Property or AccessorTarget.FieldOrProperty)
+            {
+                var prop = type.GetStaticPropertyInfoOrNull(memberName);
+                if (prop is not null)
+                {
+                    getter = prop.CreateStaticGetter<TValue>();
+                    setter = prop.CreateStaticSetter<TValue>();
+                    return true;
+                }
+            }
+
+            getter = null;
+            setter = null;
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static TDelegate LogAndCompile<TDelegate>(this Expression<TDelegate> input)
         {
 #if DEBUG
@@ -90,6 +126,17 @@ namespace ReflectionExtensions
         public static InstanceAccessor<TTarget, TValue> CreateInstanceAccessor<TTarget, TValue>(this Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
             if (TryGetInstanceAccessors<TTarget, TValue>(instanceType, memberName, accessor, out var getter, out var setter))
+            {
+                return new InstanceAccessor<TTarget, TValue>(getter, setter);
+            }
+
+            throw new NullReferenceException($"Can't find member with name {memberName} on type {typeof(TTarget).AssemblyQualifiedName}");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceAccessor<TTarget, TValue> CreateInstanceAccessor<TTarget, TValue>(string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        {
+            if (TryGetInstanceAccessors<TTarget, TValue>(typeof(TTarget), memberName, accessor, out var getter, out var setter))
             {
                 return new InstanceAccessor<TTarget, TValue>(getter, setter);
             }
@@ -160,26 +207,9 @@ namespace ReflectionExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConstAccessor<TValue> CreateStaticAccessor<TValue>(this Type type, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
-            if (accessor is AccessorTarget.Field or AccessorTarget.FieldOrProperty)
+            if (TryGetStaticAccessors<TValue>(type, memberName, accessor, out var getter, out var setter))
             {
-                var field = type.GetStaticFieldInfoOrNull(memberName);
-                if (field is not null)
-                {
-                    var getter = field.CreateStaticGetter<TValue>();
-                    var setter = field.CreateStaticSetter<TValue>();
-                    return new ConstAccessor<TValue>(getter, setter);
-                }
-            }
-
-            if (accessor is AccessorTarget.Property or AccessorTarget.FieldOrProperty)
-            {
-                var prop = type.GetStaticPropertyInfoOrNull(memberName);
-                if (prop is not null)
-                {
-                    var getter = prop.CreateStaticGetter<TValue>();
-                    var setter = prop.CreateStaticSetter<TValue>();
-                    return new ConstAccessor<TValue>(getter, setter);
-                }
+                return new ConstAccessor<TValue>(getter, setter);
             }
 
             throw new NullReferenceException($"Can't find member with name {memberName} on type {type.AssemblyQualifiedName}");
