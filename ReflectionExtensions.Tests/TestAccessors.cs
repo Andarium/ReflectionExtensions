@@ -9,8 +9,8 @@ public sealed class TestAccessors
 {
     private TestClass _instance = default!;
 
-    private InstanceAccessor<int> _instanceValueField = default!;
-    private InstanceAccessor<TestObject> _instanceRefField = default!;
+    private InstanceAccessorR<int> _instanceValueField = default!;
+    private InstanceAccessorR<TestObject> _instanceRefField = default!;
     private InstanceAccessor<TestClass, int> _instanceValueProperty = default!;
     private InstanceAccessor<TestClass, TestObject> _instanceRefProperty = default!;
 
@@ -30,15 +30,15 @@ public sealed class TestAccessors
         _instance = new();
         var t = typeof(TestClass);
 
-        _instanceValueField = t.CreateInstanceAccessor<int>("ValueField");
-        _instanceRefField = t.CreateInstanceAccessor<TestObject>("RefField");
+        _instanceValueField = t.CreateInstanceAccessorR<int>("ValueField");
+        _instanceRefField = t.CreateInstanceAccessorR<TestObject>("RefField");
         _instanceValueProperty = t.CreateInstanceAccessor<TestClass, int>("ValueProperty");
         _instanceRefProperty = t.CreateInstanceAccessor<TestClass, TestObject>("RefProperty");
-        
-        _constInstanceValueField = _instance.CreateConstInstanceAccessor<int>(t, "ValueField");
-        _constInstanceRefField = t.CreateConstInstanceAccessor<TestObject>(_instance, "RefField");
-        _constInstanceValueProperty = t.CreateConstInstanceAccessor<int>(_instance, "ValueProperty");
-        _constInstanceRefProperty = t.CreateConstInstanceAccessor<TestObject>(_instance, "RefProperty");
+
+        _constInstanceValueField = _instance.CreateConstInstanceAccessor<int>("ValueField");
+        _constInstanceRefField = _instance.CreateConstInstanceAccessor<TestObject>("RefField");
+        _constInstanceValueProperty = _instance.CreateConstInstanceAccessor<int>("ValueProperty");
+        _constInstanceRefProperty = _instance.CreateConstInstanceAccessor<TestObject>("RefProperty");
 
         _staticValueField = t.CreateStaticAccessor<int>("StaticValueField");
         _staticRefField = t.CreateStaticAccessor<TestObject>("StaticRefField");

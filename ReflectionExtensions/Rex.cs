@@ -71,21 +71,25 @@ namespace ReflectionExtensions
             return input.Compile();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static InstanceAccessor<TValue> CreateInstanceAccessor<TValue>(this Type type, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        public static InstanceAccessorX CreateInstanceAccessorX(this Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
-            if (TryGetInstanceAccessors<object, TValue>(type, memberName, accessor, out var getter, out var setter))
-            {
-                return new InstanceAccessor<TValue>(getter, setter);
-            }
+            return CreateInstanceAccessor<object, object>(instanceType, memberName, accessor);
+        }
 
-            throw new NullReferenceException($"Can't find member with name {memberName} on type {type.AssemblyQualifiedName}");
+        public static InstanceAccessorR<TValue> CreateInstanceAccessorR<TValue>(this Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        {
+            return CreateInstanceAccessor<object, TValue>(instanceType, memberName, accessor);
+        }
+
+        public static InstanceAccessorT<TTarget> CreateInstanceAccessorT<TTarget>(this Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        {
+            return CreateInstanceAccessor<TTarget, object>(instanceType, memberName, accessor);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static InstanceAccessor<TTarget, TValue> CreateInstanceAccessor<TTarget, TValue>(this Type type, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        public static InstanceAccessor<TTarget, TValue> CreateInstanceAccessor<TTarget, TValue>(this Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
-            if (TryGetInstanceAccessors<TTarget, TValue>(type, memberName, accessor, out var getter, out var setter))
+            if (TryGetInstanceAccessors<TTarget, TValue>(instanceType, memberName, accessor, out var getter, out var setter))
             {
                 return new InstanceAccessor<TTarget, TValue>(getter, setter);
             }
@@ -93,58 +97,64 @@ namespace ReflectionExtensions
             throw new NullReferenceException($"Can't find member with name {memberName} on type {typeof(TTarget).AssemblyQualifiedName}");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>([NotNull] this object? instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        public static ConstAccessorX CreateConstInstanceAccessorX([NotNull] this object? constInstance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
-            return CreateConstInstanceAccessor<TValue>(instance?.GetType(), instance, memberName, accessor);
+            return CreateConstInstanceAccessor<object, object>(constInstance, memberName, accessor);
+        }
+
+        /*public static ConstAccessorX CreateConstInstanceAccessorT<TTarget>([NotNull] this TTarget? instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        {
+            return CreateConstInstanceAccessor<TTarget, object>(instance, memberName, accessor);
+        }*/
+
+        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>([NotNull] this object? constInstance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        {
+            return CreateConstInstanceAccessor<object, TValue>(constInstance, memberName, accessor);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>([NotNull] this object? instance, Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        private static ConstAccessor<TValue> CreateConstInstanceAccessor<TTarget, TValue>([NotNull] this TTarget? constInstance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
-            return CreateConstInstanceAccessor<TValue>(instanceType, instance, memberName, accessor);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TTarget, TValue>([NotNull] this TTarget? instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
-        {
-            return CreateConstInstanceAccessor<TValue>(typeof(TTarget), instance, memberName, accessor);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstAccessor<TValue> CreateConstInstanceAccessor<TValue>([NotNull] this Type? type, [NotNull] object? instance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
-        {
-            AssertInstanceAndType(instance, ref type, memberName, accessor.ToMemberType());
+            AssertInstance<TTarget>(constInstance, out var instanceType, memberName, accessor.ToMemberType());
 
             if (accessor is AccessorTarget.Field or AccessorTarget.FieldOrProperty)
             {
-                var field = type.GetInstanceFieldInfoOrNull(memberName);
+                var field = instanceType.GetInstanceFieldInfoOrNull(memberName);
                 if (field is not null)
                 {
-                    var getter = field.CreateConstInstanceGetter<TValue>(instance);
-                    var setter = field.CreateConstInstanceSetter<TValue>(instance);
+                    var getter = field.CreateConstInstanceGetterR<TValue>(constInstance);
+                    var setter = field.CreateConstInstanceSetterR<TValue>(constInstance);
                     return new ConstAccessor<TValue>(getter, setter);
                 }
             }
 
             if (accessor is AccessorTarget.Property or AccessorTarget.FieldOrProperty)
             {
-                var prop = type.GetInstancePropertyInfoOrNull(memberName);
+                var prop = instanceType.GetInstancePropertyInfoOrNull(memberName);
                 if (prop is not null)
                 {
-                    var getter = prop.CreateConstInstanceGetter<TValue>(instance);
-                    var setter = prop.CreateConstInstanceSetter<TValue>(instance);
+                    var getter = prop.CreateConstInstanceGetterR<TValue>(constInstance);
+                    var setter = prop.CreateConstInstanceSetterR<TValue>(constInstance);
                     return new ConstAccessor<TValue>(getter, setter);
                 }
             }
 
-            throw new NullReferenceException($"Can't find member with name {memberName} on type {type.AssemblyQualifiedName}");
+            throw new NullReferenceException($"Can't find member with name {memberName} on type {instanceType.AssemblyQualifiedName}");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConstAccessor<TValue> CreateStaticAccessor<TTarget, TValue>(string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
             return CreateStaticAccessor<TValue>(typeof(TTarget), memberName, accessor);
+        }
+
+        public static ConstAccessorX CreateStaticAccessor(this Type type, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        {
+            return CreateStaticAccessor<object>(type, memberName, accessor);
+        }
+
+        public static ConstAccessorX CreateStaticAccessor<TTarget>(string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        {
+            return CreateStaticAccessor<object>(typeof(TTarget), memberName, accessor);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,106 +1,46 @@
 using System;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace ReflectionExtensions
 {
     public static partial class ReflectionExtensions
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Func<TTarget, TValue> CreateInstanceGetter<TTarget, TValue>(this PropertyInfo prop)
-        {
-            var targetExp = Expression.Parameter(typeof(TTarget), "target");
-            var castTargetExp = targetExp.Cast(prop.DeclaringType!);
-            var propExp = Expression.Property(castTargetExp, prop);
-            return Expression.Lambda<Func<TTarget, TValue>>(propExp, targetExp).Compile();
-        }
+        //////////////////////////////////
+        //////////   Instance   //////////
+        //////////////////////////////////
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Func<TValue> CreateConstInstanceGetter<TTarget, TValue>(this PropertyInfo prop, TTarget constInstance)
-        {
-            if (constInstance == null)
-            {
-                throw new ArgumentNullException(nameof(constInstance));
-            }
+        public static Func<TTarget, TValue> CreateInstanceGetter<TTarget, TValue>(this PropertyInfo prop) => InstanceGetter<TTarget, TValue>(prop);
+        public static Func<TTarget, object> CreateInstanceGetterT<TTarget>(this PropertyInfo prop) => InstanceGetter<TTarget, object>(prop);
+        public static Func<object, TValue> CreateInstanceGetterR<TValue>(this PropertyInfo prop) => InstanceGetter<object, TValue>(prop);
+        public static Func<object, object> CreateInstanceGetterX(this PropertyInfo prop) => InstanceGetter<object, object>(prop);
 
-            var propExp = Expression.Property(Expression.Constant(constInstance), prop);
-            return Expression.Lambda<Func<TValue>>(propExp).Compile();
-        }
+        public static Action<TTarget, TValue> CreateInstanceSetter<TTarget, TValue>(this PropertyInfo prop) => InstanceSetter<TTarget, TValue>(prop);
+        public static Action<TTarget, object> CreateInstanceSetterT<TTarget>(this PropertyInfo prop) => InstanceSetter<TTarget, object>(prop);
+        public static Action<object, TValue> CreateInstanceSetterR<TValue>(this PropertyInfo prop) => InstanceSetter<object, TValue>(prop);
+        public static Action<object, object> CreateInstanceSetterX(this PropertyInfo prop) => InstanceSetter<object, object>(prop);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Func<TValue> CreateConstInstanceGetter<TValue>(this PropertyInfo prop, object constInstance)
-        {
-            if (constInstance == null)
-            {
-                throw new ArgumentNullException(nameof(constInstance));
-            }
+        ////////////////////////////////////////
+        //////////   Const Instance   //////////
+        ////////////////////////////////////////
 
-            var propExp = Expression.Property(Expression.Constant(constInstance), prop);
-            return Expression.Lambda<Func<TValue>>(propExp).Compile();
-        }
+        public static Func<TValue> CreateConstInstanceGetter<TTarget, TValue>(this PropertyInfo prop, TTarget constInstance) => ConstInstanceGetter<TTarget, TValue>(prop, constInstance);
+        public static Func<TValue> CreateConstInstanceGetterR<TValue>(this PropertyInfo prop, object constInstance) => ConstInstanceGetter<object, TValue>(prop, constInstance);
+        public static Func<object> CreateConstInstanceGetterT<TTarget>(this PropertyInfo prop, TTarget constInstance) => ConstInstanceGetter<TTarget, object>(prop, constInstance);
+        public static Func<object> CreateConstInstanceGetterX(this PropertyInfo prop, object constInstance) => ConstInstanceGetter<object, object>(prop, constInstance);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Func<TValue> CreateStaticGetter<TValue>(this PropertyInfo prop)
-        {
-            var propExp = Expression.Property(null, prop);
-            return Expression.Lambda<Func<TValue>>(propExp).Compile();
-        }
+        public static Action<TValue> CreateConstInstanceSetter<TTarget, TValue>(this PropertyInfo prop, TTarget constInstance) => ConstInstanceSetter<TTarget, TValue>(prop, constInstance);
+        public static Action<object> CreateConstInstanceSetterT<TTarget>(this PropertyInfo prop, TTarget constInstance) => ConstInstanceSetter<TTarget, object>(prop, constInstance);
+        public static Action<TValue> CreateConstInstanceSetterR<TValue>(this PropertyInfo prop, object constInstance) => ConstInstanceSetter<object, TValue>(prop, constInstance);
+        public static Action<object> CreateConstInstanceSetterX(this PropertyInfo prop, object constInstance) => ConstInstanceSetter<object, object>(prop, constInstance);
 
-        // Setters
+        ////////////////////////////////
+        //////////   Static   //////////
+        ////////////////////////////////
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Action<TTarget, TValue> CreateInstanceSetter<TTarget, TValue>(this PropertyInfo prop)
-        {
-            var targetExp = Expression.Parameter(typeof(TTarget), "target");
-            var valueExp = Expression.Parameter(typeof(TValue), "value");
+        public static Func<TValue> CreateStaticGetter<TValue>(this PropertyInfo prop) => StaticGetter<TValue>(prop);
+        public static Func<object> CreateStaticGetterX(this PropertyInfo prop) => StaticGetter<object>(prop);
 
-            var castTargetExp = targetExp.Cast(prop.DeclaringType!);
-            var castValueExp = valueExp.Cast(prop.PropertyType);
-
-            var propExp = Expression.Property(castTargetExp, prop);
-            var assignExp = Expression.Assign(propExp, castValueExp);
-            return Expression.Lambda<Action<TTarget, TValue>>(assignExp, targetExp, valueExp).Compile();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Action<TValue> CreateConstInstanceSetter<TTarget, TValue>(this PropertyInfo prop, TTarget constInstance)
-        {
-            if (constInstance == null)
-            {
-                throw new ArgumentNullException(nameof(constInstance));
-            }
-
-            var valueExp = Expression.Parameter(typeof(TValue), "value");
-            var fieldExp = Expression.Property(Expression.Constant(constInstance), prop);
-            var castValueExp = valueExp.Cast(prop.PropertyType);
-            var assignExp = Expression.Assign(fieldExp, castValueExp);
-            return Expression.Lambda<Action<TValue>>(assignExp, valueExp).Compile();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Action<TValue> CreateConstInstanceSetter<TValue>(this PropertyInfo prop, object constInstance)
-        {
-            if (constInstance == null)
-            {
-                throw new ArgumentNullException(nameof(constInstance));
-            }
-
-            var valueExp = Expression.Parameter(typeof(TValue), "value");
-            var fieldExp = Expression.Property(Expression.Constant(constInstance), prop);
-            var castValueExp = valueExp.Cast(prop.PropertyType);
-            var assignExp = Expression.Assign(fieldExp, castValueExp);
-            return Expression.Lambda<Action<TValue>>(assignExp, valueExp).Compile();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Action<TValue> CreateStaticSetter<TValue>(this PropertyInfo prop)
-        {
-            var valueExp = Expression.Parameter(typeof(TValue), "value");
-            var fieldExp = Expression.Property(null, prop);
-            var castValueExp = valueExp.Cast(prop.PropertyType);
-            var assignExp = Expression.Assign(fieldExp, castValueExp);
-            return Expression.Lambda<Action<TValue>>(assignExp, valueExp).Compile();
-        }
+        public static Action<TValue> CreateStaticSetter<TValue>(this PropertyInfo prop) => StaticSetter<TValue>(prop);
+        public static Action<object> CreateStaticSetterX(this PropertyInfo prop) => StaticSetter<object>(prop);
     }
 }
