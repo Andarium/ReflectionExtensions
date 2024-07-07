@@ -114,7 +114,7 @@ namespace ReflectionExtensions
         public static object CallInstanceMethod<T>(this T instance, string methodName, Args args = default)
         {
             var instanceType = typeof(T);
-            AssertInstance(instance, ref instanceType, methodName, MemberType.Method);
+            AssertInstanceAndType(instance, ref instanceType, methodName, MemberType.Method);
             var method = GetInstanceMethodInfo(instanceType, methodName, args.Types);
             return method.Invoke(instance, args.Values);
         }

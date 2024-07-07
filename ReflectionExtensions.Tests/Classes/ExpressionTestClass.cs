@@ -8,8 +8,19 @@ public sealed class ExpressionTestClass
     public int ValueProperty { get; set; } = 66;
     public TestObject RefProperty { get; set; } = new();
 
-    public static int StaticValueField = 77;
-    public static TestObject StaticRefField = new();
-    public static int StaticValueProperty { get; set; } = 88;
-    public static TestObject StaticRefProperty { get; set; } = new();
+    public static int StaticValueField;
+    public static TestObject StaticRefField = default!;
+
+    public static int StaticValueProperty { get; set; }
+    public static TestObject StaticRefProperty { get; set; } = default!;
+
+    static ExpressionTestClass() => Reset();
+
+    public static void Reset()
+    {
+        StaticValueField = 77;
+        StaticRefField = new TestObject();
+        StaticValueProperty = 88;
+        StaticRefProperty = new TestObject();
+    }
 }

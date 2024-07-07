@@ -41,7 +41,7 @@ namespace ReflectionExtensions
 
         public static TR GetInstanceFieldOrProperty<TR>([NotNull] this object? instance, string propName, Type? instanceType = null)
         {
-            AssertInstance(instance, ref instanceType, propName, MemberType.FieldOrProperty);
+            AssertInstanceAndType(instance, ref instanceType, propName, MemberType.FieldOrProperty);
             var info = GetInstanceFieldOrPropertyInfo(instanceType, propName);
             return info switch
             {
@@ -54,7 +54,7 @@ namespace ReflectionExtensions
         public static void SetInstanceFieldOrProperty<T, TR>(this T? instance, string propName, TR? value)
         {
             var instanceType = typeof(T);
-            AssertInstance(instance, ref instanceType, propName, MemberType.FieldOrProperty);
+            AssertInstanceAndType(instance, ref instanceType, propName, MemberType.FieldOrProperty);
             var info = GetInstanceFieldOrPropertyInfo(instanceType, propName);
             switch (info)
             {

@@ -20,7 +20,8 @@ namespace ReflectionExtensions
 
         private const string NotFound = "Can't find {0} {1} {2} in {3} type";
         private const string NotFoundMethod = "Can't find {0} {1} {2}({4}) in {3} type";
-        private const string NullInstance = "Null instance. {0} {1}, {2} type";
+        private const string NullInstance = "Null instance. {0} {1}";
+        private const string NullInstanceWithType = "Null instance. {0} {1}, {2} type";
         private const string CastString = "Can't assign {3} to {0}. {0} {1}, {2} type";
 
         public static void ClearCache()
@@ -54,8 +55,14 @@ namespace ReflectionExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string NullInstanceMessage(Type? type, string memberName, MemberType memberType)
         {
-            var name = type?.AssemblyQualifiedName;
-            return string.Format(NullInstance, memberType, memberName, name);
+            var typeName = type?.AssemblyQualifiedName;
+            return string.Format(NullInstanceWithType, memberType, memberName, typeName);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string NullInstanceMessage(string memberName, MemberType memberType)
+        {
+            return string.Format(NullInstance, memberType, memberName);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -66,7 +73,7 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void AssertInstance([NotNull] object? instance, [NotNull] ref Type? instanceType, string memberName, MemberType memberType)
+        private static void AssertInstanceAndType([NotNull] object? instance, [NotNull] ref Type? instanceType, string memberName, MemberType memberType)
         {
             if (instance is null)
             {
@@ -82,11 +89,37 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void AssertInstance<T>([NotNull] object? instance, out Type instanceType, string memberName, MemberType memberType)
+        {
+            if (instance is null)
+            {
+                throw new NullReferenceException(NullInstanceMessage(typeof(T), memberName, memberType));
+            }
+
+            instanceType = instance.GetType();
+
+            if (instance is not T)
+            {
+                throw new ArgumentException(CastMessage(instanceType, memberName, memberType, instance.GetType()));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void AssertInstance<T>([NotNull] object? instance, string memberName, MemberType memberType) => AssertInstance<T>(instance, out _, memberName, memberType);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void AssertInstance([NotNull] object? instance, out Type instanceType, string memberName, MemberType memberType)
+        {
+            AssertInstance(instance, memberName, memberType);
+            instanceType = instance.GetType();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void AssertInstance([NotNull] object? instance, string memberName, MemberType memberType)
         {
             if (instance is null)
             {
-                throw new NullReferenceException(NullInstanceMessage(null, memberName, memberType));
+                throw new NullReferenceException(NullInstanceMessage(memberName, memberType));
             }
         }
 
@@ -179,6 +212,17 @@ namespace ReflectionExtensions
             }
 
             return true;
+        }
+
+        private static Type[] GetArgs(this MethodBase method)
+        {
+            var p = method.GetParameters();
+            if (p.Length is 0)
+            {
+                return Array.Empty<Type>();
+            }
+
+            return p.Select(x => x.ParameterType).ToArray();
         }
 
         internal enum MemberType
