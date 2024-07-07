@@ -48,13 +48,6 @@ namespace ReflectionExtensions
             return info.CreateInstanceProcedure<TInstance, T0, T1, T2, T3, T4>();
         }
 
-        ////////// Instance Procedure X //////////
-        public static InstanceProcedureX CreateInstanceProcedureX(this Type instanceType, string methodName, params Type[] argTypes)
-        {
-            var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateInstanceProcedureX(instanceType);
-        }
-
         #endregion
 
         ///////////////////////////////////////////////////////
@@ -97,14 +90,6 @@ namespace ReflectionExtensions
         {
             var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             return info.CreateConstInstanceProcedure<TInstance, T0, T1, T2, T3, T4>(constInstance);
-        }
-
-        ////////// Const Instance Procedure X //////////
-        public static ConstProcedureX CreateConstInstanceProcedureX(this object constInstance, string methodName, params Type[] argTypes)
-        {
-            AssertInstance(constInstance, out var instanceType, methodName, MemberType.Method);
-            var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateConstInstanceProcedureX(constInstance);
         }
 
         #endregion
@@ -163,13 +148,6 @@ namespace ReflectionExtensions
 
         public static ConstProcedure<T0, T1, T2, T3, T4> CreateStaticProcedure<TTarget, T0, T1, T2, T3, T4>(string methodName) => typeof(TTarget).CreateStaticProcedure<T0, T1, T2, T3, T4>(methodName);
 
-        ////////// Instance Procedure X //////////
-        public static ConstProcedureX CreateStaticProcedureX(this Type targetType, string methodName, params Type[] argTypes)
-        {
-            var info = targetType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateStaticProcedureX(argTypes);
-        }
-
         #endregion
 
         ////////////////////////////////////////////////
@@ -214,13 +192,6 @@ namespace ReflectionExtensions
             return info.CreateInstanceFunction<TTarget, T0, T1, T2, T3, T4, TR>();
         }
 
-        ////////// Instance Function X //////////
-        public static InstanceFunctionX CreateInstanceFunctionX(this Type instanceType, string methodName, params Type[] argTypes)
-        {
-            var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateInstanceFunctionX(instanceType);
-        }
-
         #endregion
 
         //////////////////////////////////////////////////////
@@ -263,14 +234,6 @@ namespace ReflectionExtensions
         {
             var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             return info.CreateConstInstanceFunction<TInstance, T0, T1, T2, T3, T4, TR>(constInstance);
-        }
-
-        ////////// Const Instance Function X //////////
-        public static ConstFunctionX CreateConstInstanceFunctionX(this object constInstance, string methodName, params Type[] argTypes)
-        {
-            AssertInstance(constInstance, out var instanceType, methodName, MemberType.Method);
-            var info = instanceType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateConstInstanceFunctionX(constInstance);
         }
 
         #endregion
@@ -328,13 +291,6 @@ namespace ReflectionExtensions
         public static ConstFunction<T0, T1, T2, T3, TR> CreateStaticFunction<TTarget, T0, T1, T2, T3, TR>(string methodName) => typeof(TTarget).CreateStaticFunction<T0, T1, T2, T3, TR>(methodName);
 
         public static ConstFunction<T0, T1, T2, T3, T4, TR> CreateStaticFunction<TTarget, T0, T1, T2, T3, T4, TR>(string methodName) => typeof(TTarget).CreateStaticFunction<T0, T1, T2, T3, T4, TR>(methodName);
-
-        ////////// Static Function X //////////
-        public static ConstFunctionX CreateStaticFunctionX(this Type targetType, string methodName, params Type[] argTypes)
-        {
-            var info = targetType.GetInstanceMethodInfo(methodName, argTypes);
-            return info.CreateStaticFunctionX();
-        }
 
         #endregion
     }
