@@ -2,7 +2,7 @@ using System;
 
 namespace ReflectionExtensions
 {
-    [System.Flags]
+    [Flags]
     public enum AccessorTarget
     {
         Field = 1,

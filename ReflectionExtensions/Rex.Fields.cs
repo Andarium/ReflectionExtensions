@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace ReflectionExtensions
 {
@@ -23,15 +24,14 @@ namespace ReflectionExtensions
         //////////   Const Instance   //////////
         ////////////////////////////////////////
 
-        public static Func<TValue> CreateConstInstanceGetter<TTarget, TValue>(this FieldInfo field, TTarget constInstance) => ConstInstanceGetter<TTarget, TValue>(field, constInstance);
-        public static Func<TValue> CreateConstInstanceGetterR<TValue>(this FieldInfo field, object constInstance) => ConstInstanceGetter<object, TValue>(field, constInstance);
-        public static Func<object> CreateConstInstanceGetterT<TTarget>(this FieldInfo field, TTarget constInstance) => ConstInstanceGetter<TTarget, object>(field, constInstance);
-        public static Func<object> CreateConstInstanceGetterX(this FieldInfo field, object constInstance) => ConstInstanceGetter<object, object>(field, constInstance);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Func<TValue> CreateConstInstanceGetter<TValue>(this FieldInfo field, object constInstance) => ConstInstanceGetter<TValue>(field, constInstance);
 
-        public static Action<TValue> CreateConstInstanceSetter<TTarget, TValue>(this FieldInfo field, TTarget constInstance) => ConstInstanceSetter<TTarget, TValue>(field, constInstance);
-        public static Action<object> CreateConstInstanceSetterT<TTarget>(this FieldInfo field, TTarget constInstance) => ConstInstanceSetter<TTarget, object>(field, constInstance);
-        public static Action<TValue> CreateConstInstanceSetterR<TValue>(this FieldInfo field, object constInstance) => ConstInstanceSetter<object, TValue>(field, constInstance);
-        public static Action<object> CreateConstInstanceSetterX(this FieldInfo field, object constInstance) => ConstInstanceSetter<object, object>(field, constInstance);
+        public static Func<object> CreateConstInstanceGetter(this FieldInfo field, object constInstance) => ConstInstanceGetter<object>(field, constInstance);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Action<TValue> CreateConstInstanceSetter<TValue>(this FieldInfo field, object constInstance) => ConstInstanceSetter<TValue>(field, constInstance);
+        public static Action<object> CreateConstInstanceSetter(this FieldInfo field, object constInstance) => ConstInstanceSetter<object>(field, constInstance);
 
         ////////////////////////////////
         //////////   Static   //////////

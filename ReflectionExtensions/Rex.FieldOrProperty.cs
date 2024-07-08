@@ -49,12 +49,9 @@ namespace ReflectionExtensions
         ////////////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Func<TValue> ConstInstanceGetter<TTarget, TValue>(FieldOrProp fieldOrProperty, TTarget constInstance)
+        private static Func<TValue> ConstInstanceGetter<TValue>(FieldOrProp fieldOrProperty, object constInstance)
         {
-            if (constInstance is null)
-            {
-                throw new ArgumentNullException(nameof(constInstance));
-            }
+            AssertInstance(constInstance, fieldOrProperty.Name, MemberType.FieldOrProperty);
 
             var targetExp = Expression.Constant(constInstance);
             var memberExp = Expression.MakeMemberAccess(targetExp, fieldOrProperty);
@@ -65,15 +62,11 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Action<TValue> ConstInstanceSetter<TTarget, TValue>(FieldOrProp fieldOrProperty, TTarget constInstance)
+        private static Action<TValue> ConstInstanceSetter<TValue>(FieldOrProp fieldOrProperty, object constInstance)
         {
-            if (constInstance is null)
-            {
-                throw new ArgumentNullException(nameof(constInstance));
-            }
+            AssertInstance(constInstance, fieldOrProperty.Name, MemberType.FieldOrProperty);
 
             var targetExp = Expression.Constant(constInstance);
-
             var valueExp = Expression.Parameter(typeof(TValue), "value");
 
             // cast value in case of getting parameter as 'object'
@@ -82,6 +75,25 @@ namespace ReflectionExtensions
             var memberExp = Expression.MakeMemberAccess(targetExp, fieldOrProperty);
             var assignExp = Expression.Assign(memberExp, castValueExp);
             return Expression.Lambda<Action<TValue>>(assignExp, valueExp).LogAndCompile();
+        }
+
+        public static Func<object> CreateConstInstanceGetter(this object constInstance, string memberName) => CreateConstInstanceGetter<object>(constInstance, memberName);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Func<TValue> CreateConstInstanceGetter<TValue>(this object constInstance, string memberName)
+        {
+            AssertInstance(constInstance, out var instanceType, memberName, MemberType.FieldOrProperty);
+            var info = instanceType.GetInstanceFieldOrPropertyInfo(memberName);
+            return ConstInstanceGetter<TValue>((FieldOrProp) info, constInstance);
+        }
+
+        public static Action<object> CreateConstInstanceSetter(this object constInstance, string memberName) => CreateConstInstanceSetter<object>(constInstance, memberName);
+
+        public static Action<TValue> CreateConstInstanceSetter<TValue>(this object constInstance, string memberName)
+        {
+            AssertInstance(constInstance, out var instanceType, memberName, MemberType.FieldOrProperty);
+            var info = instanceType.GetInstanceFieldOrPropertyInfo(memberName);
+            return ConstInstanceSetter<TValue>((FieldOrProp) info, constInstance);
         }
 
         ////////////////////////////////
@@ -143,10 +155,13 @@ namespace ReflectionExtensions
                 }
             }
 
+            public string Name => _info.Name;
+
             public Type DeclaringType => _info.DeclaringType!;
 
             public static implicit operator FieldOrProp(FieldInfo field) => new(field);
             public static implicit operator FieldOrProp(PropertyInfo prop) => new(prop);
+            public static explicit operator FieldOrProp(MemberInfo prop) => new(prop);
 
             public static implicit operator FieldInfo(FieldOrProp f) => (FieldInfo) f._info;
             public static implicit operator PropertyInfo(FieldOrProp f) => (PropertyInfo) f._info;

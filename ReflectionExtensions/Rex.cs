@@ -169,8 +169,8 @@ namespace ReflectionExtensions
                 var field = instanceType.GetInstanceFieldInfoOrNull(memberName);
                 if (field is not null)
                 {
-                    var getter = field.CreateConstInstanceGetterR<TValue>(constInstance);
-                    var setter = field.CreateConstInstanceSetterR<TValue>(constInstance);
+                    var getter = field.CreateConstInstanceGetter<TValue>(constInstance);
+                    var setter = field.CreateConstInstanceSetter<TValue>(constInstance);
                     return new ConstAccessor<TValue>(getter, setter);
                 }
             }
@@ -180,8 +180,8 @@ namespace ReflectionExtensions
                 var prop = instanceType.GetInstancePropertyInfoOrNull(memberName);
                 if (prop is not null)
                 {
-                    var getter = prop.CreateConstInstanceGetterR<TValue>(constInstance);
-                    var setter = prop.CreateConstInstanceSetterR<TValue>(constInstance);
+                    var getter = prop.CreateConstInstanceGetter<TValue>(constInstance);
+                    var setter = prop.CreateConstInstanceSetter<TValue>(constInstance);
                     return new ConstAccessor<TValue>(getter, setter);
                 }
             }

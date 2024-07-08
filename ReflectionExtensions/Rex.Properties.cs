@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace ReflectionExtensions
 {
@@ -23,15 +24,13 @@ namespace ReflectionExtensions
         //////////   Const Instance   //////////
         ////////////////////////////////////////
 
-        public static Func<TValue> CreateConstInstanceGetter<TTarget, TValue>(this PropertyInfo prop, TTarget constInstance) => ConstInstanceGetter<TTarget, TValue>(prop, constInstance);
-        public static Func<TValue> CreateConstInstanceGetterR<TValue>(this PropertyInfo prop, object constInstance) => ConstInstanceGetter<object, TValue>(prop, constInstance);
-        public static Func<object> CreateConstInstanceGetterT<TTarget>(this PropertyInfo prop, TTarget constInstance) => ConstInstanceGetter<TTarget, object>(prop, constInstance);
-        public static Func<object> CreateConstInstanceGetterX(this PropertyInfo prop, object constInstance) => ConstInstanceGetter<object, object>(prop, constInstance);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Func<TValue> CreateConstInstanceGetter<TValue>(this PropertyInfo prop, object constInstance) => ConstInstanceGetter<TValue>(prop, constInstance);
 
-        public static Action<TValue> CreateConstInstanceSetter<TTarget, TValue>(this PropertyInfo prop, TTarget constInstance) => ConstInstanceSetter<TTarget, TValue>(prop, constInstance);
-        public static Action<object> CreateConstInstanceSetterT<TTarget>(this PropertyInfo prop, TTarget constInstance) => ConstInstanceSetter<TTarget, object>(prop, constInstance);
-        public static Action<TValue> CreateConstInstanceSetterR<TValue>(this PropertyInfo prop, object constInstance) => ConstInstanceSetter<object, TValue>(prop, constInstance);
-        public static Action<object> CreateConstInstanceSetterX(this PropertyInfo prop, object constInstance) => ConstInstanceSetter<object, object>(prop, constInstance);
+        public static Func<object> CreateConstInstanceGetter(this PropertyInfo prop, object constInstance) => ConstInstanceGetter<object>(prop, constInstance);
+
+        public static Action<TValue> CreateConstInstanceSetter<TValue>(this PropertyInfo prop, object constInstance) => ConstInstanceSetter<TValue>(prop, constInstance);
+        public static Action<object> CreateConstInstanceSetter(this PropertyInfo prop, object constInstance) => ConstInstanceSetter<object>(prop, constInstance);
 
         ////////////////////////////////
         //////////   Static   //////////
