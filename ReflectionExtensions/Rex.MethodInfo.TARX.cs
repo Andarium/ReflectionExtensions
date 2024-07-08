@@ -97,6 +97,51 @@ namespace ReflectionExtensions
             return Expression.Lambda<InstanceFunctionX>(callExp, targetExp, arrayArgsExp).LogAndCompile();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceFunctionA<T0> CreateInstanceFunctionA<T0>(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = targetExp.Cast(methodInfo.DeclaringType!);
+            var callExp = BoxCall(instExp, methodInfo, argList);
+            return Expression.Lambda<InstanceFunctionA<T0>>(callExp, targetExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceFunctionA<T0, T1> CreateInstanceFunctionA<T0, T1>(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = targetExp.Cast(methodInfo.DeclaringType!);
+            var callExp = BoxCall(instExp, methodInfo, argList);
+            return Expression.Lambda<InstanceFunctionA<T0, T1>>(callExp, targetExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceFunctionA<T0, T1, T2> CreateInstanceFunctionA<T0, T1, T2>(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = targetExp.Cast(methodInfo.DeclaringType!);
+            var callExp = BoxCall(instExp, methodInfo, argList);
+            return Expression.Lambda<InstanceFunctionA<T0, T1, T2>>(callExp, targetExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceFunctionA<T0, T1, T2, T3> CreateInstanceFunctionA<T0, T1, T2, T3>(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = targetExp.Cast(methodInfo.DeclaringType!);
+            var callExp = BoxCall(instExp, methodInfo, argList);
+            return Expression.Lambda<InstanceFunctionA<T0, T1, T2, T3>>(callExp, targetExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceFunctionA<T0, T1, T2, T3, T4> CreateInstanceFunctionA<T0, T1, T2, T3, T4>(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = targetExp.Cast(methodInfo.DeclaringType!);
+            var callExp = BoxCall(instExp, methodInfo, argList);
+            return Expression.Lambda<InstanceFunctionA<T0, T1, T2, T3, T4>>(callExp, targetExp, arrayArgsExp).LogAndCompile();
+        }
+
         ///////////////////////////////////////////////////////////
         //////////     Const Instance Functions T/R/X    //////////
         ///////////////////////////////////////////////////////////
@@ -119,6 +164,56 @@ namespace ReflectionExtensions
             var instExp = Expression.Constant(constInstance);
             var callExp = BoxCall(instExp, methodInfo, argList);
             return Expression.Lambda<ConstFunctionX>(callExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA<T0> CreateConstInstanceFunctionA<T0>(this MethodInfo methodInfo, object constInstance)
+        {
+            AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
+            var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = Expression.Constant(constInstance);
+            var callExp = Expression.Call(instExp, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA<T0>>(callExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA<T0, T1> CreateConstInstanceFunctionA<T0, T1>(this MethodInfo methodInfo, object constInstance)
+        {
+            AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
+            var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = Expression.Constant(constInstance);
+            var callExp = Expression.Call(instExp, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA<T0, T1>>(callExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA<T0, T1, T2> CreateConstInstanceFunctionA<T0, T1, T2>(this MethodInfo methodInfo, object constInstance)
+        {
+            AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
+            var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = Expression.Constant(constInstance);
+            var callExp = Expression.Call(instExp, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA<T0, T1, T2>>(callExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA<T0, T1, T2, T3> CreateConstInstanceFunctionA<T0, T1, T2, T3>(this MethodInfo methodInfo, object constInstance)
+        {
+            AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
+            var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = Expression.Constant(constInstance);
+            var callExp = Expression.Call(instExp, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA<T0, T1, T2, T3>>(callExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA<T0, T1, T2, T3, T4> CreateConstInstanceFunctionA<T0, T1, T2, T3, T4>(this MethodInfo methodInfo, object constInstance)
+        {
+            AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
+            var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
+            var instExp = Expression.Constant(constInstance);
+            var callExp = Expression.Call(instExp, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA<T0, T1, T2, T3, T4>>(callExp, arrayArgsExp).LogAndCompile();
         }
 
         ////////////////////////////////////////////////////
