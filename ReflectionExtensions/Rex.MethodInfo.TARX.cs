@@ -1,4 +1,4 @@
-// ReSharper disable InconsistentNaming
+﻿// ReSharper disable InconsistentNaming
 
 using System.Linq.Expressions;
 using System.Reflection;

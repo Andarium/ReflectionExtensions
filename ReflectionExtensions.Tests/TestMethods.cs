@@ -1,4 +1,4 @@
-// ReSharper disable CheckNamespace
+﻿// ReSharper disable CheckNamespace
 // ReSharper disable RedundantNullableDirective
 
 #nullable enable
