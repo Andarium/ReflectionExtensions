@@ -1,7 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 namespace ReflectionExtensions
 {
-    public delegate object ConstructorX(params object[] args);
+    public delegate object Constructor(params object[] args);
     public delegate TTarget ConstructorT<out TTarget>(params object[] args);
 
     public delegate object ConstructorA<in T0>(T0 arg0);

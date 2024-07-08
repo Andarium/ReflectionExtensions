@@ -68,7 +68,7 @@ namespace ReflectionExtensions
             return Expression.Lambda<Constructor<TTarget, T0, T1, T2, T3, T4>>(newExp, arguments).LogAndCompile();
         }
 
-        public static ConstructorT<TTarget> CreateConstructorX<TTarget>(this ConstructorInfo constructorInfo, params Type[] argTypes)
+        public static ConstructorT<TTarget> CreateConstructor<TTarget>(this ConstructorInfo constructorInfo, params Type[] argTypes)
         {
             constructorInfo.AssertConstructor<TTarget>();
             var arguments = CreateArgumentsX(out var arrayArgsExp, argTypes);
@@ -76,11 +76,11 @@ namespace ReflectionExtensions
             return Expression.Lambda<ConstructorT<TTarget>>(newExp, arrayArgsExp).LogAndCompile();
         }
 
-        public static ConstructorX CreateConstructorX(this ConstructorInfo constructorInfo, params Type[] argTypes)
+        public static Constructor CreateConstructor(this ConstructorInfo constructorInfo, params Type[] argTypes)
         {
             var arguments = CreateArgumentsX(out var arrayArgsExp, argTypes);
             var newExp = BoxNew(constructorInfo, arguments);
-            return Expression.Lambda<ConstructorX>(newExp, arrayArgsExp).LogAndCompile();
+            return Expression.Lambda<Constructor>(newExp, arrayArgsExp).LogAndCompile();
         }
 
         #endregion
@@ -121,16 +121,16 @@ namespace ReflectionExtensions
             return info.CreateConstructor<TTarget, T0, T1, T2, T3, T4>();
         }
 
-        public static ConstructorT<TTarget> CreateConstructorX<TTarget>(params Type[] argTypes)
+        public static ConstructorT<TTarget> CreateConstructor<TTarget>(params Type[] argTypes)
         {
             var info = typeof(TTarget).GetConstructorInfo(argTypes);
-            return info.CreateConstructorX<TTarget>(argTypes);
+            return info.CreateConstructor<TTarget>(argTypes);
         }
 
-        public static ConstructorX CreateConstructorX(this Type targetType, params Type[] argTypes)
+        public static Constructor CreateConstructor(this Type targetType, params Type[] argTypes)
         {
             var info = targetType.GetConstructorInfo(argTypes);
-            return info.CreateConstructorX(argTypes);
+            return info.CreateConstructor(argTypes);
         }
     }
 }

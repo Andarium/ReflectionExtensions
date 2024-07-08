@@ -30,19 +30,9 @@ public sealed class TestConstructorsExpression
     }
 
     [Test]
-    public void Public_Arg0_XR()
-    {
-        var c = CreateConstructorX<TestClass_Public>();
-        Assert.That(c, Is.Not.Null);
-        var actual = c.Invoke();
-        Assert.That(actual, Is.Not.Null);
-        Assert.That(actual.Field, Is.EqualTo(777));
-    }
-
-    [Test]
     public void Public_Arg2_XR()
     {
-        var c = CreateConstructorX<TestClass_Public>(typeof(int), typeof(float));
+        var c = CreateConstructor<TestClass_Public>(typeof(int), typeof(float));
         Assert.That(c, Is.Not.Null);
         var actual = c.Invoke(333, 1001f);
         Assert.That(actual, Is.Not.Null);
@@ -52,7 +42,7 @@ public sealed class TestConstructorsExpression
     [Test]
     public void Public_Arg0_X()
     {
-        var c = typeof(TestClass_Public).CreateConstructorX();
+        var c = typeof(TestClass_Public).CreateConstructor();
         Assert.That(c, Is.Not.Null);
         var actual = c.Invoke();
         Assert.That(actual, Is.Not.Null);
@@ -63,7 +53,7 @@ public sealed class TestConstructorsExpression
     [Test]
     public void Public_Arg2_X()
     {
-        var c = typeof(TestClass_Public).CreateConstructorX(typeof(int), typeof(float));
+        var c = typeof(TestClass_Public).CreateConstructor(typeof(int), typeof(float));
         Assert.That(c, Is.Not.Null);
         var actual = c.Invoke(333, 1001f);
         Assert.That(actual, Is.Not.Null);

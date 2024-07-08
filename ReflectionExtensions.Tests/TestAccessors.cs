@@ -10,8 +10,8 @@ public sealed class TestAccessors
 {
     private TestClass _instance = default!;
 
-    private InstanceAccessorR<int> _instanceValueField = default!;
-    private InstanceAccessorR<TestObject> _instanceRefField = default!;
+    private InstanceAccessor<int> _instanceValueField = default!;
+    private InstanceAccessor<TestObject> _instanceRefField = default!;
     private InstanceAccessor<TestClass, int> _instanceValueProperty = default!;
     private InstanceAccessor<TestClass, TestObject> _instanceRefProperty = default!;
 
