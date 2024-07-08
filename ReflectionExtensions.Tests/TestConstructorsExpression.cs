@@ -1,4 +1,4 @@
-#pragma warning disable NUnit2023
+﻿#pragma warning disable NUnit2023
 
 using NUnit.Framework;
 using ReflectionExtensions.Tests.Classes;

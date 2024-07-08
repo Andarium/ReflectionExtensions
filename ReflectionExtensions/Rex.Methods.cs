@@ -1,4 +1,4 @@
-// ReSharper disable CoVariantArrayConversion
+﻿// ReSharper disable CoVariantArrayConversion
 
 using System;
 

@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using ReflectionExtensions.Tests.Classes;
 using static ReflectionExtensions.ReflectionExtensions;
 

@@ -1,4 +1,4 @@
-namespace ReflectionExtensions.Tests.Classes;
+﻿namespace ReflectionExtensions.Tests.Classes;
 
 public sealed class ExpressionTestClass
 {
