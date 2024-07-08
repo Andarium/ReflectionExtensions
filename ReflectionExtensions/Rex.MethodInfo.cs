@@ -81,7 +81,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments);
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Action<TInstance>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceProcedure<TInstance>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -89,7 +89,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments, typeof(T0));
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Action<TInstance, T0>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceProcedure<TInstance, T0>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -97,7 +97,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments, typeof(T0), typeof(T1));
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Action<TInstance, T0, T1>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceProcedure<TInstance, T0, T1>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -105,7 +105,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments, typeof(T0), typeof(T1), typeof(T2));
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Action<TInstance, T0, T1, T2>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceProcedure<TInstance, T0, T1, T2>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -113,7 +113,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Action<TInstance, T0, T1, T2, T3>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceProcedure<TInstance, T0, T1, T2, T3>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -121,7 +121,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Action<TInstance, T0, T1, T2, T3, T4>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceProcedure<TInstance, T0, T1, T2, T3, T4>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         #endregion
@@ -138,7 +138,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments);
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<Action>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -147,7 +147,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments, typeof(T0));
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<ConstProcedure<T0>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure<T0>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -156,7 +156,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments, typeof(T0), typeof(T1));
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<ConstProcedure<T0, T1>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure<T0, T1>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -165,7 +165,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2));
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<ConstProcedure<T0, T1, T2>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure<T0, T1, T2>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -174,7 +174,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<ConstProcedure<T0, T1, T2, T3>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure<T0, T1, T2, T3>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -183,7 +183,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<ConstProcedure<T0, T1, T2, T3, T4>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure<T0, T1, T2, T3, T4>>(callExp, arguments).LogAndCompile();
         }
 
         #endregion
@@ -199,7 +199,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments);
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<Action>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -207,7 +207,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments, typeof(T0));
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<ConstProcedure<T0>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure<T0>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -215,7 +215,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments, typeof(T0), typeof(T1));
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<ConstProcedure<T0, T1>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure<T0, T1>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -223,7 +223,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2));
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<ConstProcedure<T0, T1, T2>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure<T0, T1, T2>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -231,7 +231,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<ConstProcedure<T0, T1, T2, T3>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure<T0, T1, T2, T3>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -239,7 +239,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<ConstProcedure<T0, T1, T2, T3, T4>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedure<T0, T1, T2, T3, T4>>(callExp, arguments).LogAndCompile();
         }
 
         #endregion
@@ -255,7 +255,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments);
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Func<TInstance, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceFunction<TInstance, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -263,7 +263,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments, typeof(T0));
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Func<TInstance, T0, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceFunction<TInstance, T0, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -271,7 +271,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments, typeof(T0), typeof(T1));
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Func<TInstance, T0, T1, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceFunction<TInstance, T0, T1, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -279,7 +279,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments, typeof(T0), typeof(T1), typeof(T2));
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Func<TInstance, T0, T1, T2, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceFunction<TInstance, T0, T1, T2, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -287,7 +287,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Func<TInstance, T0, T1, T2, T3, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceFunction<TInstance, T0, T1, T2, T3, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -295,7 +295,7 @@ namespace ReflectionExtensions
         {
             CreateArguments<TInstance>(out var targetExp, out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             var callExp = Expression.Call(targetExp, methodInfo, arguments);
-            return Expression.Lambda<Func<TInstance, T0, T1, T2, T3, T4, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceFunction<TInstance, T0, T1, T2, T3, T4, TResult>>(callExp, arguments.Prepend(targetExp)).LogAndCompile();
         }
 
         #endregion
@@ -312,7 +312,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments);
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<Func<TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<TResult>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -321,7 +321,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments, typeof(T0));
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<Func<T0, TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<T0, TResult>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -330,7 +330,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments, typeof(T0), typeof(T1));
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<T0, T1, TResult>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -339,7 +339,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2));
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, T2, TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<T0, T1, T2, TResult>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -348,7 +348,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, T2, T3, TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<T0, T1, T2, T3, TResult>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -357,7 +357,7 @@ namespace ReflectionExtensions
             AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             var callExp = Expression.Call(Expression.Constant(constInstance), methodInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, T2, T3, T4, TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<T0, T1, T2, T3, T4, TResult>>(callExp, arguments).LogAndCompile();
         }
 
         #endregion
@@ -373,7 +373,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments);
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<Func<TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<TResult>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -381,7 +381,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments, typeof(T0));
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<Func<T0, TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<T0, TResult>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -389,7 +389,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments, typeof(T0), typeof(T1));
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<T0, T1, TResult>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -397,7 +397,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2));
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, T2, TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<T0, T1, T2, TResult>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -405,7 +405,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, T2, T3, TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<T0, T1, T2, T3, TResult>>(callExp, arguments).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -413,7 +413,7 @@ namespace ReflectionExtensions
         {
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             var callExp = Expression.Call(null, methodInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, T2, T3, T4, TResult>>(callExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunction<T0, T1, T2, T3, T4, TResult>>(callExp, arguments).LogAndCompile();
         }
 
         #endregion

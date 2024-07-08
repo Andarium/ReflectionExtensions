@@ -35,10 +35,10 @@ public sealed class TestAccessors
         _instance = new();
         var t = typeof(TestClass);
 
-        _instanceValueField = t.CreateInstanceAccessorR<int>("ValueField");
-        _instanceRefField = t.CreateInstanceAccessorR<TestObject>("RefField");
-        _instanceValueProperty = t.CreateInstanceAccessor<TestClass, int>("ValueProperty");
-        _instanceRefProperty = t.CreateInstanceAccessor<TestClass, TestObject>("RefProperty");
+        _instanceValueField = t.CreateInstanceAccessor<int>("ValueField");
+        _instanceRefField = t.CreateInstanceAccessor<TestObject>("RefField");
+        _instanceValueProperty = CreateInstanceAccessor<TestClass, int>("ValueProperty");
+        _instanceRefProperty = CreateInstanceAccessor<TestClass, TestObject>("RefProperty");
 
         _constInstanceValueField = _instance.CreateConstInstanceAccessor<int>("ValueField");
         _constInstanceRefField = _instance.CreateConstInstanceAccessor<TestObject>("RefField");

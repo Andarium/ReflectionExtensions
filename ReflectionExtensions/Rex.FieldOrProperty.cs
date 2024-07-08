@@ -12,7 +12,8 @@ namespace ReflectionExtensions
         //////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Func<TTarget, TResult> InstanceGetter<TTarget, TResult>(this FieldOrProp fieldOrProperty)
+        private static TDelegate InstanceGetter<TTarget, TResult, TDelegate>(this FieldOrProp fieldOrProperty)
+            where TDelegate : Delegate
         {
             var targetExp = Expression.Parameter(typeof(TTarget), "target");
 
@@ -24,11 +25,11 @@ namespace ReflectionExtensions
             // box result in case of returning 'object'
             var castResultExp = memberExp.Cast<TResult>();
 
-            return Expression.Lambda<Func<TTarget, TResult>>(castResultExp, targetExp).LogAndCompile();
+            return Expression.Lambda<TDelegate>(castResultExp, targetExp).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Action<TTarget, TValue> InstanceSetter<TTarget, TValue>(this FieldOrProp fieldOrProperty)
+        private static TDelegate InstanceSetter<TTarget, TValue, TDelegate>(this FieldOrProp fieldOrProperty) where TDelegate : Delegate
         {
             var targetExp = Expression.Parameter(typeof(TTarget), "target");
             var valueExp = Expression.Parameter(typeof(TValue), "value");
@@ -38,40 +39,39 @@ namespace ReflectionExtensions
 
             // cast value in case of getting parameter as 'object'
             var castValueExp = valueExp.Cast(fieldOrProperty.Type);
-
             var memberExp = Expression.MakeMemberAccess(castTargetExp, fieldOrProperty);
             var assignExp = Expression.Assign(memberExp, castValueExp);
-            return Expression.Lambda<Action<TTarget, TValue>>(assignExp, targetExp, valueExp).LogAndCompile();
+            return Expression.Lambda<TDelegate>(assignExp, targetExp, valueExp).LogAndCompile();
         }
 
-        public static Func<TTarget, TResult> CreateInstanceGetter<TTarget, TResult>(string memberName)
+        public static InstanceGetter<TTarget, TResult> CreateInstanceGetter<TTarget, TResult>(string memberName)
         {
-            return typeof(TTarget).GetInstanceFieldOrPropertyInfo(memberName).InstanceGetter<TTarget, TResult>();
+            return typeof(TTarget).GetInstanceFieldOrPropertyInfo(memberName).InstanceGetter<TTarget, TResult, InstanceGetter<TTarget, TResult>>();
         }
 
-        public static Func<object, TResult> CreateInstanceGetter<TResult>(this Type instanceType, string memberName)
+        public static InstanceGetter<TResult> CreateInstanceGetter<TResult>(this Type instanceType, string memberName)
         {
-            return InstanceGetter<object, TResult>(instanceType.GetInstanceFieldOrPropertyInfo(memberName));
+            return instanceType.GetInstanceFieldOrPropertyInfo(memberName).InstanceGetter<object, TResult, InstanceGetter<TResult>>();
         }
 
-        public static Func<object, object> CreateInstanceGetter(this Type instanceType, string memberName)
+        public static InstanceGetter CreateInstanceGetter(this Type instanceType, string memberName)
         {
-            return InstanceGetter<object, object>(instanceType.GetInstanceFieldOrPropertyInfo(memberName));
+            return instanceType.GetInstanceFieldOrPropertyInfo(memberName).InstanceGetter<object, object, InstanceGetter>();
         }
 
-        public static Action<TTarget, TValue> CreateInstanceSetter<TTarget, TValue>(string memberName)
+        public static InstanceSetter<TTarget, TValue> CreateInstanceSetter<TTarget, TValue>(string memberName)
         {
-            return InstanceSetter<TTarget, TValue>(typeof(TTarget).GetInstanceFieldOrPropertyInfo(memberName));
+            return typeof(TTarget).GetInstanceFieldOrPropertyInfo(memberName).InstanceSetter<TTarget, TValue, InstanceSetter<TTarget, TValue>>();
         }
 
-        public static Action<object, TValue> CreateInstanceSetter<TValue>(this Type instanceType, string memberName)
+        public static InstanceSetter<TValue> CreateInstanceSetter<TValue>(this Type instanceType, string memberName)
         {
-            return InstanceSetter<object, TValue>(instanceType.GetInstanceFieldOrPropertyInfo(memberName));
+            return instanceType.GetInstanceFieldOrPropertyInfo(memberName).InstanceSetter<object, TValue, InstanceSetter<TValue>>();
         }
 
-        public static Action<object, object> CreateInstanceSetter(this Type instanceType, string memberName)
+        public static InstanceSetter CreateInstanceSetter(this Type instanceType, string memberName)
         {
-            return InstanceSetter<object, object>(instanceType.GetInstanceFieldOrPropertyInfo(memberName));
+            return instanceType.GetInstanceFieldOrPropertyInfo(memberName).InstanceSetter<object, object, InstanceSetter>();
         }
 
         ////////////////////////////////////////
@@ -79,7 +79,7 @@ namespace ReflectionExtensions
         ////////////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Func<TValue> ConstInstanceGetter<TValue>(this FieldOrProp fieldOrProperty, object constInstance)
+        private static TDelegate ConstInstanceGetter<TValue, TDelegate>(this FieldOrProp fieldOrProperty, object constInstance) where TDelegate : Delegate
         {
             AssertInstance(constInstance, fieldOrProperty.Name, MemberType.FieldOrProperty);
 
@@ -88,11 +88,11 @@ namespace ReflectionExtensions
 
             // box result in case of returning 'object'
             var castResultExp = memberExp.Cast<TValue>();
-            return Expression.Lambda<Func<TValue>>(castResultExp).LogAndCompile();
+            return Expression.Lambda<TDelegate>(castResultExp).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Action<TValue> ConstInstanceSetter<TValue>(this FieldOrProp fieldOrProperty, object constInstance)
+        private static TDelegate ConstInstanceSetter<TValue, TDelegate>(this FieldOrProp fieldOrProperty, object constInstance) where TDelegate : Delegate
         {
             AssertInstance(constInstance, fieldOrProperty.Name, MemberType.FieldOrProperty);
 
@@ -104,26 +104,42 @@ namespace ReflectionExtensions
 
             var memberExp = Expression.MakeMemberAccess(targetExp, fieldOrProperty);
             var assignExp = Expression.Assign(memberExp, castValueExp);
-            return Expression.Lambda<Action<TValue>>(assignExp, valueExp).LogAndCompile();
+            return Expression.Lambda<TDelegate>(assignExp, valueExp).LogAndCompile();
         }
-
-        public static Func<object> CreateConstInstanceGetter(this object constInstance, string memberName) => CreateConstInstanceGetter<object>(constInstance, memberName);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Func<TValue> CreateConstInstanceGetter<TValue>(this object constInstance, string memberName)
+        private static TDelegate CreateConstInstanceGetter<TValue, TDelegate>(this object constInstance, string memberName) where TDelegate : Delegate
         {
             AssertInstance(constInstance, out var instanceType, memberName, MemberType.FieldOrProperty);
             var info = instanceType.GetInstanceFieldOrPropertyInfo(memberName);
-            return ConstInstanceGetter<TValue>(info, constInstance);
+            return ConstInstanceGetter<TValue, TDelegate>(info, constInstance);
         }
 
-        public static Action<object> CreateConstInstanceSetter(this object constInstance, string memberName) => CreateConstInstanceSetter<object>(constInstance, memberName);
+        public static ConstGetter CreateConstInstanceGetter(this object constInstance, string memberName)
+        {
+            return constInstance.CreateConstInstanceGetter<object, ConstGetter>(memberName);
+        }
 
-        public static Action<TValue> CreateConstInstanceSetter<TValue>(this object constInstance, string memberName)
+        public static ConstGetter<TValue> CreateConstInstanceGetter<TValue>(this object constInstance, string memberName)
+        {
+            return constInstance.CreateConstInstanceGetter<TValue, ConstGetter<TValue>>(memberName);
+        }
+
+        private static TDelegate CreateConstInstanceSetter<TValue, TDelegate>(this object constInstance, string memberName) where TDelegate : Delegate
         {
             AssertInstance(constInstance, out var instanceType, memberName, MemberType.FieldOrProperty);
             var info = instanceType.GetInstanceFieldOrPropertyInfo(memberName);
-            return ConstInstanceSetter<TValue>(info, constInstance);
+            return ConstInstanceSetter<TValue, TDelegate>(info, constInstance);
+        }
+
+        public static ConstSetter CreateConstInstanceSetter(this object constInstance, string memberName)
+        {
+            return CreateConstInstanceSetter<object, ConstSetter>(constInstance, memberName);
+        }
+
+        public static ConstSetter<TValue> CreateConstInstanceSetter<TValue>(this object constInstance, string memberName)
+        {
+            return CreateConstInstanceSetter<TValue, ConstSetter<TValue>>(constInstance, memberName);
         }
 
         ////////////////////////////////
@@ -131,17 +147,17 @@ namespace ReflectionExtensions
         ////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Func<TResult> StaticGetter<TResult>(this FieldOrProp fieldOrProperty)
+        private static TDelegate StaticGetter<TResult, TDelegate>(this FieldOrProp fieldOrProperty) where TDelegate : Delegate
         {
             var memberExp = Expression.MakeMemberAccess(null, fieldOrProperty);
 
             // box result in case of returning 'object'
             var castResultExp = memberExp.Cast<TResult>();
-            return Expression.Lambda<Func<TResult>>(castResultExp).LogAndCompile();
+            return Expression.Lambda<TDelegate>(castResultExp).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Action<TValue> StaticSetter<TValue>(this FieldOrProp fieldOrProperty)
+        private static TDelegate StaticSetter<TValue, TDelegate>(this FieldOrProp fieldOrProperty) where TDelegate : Delegate
         {
             var valueExp = Expression.Parameter(typeof(TValue), "value");
 
@@ -150,24 +166,29 @@ namespace ReflectionExtensions
 
             var memberExp = Expression.MakeMemberAccess(null, fieldOrProperty);
             var assignExp = Expression.Assign(memberExp, castValueExp);
-            return Expression.Lambda<Action<TValue>>(assignExp, valueExp).Compile();
+            return Expression.Lambda<TDelegate>(assignExp, valueExp).Compile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Func<TResult> CreateStaticGetter<TTarget, TResult>(string memberName)
+        public static ConstGetter<TResult> CreateStaticGetter<TTarget, TResult>(string memberName)
         {
-            return typeof(TTarget).GetStaticFieldOrPropertyInfo(memberName).StaticGetter<TResult>();
+            return typeof(TTarget).GetStaticFieldOrPropertyInfo(memberName).StaticGetter<TResult, ConstGetter<TResult>>();
         }
 
-        public static Func<object> CreateStaticGetter<TTarget>(string memberName) => CreateStaticGetter<TTarget, object>(memberName);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Func<TResult> CreateStaticGetter<TResult>(this Type targetType, string memberName)
+        public static ConstGetter CreateStaticGetter<TTarget>(string memberName)
         {
-            return targetType.GetStaticFieldOrPropertyInfo(memberName).StaticGetter<TResult>();
+            return typeof(TTarget).GetStaticFieldOrPropertyInfo(memberName).StaticGetter<object, ConstGetter>();
         }
 
-        public static Func<object> CreateStaticGetter(this Type targetType, string memberName) => CreateStaticGetter<object>(targetType, memberName);
+        public static ConstGetter<TResult> CreateStaticGetter<TResult>(this Type targetType, string memberName)
+        {
+            return targetType.GetStaticFieldOrPropertyInfo(memberName).StaticGetter<TResult, ConstGetter<TResult>>();
+        }
+
+        public static ConstGetter CreateStaticGetter(this Type targetType, string memberName)
+        {
+            return targetType.GetStaticFieldOrPropertyInfo(memberName).StaticGetter<object, ConstGetter>();
+        }
 
         private readonly struct FieldOrProp
         {

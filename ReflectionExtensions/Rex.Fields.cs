@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace ReflectionExtensions
@@ -10,37 +9,38 @@ namespace ReflectionExtensions
         //////////   Instance   //////////
         //////////////////////////////////
 
-        public static Func<TTarget, TValue> CreateInstanceGetter<TTarget, TValue>(this FieldInfo field) => InstanceGetter<TTarget, TValue>(field);
-        public static Func<TTarget, object> CreateInstanceGetterT<TTarget>(this FieldInfo field) => InstanceGetter<TTarget, object>(field);
-        public static Func<object, TValue> CreateInstanceGetterR<TValue>(this FieldInfo field) => InstanceGetter<object, TValue>(field);
-        public static Func<object, object> CreateInstanceGetterX(this FieldInfo field) => InstanceGetter<object, object>(field);
+        public static InstanceGetter<TTarget, TValue> CreateInstanceGetter<TTarget, TValue>(this FieldInfo field) => InstanceGetter<TTarget, TValue, InstanceGetter<TTarget, TValue>>(field);
+        public static InstanceGetterT<TTarget> CreateInstanceGetterT<TTarget>(this FieldInfo field) => InstanceGetter<TTarget, object, InstanceGetterT<TTarget>>(field);
+        public static InstanceGetter<TValue> CreateInstanceGetterR<TValue>(this FieldInfo field) => InstanceGetter<object, TValue, InstanceGetter<TValue>>(field);
+        public static InstanceGetter CreateInstanceGetterX(this FieldInfo field) => InstanceGetter<object, object, InstanceGetter>(field);
 
-        public static Action<TTarget, TValue> CreateInstanceSetter<TTarget, TValue>(this FieldInfo field) => InstanceSetter<TTarget, TValue>(field);
-        public static Action<TTarget, object> CreateInstanceSetterT<TTarget>(this FieldInfo field) => InstanceSetter<TTarget, object>(field);
-        public static Action<object, TValue> CreateInstanceSetterR<TValue>(this FieldInfo field) => InstanceSetter<object, TValue>(field);
-        public static Action<object, object> CreateInstanceSetterX(this FieldInfo field) => InstanceSetter<object, object>(field);
+        public static InstanceSetter<TTarget, TValue> CreateInstanceSetter<TTarget, TValue>(this FieldInfo field) => InstanceSetter<TTarget, TValue, InstanceSetter<TTarget, TValue>>(field);
+        public static InstanceSetterT<TTarget> CreateInstanceSetterT<TTarget>(this FieldInfo field) => InstanceSetter<TTarget, object, InstanceSetterT<TTarget>>(field);
+        public static InstanceSetter<TValue> CreateInstanceSetterR<TValue>(this FieldInfo field) => InstanceSetter<object, TValue, InstanceSetter<TValue>>(field);
+        public static InstanceSetter CreateInstanceSetterX(this FieldInfo field) => InstanceSetter<object, object, InstanceSetter>(field);
 
         ////////////////////////////////////////
         //////////   Const Instance   //////////
         ////////////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Func<TValue> CreateConstInstanceGetter<TValue>(this FieldInfo field, object constInstance) => ConstInstanceGetter<TValue>(field, constInstance);
+        public static ConstGetter<TValue> CreateConstInstanceGetter<TValue>(this FieldInfo field, object constInstance) => ConstInstanceGetter<TValue, ConstGetter<TValue>>(field, constInstance);
 
-        public static Func<object> CreateConstInstanceGetter(this FieldInfo field, object constInstance) => ConstInstanceGetter<object>(field, constInstance);
+        public static ConstGetter CreateConstInstanceGetter(this FieldInfo field, object constInstance) => ConstInstanceGetter<object, ConstGetter>(field, constInstance).Invoke;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Action<TValue> CreateConstInstanceSetter<TValue>(this FieldInfo field, object constInstance) => ConstInstanceSetter<TValue>(field, constInstance);
-        public static Action<object> CreateConstInstanceSetter(this FieldInfo field, object constInstance) => ConstInstanceSetter<object>(field, constInstance);
+        public static ConstSetter<TValue> CreateConstInstanceSetter<TValue>(this FieldInfo field, object constInstance) => ConstInstanceSetter<TValue, ConstSetter<TValue>>(field, constInstance);
+
+        public static ConstSetter CreateConstInstanceSetter(this FieldInfo field, object constInstance) => ConstInstanceSetter<object, ConstSetter>(field, constInstance).Invoke;
 
         ////////////////////////////////
         //////////   Static   //////////
         ////////////////////////////////
 
-        public static Func<TValue> CreateStaticGetter<TValue>(this FieldInfo field) => StaticGetter<TValue>(field);
-        public static Func<object> CreateStaticGetterX(this FieldInfo field) => StaticGetter<object>(field);
+        public static ConstGetter<TValue> CreateStaticGetter<TValue>(this FieldInfo field) => StaticGetter<TValue, ConstGetter<TValue>>(field);
+        public static ConstGetter CreateStaticGetterX(this FieldInfo field) => StaticGetter<object, ConstGetter>(field);
 
-        public static Action<TValue> CreateStaticSetter<TValue>(this FieldInfo field) => StaticSetter<TValue>(field);
-        public static Action<object> CreateStaticSetterX(this FieldInfo field) => StaticSetter<object>(field);
+        public static ConstSetter<TValue> CreateStaticSetter<TValue>(this FieldInfo field) => StaticSetter<TValue, ConstSetter<TValue>>(field);
+        public static ConstSetter CreateStaticSetterX(this FieldInfo field) => StaticSetter<object, ConstSetter>(field);
     }
 }

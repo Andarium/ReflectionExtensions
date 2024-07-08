@@ -25,7 +25,7 @@ namespace ReflectionExtensions
             constructorInfo.AssertConstructor<TTarget>();
             CreateArguments(out var arguments);
             var newExp = Expression.New(constructorInfo, arguments);
-            return Expression.Lambda<Func<TTarget>>(newExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<Constructor<TTarget>>(newExp, arguments).LogAndCompile();
         }
 
         public static Constructor<TTarget, T0> CreateConstructor<TTarget, T0>(this ConstructorInfo constructorInfo)
@@ -33,7 +33,7 @@ namespace ReflectionExtensions
             constructorInfo.AssertConstructor<TTarget>();
             CreateArguments(out var arguments, typeof(T0));
             var newExp = Expression.New(constructorInfo, arguments);
-            return Expression.Lambda<Func<T0, TTarget>>(newExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<Constructor<TTarget, T0>>(newExp, arguments).LogAndCompile();
         }
 
         public static Constructor<TTarget, T0, T1> CreateConstructor<TTarget, T0, T1>(this ConstructorInfo constructorInfo)
@@ -41,7 +41,7 @@ namespace ReflectionExtensions
             constructorInfo.AssertConstructor<TTarget>();
             CreateArguments(out var arguments, typeof(T0), typeof(T1));
             var newExp = Expression.New(constructorInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, TTarget>>(newExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<Constructor<TTarget, T0, T1>>(newExp, arguments).LogAndCompile();
         }
 
         public static Constructor<TTarget, T0, T1, T2> CreateConstructor<TTarget, T0, T1, T2>(this ConstructorInfo constructorInfo)
@@ -49,7 +49,7 @@ namespace ReflectionExtensions
             constructorInfo.AssertConstructor<TTarget>();
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2));
             var newExp = Expression.New(constructorInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, T2, TTarget>>(newExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<Constructor<TTarget, T0, T1, T2>>(newExp, arguments).LogAndCompile();
         }
 
         public static Constructor<TTarget, T0, T1, T2, T3> CreateConstructor<TTarget, T0, T1, T2, T3>(this ConstructorInfo constructorInfo)
@@ -57,7 +57,7 @@ namespace ReflectionExtensions
             constructorInfo.AssertConstructor<TTarget>();
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
             var newExp = Expression.New(constructorInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, T2, T3, TTarget>>(newExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<Constructor<TTarget, T0, T1, T2, T3>>(newExp, arguments).LogAndCompile();
         }
 
         public static Constructor<TTarget, T0, T1, T2, T3, T4> CreateConstructor<TTarget, T0, T1, T2, T3, T4>(this ConstructorInfo constructorInfo)
@@ -65,7 +65,7 @@ namespace ReflectionExtensions
             constructorInfo.AssertConstructor<TTarget>();
             CreateArguments(out var arguments, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             var newExp = Expression.New(constructorInfo, arguments);
-            return Expression.Lambda<Func<T0, T1, T2, T3, T4, TTarget>>(newExp, arguments).LogAndCompile().Invoke;
+            return Expression.Lambda<Constructor<TTarget, T0, T1, T2, T3, T4>>(newExp, arguments).LogAndCompile();
         }
 
         public static ConstructorT<TTarget> CreateConstructorX<TTarget>(this ConstructorInfo constructorInfo, params Type[] argTypes)
@@ -73,14 +73,14 @@ namespace ReflectionExtensions
             constructorInfo.AssertConstructor<TTarget>();
             var arguments = CreateArgumentsX(out var arrayArgsExp, argTypes);
             var newExp = Expression.New(constructorInfo, arguments);
-            return Expression.Lambda<Func<object[], TTarget>>(newExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstructorT<TTarget>>(newExp, arrayArgsExp).LogAndCompile();
         }
 
         public static ConstructorX CreateConstructorX(this ConstructorInfo constructorInfo, params Type[] argTypes)
         {
             var arguments = CreateArgumentsX(out var arrayArgsExp, argTypes);
             var newExp = BoxNew(constructorInfo, arguments);
-            return Expression.Lambda<Func<object[], object>>(newExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstructorX>(newExp, arrayArgsExp).LogAndCompile();
         }
 
         #endregion
