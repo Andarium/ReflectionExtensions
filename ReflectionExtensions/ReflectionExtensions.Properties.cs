@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace ReflectionExtensions
 {
@@ -17,7 +18,8 @@ namespace ReflectionExtensions
         private static readonly Dictionary<Type, PropertyInfo[]> PropertyMap = new();
         private static readonly Map<Type, string, PropertyInfo?> PropertyNameMap = new();
 
-        private static IReadOnlyList<PropertyInfo> GetAllProperties(this Type type)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static IReadOnlyList<PropertyInfo> GetAllProperties(Type type)
         {
             if (PropertyMap.TryGetValue(type, out var value))
             {
@@ -29,6 +31,7 @@ namespace ReflectionExtensions
             return value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static PropertyInfo? GetPropertyInfoInternalOrNull([NotNull] this Type? type, string propName, bool isStatic)
         {
             type.AssertType();
@@ -42,15 +45,11 @@ namespace ReflectionExtensions
             return prop;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static PropertyInfo GetPropertyInfoInternal([NotNull] this Type? type, string propName, bool isStatic)
         {
             var prop = GetPropertyInfoInternalOrNull(type, propName, isStatic);
             return prop ?? throw new InvalidOperationException(NotFoundMessage(type, propName, isStatic, MemberType.Property));
-        }
-
-        private static bool IsStatic(this PropertyInfo p)
-        {
-            return p.GetMethod?.IsStatic ?? p.SetMethod?.IsStatic ?? true;
         }
 
         #region Property Info
@@ -71,41 +70,33 @@ namespace ReflectionExtensions
 
         #region Instance Property Value
 
-        public static TR GetInstanceProperty<T, TR>(this T instance, string propName) => GetInstanceProperty<TR>(instance, propName, typeof(T));
-
-        public static TR GetInstanceProperty<TR>([NotNull] this object? instance, string propName, Type? instanceType = null)
+        public static TResult GetInstanceProperty<TResult>([NotNull] this object? instance, string propName)
         {
-            AssertInstanceAndType(instance, ref instanceType, propName, MemberType.Property);
-            var prop = GetInstancePropertyInfo(instanceType, propName);
-            return (TR) prop.GetValue(instance);
+            AssertInstance(instance, out var instanceType, propName, MemberType.Property);
+            return (TResult) GetInstancePropertyInfo(instanceType, propName).GetValue(instance);
         }
 
-        public static void SetInstanceProperty<T, TR>([NotNull] this T? instance, string propName, TR? value)
+        public static void SetInstanceProperty([NotNull] this object? instance, string propName, object? value)
         {
-            var instanceType = typeof(T);
-            AssertInstanceAndType(instance, ref instanceType, propName, MemberType.Property);
-            var prop = GetInstancePropertyInfo(instanceType, propName);
-            prop.SetValue(instance, value);
+            AssertInstance(instance, out var instanceType, propName, MemberType.Property);
+            GetInstancePropertyInfo(instanceType, propName).SetValue(instance, value);
         }
 
         #endregion
 
         #region Static Property Value
 
-        public static TR GetStaticProperty<T, TR>(string propName) => GetStaticProperty<TR>(typeof(T), propName);
+        public static TResult GetStaticProperty<TTarget, TResult>(string propName) => GetStaticProperty<TResult>(typeof(TTarget), propName);
 
-        public static TR GetStaticProperty<TR>(this Type type, string propName)
-        {
-            var prop = GetStaticPropertyInfo(type, propName);
-            return (TR) prop.GetValue(null);
-        }
+        public static TResult GetStaticProperty<TResult>(this Type type, string propName) => (TResult) GetStaticProperty(type, propName);
 
-        public static void SetStaticProperty<T>(string propName, T? value) => SetStaticProperty(typeof(T), propName, value);
+        public static object GetStaticProperty(this Type type, string propName) => GetStaticPropertyInfo(type, propName).GetValue(null);
+
+        public static void SetStaticProperty<TTarget>(string propName, object? value) => SetStaticProperty(typeof(TTarget), propName, value);
 
         public static void SetStaticProperty(this Type type, string propName, object? value)
         {
-            var prop = GetStaticPropertyInfo(type, propName);
-            prop.SetValue(null, value);
+            GetStaticPropertyInfo(type, propName).SetValue(null, value);
         }
 
         #endregion
