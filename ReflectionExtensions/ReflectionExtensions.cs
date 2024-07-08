@@ -225,6 +225,11 @@ namespace ReflectionExtensions
             return p.Select(x => x.ParameterType).ToArray();
         }
 
+        private static bool IsStatic(this PropertyInfo p)
+        {
+            return p.GetMethod?.IsStatic ?? p.SetMethod?.IsStatic ?? true;
+        }
+
         internal enum MemberType
         {
             Field,

@@ -1,21 +1,23 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace ReflectionExtensions
 {
     public static partial class ReflectionExtensions
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static MemberInfo? GetFieldOrPropertyInfoInternalOrNull([NotNull] this Type? type, string propName, bool isStatic)
         {
-            type.AssertType();
             return GetFieldInfoInternalOrNull(type, propName, isStatic) ??
                    GetPropertyInfoInternalOrNull(type, propName, isStatic) as MemberInfo;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static MemberInfo GetFieldOrPropertyInfoInternal(this Type type, string propName, bool isStatic)
         {
-            var info = GetFieldInfoInternalOrNull(type, propName, isStatic);
+            var info = GetFieldOrPropertyInfoInternalOrNull(type, propName, isStatic);
             return info ?? throw new InvalidOperationException(NotFoundMessage(type, propName, isStatic, MemberType.FieldOrProperty));
         }
 
@@ -37,16 +39,16 @@ namespace ReflectionExtensions
 
         #region Instance Field or Property Value
 
-        public static TR GetInstanceFieldOrProperty<T, TR>(this T instance, string propName) => GetInstanceFieldOrProperty<TR>(instance, propName, typeof(T));
+        public static TResult GetInstanceFieldOrProperty<TTarget, TResult>(this TTarget instance, string propName) => GetInstanceFieldOrProperty<TResult>(instance, propName, typeof(TTarget));
 
-        public static TR GetInstanceFieldOrProperty<TR>([NotNull] this object? instance, string propName, Type? instanceType = null)
+        public static TResult GetInstanceFieldOrProperty<TResult>([NotNull] this object? instance, string propName, Type? instanceType = null)
         {
             AssertInstanceAndType(instance, ref instanceType, propName, MemberType.FieldOrProperty);
             var info = GetInstanceFieldOrPropertyInfo(instanceType, propName);
             return info switch
             {
-                FieldInfo field => (TR) field.GetValue(instance),
-                PropertyInfo prop => (TR) prop.GetValue(instance),
+                FieldInfo field => (TResult) field.GetValue(instance),
+                PropertyInfo prop => (TResult) prop.GetValue(instance),
                 _ => throw new InvalidOperationException()
             };
         }
@@ -73,20 +75,20 @@ namespace ReflectionExtensions
 
         #region Static Field or Property Value
 
-        public static TR GetStaticFieldOrProperty<T, TR>(string propName) => GetStaticFieldOrProperty<TR>(typeof(T), propName);
+        public static TResult GetStaticFieldOrProperty<TTarget, TResult>(string propName) => GetStaticFieldOrProperty<TResult>(typeof(TTarget), propName);
 
-        public static TR GetStaticFieldOrProperty<TR>(this Type type, string propName)
+        public static TResult GetStaticFieldOrProperty<TResult>(this Type type, string propName)
         {
             var info = GetStaticFieldOrPropertyInfo(type, propName);
             return info switch
             {
-                FieldInfo field => (TR) field.GetValue(null),
-                PropertyInfo prop => (TR) prop.GetValue(null),
+                FieldInfo field => (TResult) field.GetValue(null),
+                PropertyInfo prop => (TResult) prop.GetValue(null),
                 _ => throw new InvalidOperationException()
             };
         }
 
-        public static void SetStaticFieldOrProperty<T>(string propName, T? value) => SetStaticFieldOrProperty(typeof(T), propName, value);
+        public static void SetStaticFieldOrProperty<TTarget>(string propName, object? value) => SetStaticFieldOrProperty(typeof(TTarget), propName, value);
 
         public static void SetStaticFieldOrProperty(this Type type, string propName, object? value)
         {
