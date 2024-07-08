@@ -151,11 +151,11 @@ namespace ReflectionExtensions
             return input.Compile();
         }
 
-        public static InstanceAccessorX CreateInstanceAccessorX(this Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        public static InstanceAccessor CreateInstanceAccessorX(this Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
             if (TryGetInstanceAccessors<object, object, InstanceGetter, InstanceSetter>(instanceType, memberName, accessor, out var getter, out var setter))
             {
-                return new InstanceAccessorX(getter, setter);
+                return new InstanceAccessor(getter, setter);
             }
 
             throw new NullReferenceException($"Can't find member with name {memberName} on type {instanceType.AssemblyQualifiedName}");
@@ -172,11 +172,11 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static InstanceAccessorR<TValue> CreateInstanceAccessor<TValue>(this Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        public static InstanceAccessor<TValue> CreateInstanceAccessor<TValue>(this Type instanceType, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
             if (TryGetInstanceAccessors<object, TValue, InstanceGetter<TValue>, InstanceSetter<TValue>>(instanceType, memberName, accessor, out var getter, out var setter))
             {
-                return new InstanceAccessorR<TValue>(getter, setter);
+                return new InstanceAccessor<TValue>(getter, setter);
             }
 
             throw new NullReferenceException($"Can't find member with name {memberName} on type {instanceType.AssemblyQualifiedName}");
