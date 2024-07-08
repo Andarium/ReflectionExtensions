@@ -33,7 +33,7 @@ public sealed class TestMethodsExpression
     public void Public_Const_Function_Arg2_ReturnString()
     {
         var instance = new TestClass_Public();
-        var f = instance.CreateConstInstanceFunction<TestClass_Public, int, float, string>(FunctionString);
+        var f = instance.CreateConstInstanceFunction<int, float, string>(FunctionString);
         var actual = f.Invoke(10, 100f);
         Assert.That(actual, Is.EqualTo("7870"));
     }
@@ -42,7 +42,7 @@ public sealed class TestMethodsExpression
     public void Public_Const_Function_Arg2_ReturnDouble()
     {
         var instance = new TestClass_Public();
-        var f = instance.CreateConstInstanceFunction<TestClass_Public, int, float, double>(FunctionDouble);
+        var f = instance.CreateConstInstanceFunction<int, float, double>(FunctionDouble);
         var actual = f.Invoke(10, 100f);
         Assert.That(actual, Is.EqualTo(7870d));
     }
@@ -69,7 +69,7 @@ public sealed class TestMethodsExpression
     public void Public_Const_Function_Arg2_X_ReturnString()
     {
         var instance = new TestClass_Public();
-        var f = instance.CreateConstInstanceFunctionX(FunctionString, typeof(int), typeof(float));
+        var f = instance.CreateConstInstanceFunction(FunctionString, typeof(int), typeof(float));
         var actual = f.Invoke(10, 100f);
         Assert.That(actual, Is.EqualTo("7870"));
     }
@@ -78,7 +78,7 @@ public sealed class TestMethodsExpression
     public void Public_Const_Function_Arg2_X_ReturnDouble()
     {
         var instance = new TestClass_Public();
-        var f = instance.CreateConstInstanceFunctionX(FunctionDouble, typeof(int), typeof(float));
+        var f = instance.CreateConstInstanceFunction(FunctionDouble, typeof(int), typeof(float));
         var actual = f.Invoke(10, 100f);
         Assert.That(actual, Is.EqualTo(7870d));
     }
@@ -149,27 +149,27 @@ public sealed class TestMethodsExpression
         object obj = instance;
 
         // full generic
-        var f1 = instance.CreateConstInstanceFunction<TestClass_Public, int, float, string>(FunctionString);
+        var f1 = instance.CreateConstInstanceFunction<int, float, string>(FunctionString);
         object actual = f1.Invoke(10, 100f);
         Assert.That(actual, Is.EqualTo("7870"));
 
-        // X
-        var f2 = obj.CreateConstInstanceFunctionX(FunctionString, typeof(int), typeof(float));
+        // X obj
+        var f2 = obj.CreateConstInstanceFunction(FunctionString, typeof(int), typeof(float));
         actual = f2.Invoke(10, 100f);
         Assert.That(actual, Is.EqualTo("7870"));
 
-        // T
-        var f3 = instance.CreateConstInstanceFunctionT(FunctionString, typeof(int), typeof(float));
+        // X type
+        var f3 = instance.CreateConstInstanceFunction(FunctionString, typeof(int), typeof(float));
         actual = f3.Invoke(10, 100f);
         Assert.That(actual, Is.EqualTo("7870"));
 
-        // R
+        // R obj
         var f4 = obj.CreateConstInstanceFunctionR<string>(FunctionString, typeof(int), typeof(float));
         actual = f4.Invoke(10, 100f);
         Assert.That(actual, Is.EqualTo("7870"));
 
-        // TR
-        var f5 = instance.CreateConstInstanceFunctionTR<TestClass_Public, string>(FunctionString, typeof(int), typeof(float));
+        // R type
+        var f5 = instance.CreateConstInstanceFunctionR<string>(FunctionString, typeof(int), typeof(float));
         actual = f5.Invoke(10, 100f);
         Assert.That(actual, Is.EqualTo("7870"));
     }

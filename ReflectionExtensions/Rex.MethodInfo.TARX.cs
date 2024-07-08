@@ -102,26 +102,9 @@ namespace ReflectionExtensions
         ///////////////////////////////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstFunctionX CreateConstInstanceFunctionT<TInstance>(this MethodInfo methodInfo, TInstance constInstance)
-        {
-            var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
-            var instExp = Expression.Constant(constInstance);
-            var callExp = BoxCall(instExp, methodInfo, argList);
-            return Expression.Lambda<Func<object[], object>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConstFunctionR<TResult> CreateConstInstanceFunctionR<TResult>(this MethodInfo methodInfo, object constInstance)
         {
-            var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
-            var instExp = Expression.Constant(constInstance);
-            var callExp = Expression.Call(instExp, methodInfo, argList);
-            return Expression.Lambda<Func<object[], TResult>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstFunctionR<TResult> CreateConstInstanceFunctionTR<TInstance, TResult>(this MethodInfo methodInfo, TInstance constInstance)
-        {
+            AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var instExp = Expression.Constant(constInstance);
             var callExp = Expression.Call(instExp, methodInfo, argList);

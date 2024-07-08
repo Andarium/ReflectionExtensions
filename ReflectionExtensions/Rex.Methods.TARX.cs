@@ -24,13 +24,7 @@ namespace ReflectionExtensions
         //////////     Const Instance Procedures T/R/X    //////////
         ////////////////////////////////////////////////////////////
 
-        public static ConstProcedureX CreateConstInstanceProcedureT<TTarget>(this TTarget constInstance, string methodName, params Type[] argTypes)
-        {
-            AssertInstance<TTarget>(constInstance, out var instanceType, methodName, MemberType.Method);
-            return instanceType.GetInstanceMethodInfo(methodName, argTypes).CreateConstInstanceProcedureX(constInstance);
-        }
-
-        public static ConstProcedureX CreateConstInstanceProcedureX(this object constInstance, string methodName, params Type[] argTypes)
+        public static ConstProcedureX CreateConstInstanceProcedure(this object constInstance, string methodName, params Type[] argTypes)
         {
             AssertInstance(constInstance, out var instanceType, methodName, MemberType.Method);
             return instanceType.GetInstanceMethodInfo(methodName, argTypes).CreateConstInstanceProcedureX(constInstance);
@@ -78,25 +72,13 @@ namespace ReflectionExtensions
         //////////     Const Instance Functions T/R/X    //////////
         ///////////////////////////////////////////////////////////
 
-        public static ConstFunctionX CreateConstInstanceFunctionT<TInstance>(this TInstance constInstance, string methodName, params Type[] argTypes)
-        {
-            AssertInstance<TInstance>(constInstance, out var instanceType, methodName, MemberType.Method);
-            return instanceType.GetInstanceMethodInfo(methodName, argTypes).CreateConstInstanceFunctionT(constInstance);
-        }
-
         public static ConstFunctionR<TResult> CreateConstInstanceFunctionR<TResult>(this object constInstance, string methodName, params Type[] argTypes)
         {
             AssertInstance(constInstance, out var instanceType, methodName, MemberType.Method);
             return instanceType.GetInstanceMethodInfo(methodName, argTypes).CreateConstInstanceFunctionR<TResult>(constInstance);
         }
 
-        public static ConstFunctionR<TResult> CreateConstInstanceFunctionTR<TInstance, TResult>(this TInstance constInstance, string methodName, params Type[] argTypes)
-        {
-            AssertInstance<TInstance>(constInstance, out var instanceType, methodName, MemberType.Method);
-            return instanceType.GetInstanceMethodInfo(methodName, argTypes).CreateConstInstanceFunctionTR<TInstance, TResult>(constInstance);
-        }
-
-        public static ConstFunctionX CreateConstInstanceFunctionX(this object constInstance, string methodName, params Type[] argTypes)
+        public static ConstFunctionX CreateConstInstanceFunction(this object constInstance, string methodName, params Type[] argTypes)
         {
             AssertInstance(constInstance, out var instanceType, methodName, MemberType.Method);
             return instanceType.GetInstanceMethodInfo(methodName, argTypes).CreateConstInstanceFunctionX(constInstance);
