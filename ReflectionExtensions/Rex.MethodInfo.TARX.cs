@@ -19,7 +19,7 @@ namespace ReflectionExtensions
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var targetExp = Expression.Parameter(typeof(TInstance), "target");
             var callExp = BoxCall(targetExp, methodInfo, argList);
-            return Expression.Lambda<Action<TInstance, object[]>>(callExp, targetExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceProcedureT<TInstance>>(callExp, targetExp, arrayArgsExp).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -28,7 +28,7 @@ namespace ReflectionExtensions
             var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, methodInfo.GetArgs());
             var instExp = targetExp.Cast(methodInfo.DeclaringType!);
             var callExp = Expression.Call(instExp, methodInfo, argList);
-            return Expression.Lambda<Action<object, object[]>>(callExp, targetExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceProcedureX>(callExp, targetExp, arrayArgsExp).LogAndCompile();
         }
 
         ////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ namespace ReflectionExtensions
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var instExp = Expression.Constant(constInstance);
             var callExp = Expression.Call(instExp, methodInfo, argList);
-            return Expression.Lambda<Action<object[]>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedureX>(callExp, arrayArgsExp).LogAndCompile();
         }
 
         ////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ namespace ReflectionExtensions
         {
             var argList = CreateArgumentsX(out var arrayArgsExp, argTypes);
             var callExp = Expression.Call(null, methodInfo, argList);
-            return Expression.Lambda<Action<object[]>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstProcedureX>(callExp, arrayArgsExp).LogAndCompile();
         }
 
         /////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ namespace ReflectionExtensions
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var targetExp = Expression.Parameter(typeof(TInstance), "target");
             var callExp = BoxCall(targetExp, methodInfo, argList);
-            return Expression.Lambda<Func<TInstance, object[], object>>(callExp, targetExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceFunctionT<TInstance>>(callExp, targetExp, arrayArgsExp).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -76,7 +76,7 @@ namespace ReflectionExtensions
             var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, methodInfo.GetArgs());
             var instExp = targetExp.Cast(methodInfo.DeclaringType!);
             var callExp = BoxCall(instExp, methodInfo, argList);
-            return Expression.Lambda<Func<object, object[], TResult>>(callExp, targetExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceFunctionR<TResult>>(callExp, targetExp, arrayArgsExp).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -85,7 +85,7 @@ namespace ReflectionExtensions
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var targetExp = Expression.Parameter(typeof(TInstance), "target");
             var callExp = BoxCall(targetExp, methodInfo, argList);
-            return Expression.Lambda<Func<TInstance, object[], TResult>>(callExp, targetExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceFunctionTR<TInstance, TResult>>(callExp, targetExp, arrayArgsExp).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -94,7 +94,7 @@ namespace ReflectionExtensions
             var argList = CreateArgumentsX(out var targetExp, out var arrayArgsExp, methodInfo.GetArgs());
             var instExp = targetExp.Cast(methodInfo.DeclaringType!);
             var callExp = BoxCall(instExp, methodInfo, argList);
-            return Expression.Lambda<Func<object, object[], object>>(callExp, targetExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<InstanceFunctionX>(callExp, targetExp, arrayArgsExp).LogAndCompile();
         }
 
         ///////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ namespace ReflectionExtensions
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var instExp = Expression.Constant(constInstance);
             var callExp = Expression.Call(instExp, methodInfo, argList);
-            return Expression.Lambda<Func<object[], TResult>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunctionR<TResult>>(callExp, arrayArgsExp).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -118,7 +118,7 @@ namespace ReflectionExtensions
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var instExp = Expression.Constant(constInstance);
             var callExp = BoxCall(instExp, methodInfo, argList);
-            return Expression.Lambda<Func<object[], object>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunctionX>(callExp, arrayArgsExp).LogAndCompile();
         }
 
         ////////////////////////////////////////////////////
@@ -130,7 +130,7 @@ namespace ReflectionExtensions
         {
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var callExp = BoxCall(null, methodInfo, argList);
-            return Expression.Lambda<Func<object[], object>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunctionX>(callExp, arrayArgsExp).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -138,7 +138,7 @@ namespace ReflectionExtensions
         {
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var callExp = BoxCall(null, methodInfo, argList);
-            return Expression.Lambda<Func<object[], TResult>>(callExp, arrayArgsExp).LogAndCompile().Invoke;
+            return Expression.Lambda<ConstFunctionR<TResult>>(callExp, arrayArgsExp).LogAndCompile();
         }
     }
 }
