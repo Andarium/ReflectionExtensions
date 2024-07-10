@@ -198,38 +198,6 @@ namespace ReflectionExtensions
             return info.CreateInstanceFunction<TInstance, T0, T1, T2, T3, T4, TR>();
         }
 
-
-        public static InstanceFunctionTA<TInstance, T0> CreateInstanceFunctionTA<TInstance, T0>(string methodName)
-        {
-            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0));
-            return info.CreateInstanceFunctionTA<TInstance, T0>();
-        }
-
-        public static InstanceFunctionTA<TInstance, T0, T1> CreateInstanceFunctionTA<TInstance, T0, T1>(string methodName)
-        {
-            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1));
-            return info.CreateInstanceFunctionTA<TInstance, T0, T1>();
-        }
-
-        public static InstanceFunctionTA<TInstance, T0, T1, T2> CreateInstanceFunctionTA<TInstance, T0, T1, T2>(string methodName)
-        {
-            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2));
-            return info.CreateInstanceFunctionTA<TInstance, T0, T1, T2>();
-        }
-
-        public static InstanceFunctionTA<TInstance, T0, T1, T2, T3> CreateInstanceFunctionTA<TInstance, T0, T1, T2, T3>(string methodName)
-        {
-            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
-            return info.CreateInstanceFunctionTA<TInstance, T0, T1, T2, T3>();
-        }
-
-        public static InstanceFunctionTA<TInstance, T0, T1, T2, T3, T4> CreateInstanceFunctionTA<TInstance, T0, T1, T2, T3, T4>(string methodName)
-        {
-            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
-            return info.CreateInstanceFunctionTA<TInstance, T0, T1, T2, T3, T4>();
-        }
-        
-
         #endregion
 
         //////////////////////////////////////////////////////

@@ -63,19 +63,16 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
 
         AppendLine();
 
-        if (args > 0)
+        using (WithTestMethodScope<T>(testMethodNameBase + "_A"))
         {
-            using (WithTestMethodScope<T>(testMethodNameBase + "_A"))
-            {
-                // A
-                AppendOffset2Line($"var instance = new {targetClass}();");
-                AppendOffset2($"var f = instance.{extensionName}A");
-                AppendGenerics<T>(args);
-                Append("(");
-                AppendFunName<T>(args, isPublic);
-                AppendLine(");");
-                AppendInvokeAndAssert<T>(args);
-            }
+            // A
+            AppendOffset2Line($"var instance = new {targetClass}();");
+            AppendOffset2($"var f = instance.{extensionName}A");
+            AppendGenerics<T>(args);
+            Append("(");
+            AppendFunName<T>(args, isPublic);
+            AppendLine(");");
+            AppendInvokeAndAssert<T>(args);
         }
 
         AppendLine();
