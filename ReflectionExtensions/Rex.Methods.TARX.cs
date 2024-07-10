@@ -145,22 +145,22 @@ namespace ReflectionExtensions
 
         public static ConstFunctionX CreateStaticFunctionT<TTarget>(string methodName, params Type[] argTypes)
         {
-            return GetInstanceMethodInfo<TTarget>(methodName, argTypes).CreateStaticFunctionX();
+            return GetStaticMethodInfo<TTarget>(methodName, argTypes).CreateStaticFunctionX();
         }
 
         public static ConstFunctionR<TResult> CreateStaticFunctionR<TResult>(this Type targetType, string methodName, params Type[] argTypes)
         {
-            return targetType.GetInstanceMethodInfo(methodName, argTypes).CreateStaticFunctionR<TResult>();
+            return targetType.GetStaticMethodInfo(methodName, argTypes).CreateStaticFunctionR<TResult>();
         }
 
         public static ConstFunctionR<TResult> CreateStaticFunctionTR<TTarget, TResult>(string methodName, params Type[] argTypes)
         {
-            return GetInstanceMethodInfo<TTarget>(methodName, argTypes).CreateStaticFunctionR<TResult>();
+            return GetStaticMethodInfo<TTarget>(methodName, argTypes).CreateStaticFunctionR<TResult>();
         }
 
         public static ConstFunctionX CreateStaticFunctionX(this Type targetType, string methodName, params Type[] argTypes)
         {
-            return targetType.GetInstanceMethodInfo(methodName, argTypes).CreateStaticFunctionX();
+            return targetType.GetStaticMethodInfo(methodName, argTypes).CreateStaticFunctionX();
         }
     }
 }
