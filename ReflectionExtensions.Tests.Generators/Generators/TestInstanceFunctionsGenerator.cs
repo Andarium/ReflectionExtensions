@@ -63,52 +63,47 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
 
         AppendLine();
 
-        if (args > 0)
+        using (WithTestMethodScope<T>(testMethodNameBase + "_A"))
         {
-            using (WithTestMethodScope<T>(testMethodNameBase + "_A"))
-            {
-                // generics except type
-                AppendOffset2Line($"var instance = new {targetClass}();");
-                AppendOffset2($"var f = typeof({targetClass}).{extensionName}A");
-                AppendGenerics<T>(args);
-                Append("(");
-                AppendFunName<T>(args, isPublic);
-                AppendLine(");");
-                AppendInvokeAndAssert<T>(args);
-            }
-            
-            AppendLine();
-            
-            using (WithTestMethodScope<T>(testMethodNameBase + "_AR"))
-            {
-                // generics except type
-                AppendOffset2Line($"var instance = new {targetClass}();");
-                AppendOffset2($"var f = typeof({targetClass}).{extensionName}AR");
-                AppendGenerics<T>(args + 1);
-                Append("(");
-                AppendFunName<T>(args, isPublic);
-                AppendLine(");");
-                AppendInvokeAndAssert<T>(args);
-            }
-            
-            AppendLine();
-            
-                        
-            using (WithTestMethodScope<T>(testMethodNameBase + "_TA"))
-            {
-                // generics except type
-                AppendOffset2Line($"var instance = new {targetClass}();");
-                AppendOffset2($"var f = {extensionName}TA");
-                AppendGenerics<T>(args, targetClass);
-                Append("(");
-                AppendFunName<T>(args, isPublic);
-                AppendLine(");");
-                AppendInvokeAndAssert<T>(args);
-            }
-            
-            AppendLine();
+            // generics except type
+            AppendOffset2Line($"var instance = new {targetClass}();");
+            AppendOffset2($"var f = typeof({targetClass}).{extensionName}A");
+            AppendGenerics<T>(args);
+            Append("(");
+            AppendFunName<T>(args, isPublic);
+            AppendLine(");");
+            AppendInvokeAndAssert<T>(args);
         }
 
+        AppendLine();
+
+        using (WithTestMethodScope<T>(testMethodNameBase + "_AR"))
+        {
+            // generics except type
+            AppendOffset2Line($"var instance = new {targetClass}();");
+            AppendOffset2($"var f = typeof({targetClass}).{extensionName}AR");
+            AppendGenerics<T>(args + 1);
+            Append("(");
+            AppendFunName<T>(args, isPublic);
+            AppendLine(");");
+            AppendInvokeAndAssert<T>(args);
+        }
+
+        AppendLine();
+
+        using (WithTestMethodScope<T>(testMethodNameBase + "_TA"))
+        {
+            // generics except type
+            AppendOffset2Line($"var instance = new {targetClass}();");
+            AppendOffset2($"var f = {extensionName}TA");
+            AppendGenerics<T>(args, targetClass);
+            Append("(");
+            AppendFunName<T>(args, isPublic);
+            AppendLine(");");
+            AppendInvokeAndAssert<T>(args);
+        }
+
+        AppendLine();
 
         using (WithTestMethodScope<T>(testMethodNameBase + "_T"))
         {
@@ -176,6 +171,7 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
         {
             Append(", ");
         }
+
         AppendParameterValues<T>(args);
         AppendLine(");");
 

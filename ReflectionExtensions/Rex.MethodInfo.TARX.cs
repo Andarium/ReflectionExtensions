@@ -99,6 +99,14 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceFunctionA CreateInstanceFunctionA(this MethodInfo methodInfo)
+        {
+            CreateArgumentsIA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
+            var callExp = BoxCall(targetExp, methodInfo, callArgs);
+            return Expression.Lambda<InstanceFunctionA>(callExp, lambdaArgs).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static InstanceFunctionA<T0> CreateInstanceFunctionA<T0>(this MethodInfo methodInfo)
         {
             CreateArgumentsIA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
@@ -147,6 +155,14 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceFunctionAR<TResult> CreateInstanceFunctionAR<TResult>(this MethodInfo methodInfo)
+        {
+            CreateArgumentsIA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
+            var callExp = Expression.Call(targetExp, methodInfo, callArgs);
+            return Expression.Lambda<InstanceFunctionAR<TResult>>(callExp, lambdaArgs).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static InstanceFunctionAR<T0, T1, TResult> CreateInstanceFunctionAR<T0, T1, TResult>(this MethodInfo methodInfo)
         {
             CreateArgumentsIA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
@@ -184,6 +200,14 @@ namespace ReflectionExtensions
             CreateArgumentsITA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
             var callExp = BoxCall(targetExp, methodInfo, callArgs);
             return Expression.Lambda<InstanceFunctionTA<TInstance, T0>>(callExp, lambdaArgs).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceFunctionTA<TInstance> CreateInstanceFunctionTA<TInstance>(this MethodInfo methodInfo)
+        {
+            CreateArgumentsITA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
+            var callExp = BoxCall(targetExp, methodInfo, callArgs);
+            return Expression.Lambda<InstanceFunctionTA<TInstance>>(callExp, lambdaArgs).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -240,6 +264,16 @@ namespace ReflectionExtensions
             var instExp = Expression.Constant(constInstance);
             var callExp = BoxCall(instExp, methodInfo, argList);
             return Expression.Lambda<ConstFunctionX>(callExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA CreateConstInstanceFunctionA(this MethodInfo methodInfo, object constInstance)
+        {
+            AssertInstance(constInstance, methodInfo.Name, MemberType.Method);
+            var argList = CreateArgumentsA(methodInfo);
+            var instExp = Expression.Constant(constInstance);
+            var callExp = BoxCall(instExp, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA>(callExp, argList).LogAndCompile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -310,6 +344,54 @@ namespace ReflectionExtensions
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var callExp = Expression.Call(null, methodInfo, argList);
             return Expression.Lambda<ConstFunctionR<TResult>>(callExp, arrayArgsExp).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA CreateStaticFunctionA(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsA(methodInfo);
+            var callExp = BoxCall(null, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA>(callExp, argList).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA<T0> CreateStaticFunctionA<T0>(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsA(methodInfo);
+            var callExp = BoxCall(null, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA<T0>>(callExp, argList).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA<T0, T1> CreateStaticFunctionA<T0, T1>(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsA(methodInfo);
+            var callExp = BoxCall(null, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA<T0, T1>>(callExp, argList).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA<T0, T1, T2> CreateStaticFunctionA<T0, T1, T2>(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsA(methodInfo);
+            var callExp = BoxCall(null, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA<T0, T1, T2>>(callExp, argList).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA<T0, T1, T2, T3> CreateStaticFunctionA<T0, T1, T2, T3>(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsA(methodInfo);
+            var callExp = BoxCall(null, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA<T0, T1, T2, T3>>(callExp, argList).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConstFunctionA<T0, T1, T2, T3, T4> CreateStaticFunctionA<T0, T1, T2, T3, T4>(this MethodInfo methodInfo)
+        {
+            var argList = CreateArgumentsA(methodInfo);
+            var callExp = BoxCall(null, methodInfo, argList);
+            return Expression.Lambda<ConstFunctionA<T0, T1, T2, T3, T4>>(callExp, argList).LogAndCompile();
         }
     }
 }

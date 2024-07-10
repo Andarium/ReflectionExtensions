@@ -62,9 +62,20 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
 
         AppendLine();
 
+        using (WithTestMethodScope<T>(testMethodNameBase + "_A"))
+        {
+            // A
+            AppendOffset2($"var f = typeof({targetClass}).{extensionName}A");
+            AppendGenerics<T>(args);
+            Append("(");
+            AppendFunName<T>(args, isPublic);
+            AppendLine(");");
+            AppendInvokeAndAssert<T>(args);
+        }
+
         using (WithTestMethodScope<T>(testMethodNameBase + "_AR"))
         {
-            // generics except type
+            // AR
             AppendOffset2($"var f = typeof({targetClass}).{extensionName}");
             AppendGenerics<T>(args + 1);
             Append("(");
@@ -77,7 +88,7 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
 
         using (WithTestMethodScope<T>(testMethodNameBase + "_T"))
         {
-            // full generics
+            // T
             AppendOffset2($"var f = {extensionName}T");
             AppendGenerics<T>(0, targetClass); // +1 for return type
             Append("(");
