@@ -162,41 +162,73 @@ namespace ReflectionExtensions
 
         #region Instance Functions
 
-        public static InstanceFunction<TTarget, TR> CreateInstanceFunction<TTarget, TR>(string methodName)
+        public static InstanceFunction<TInstance, TR> CreateInstanceFunction<TInstance, TR>(string methodName)
         {
-            var info = GetInstanceMethodInfo<TTarget>(methodName);
-            return info.CreateInstanceFunction<TTarget, TR>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName);
+            return info.CreateInstanceFunction<TInstance, TR>();
         }
 
-        public static InstanceFunction<TTarget, T0, TR> CreateInstanceFunction<TTarget, T0, TR>(string methodName)
+        public static InstanceFunction<TInstance, T0, TR> CreateInstanceFunction<TInstance, T0, TR>(string methodName)
         {
-            var info = GetInstanceMethodInfo<TTarget>(methodName, typeof(T0));
-            return info.CreateInstanceFunction<TTarget, T0, TR>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0));
+            return info.CreateInstanceFunction<TInstance, T0, TR>();
         }
 
-        public static InstanceFunction<TTarget, T0, T1, TR> CreateInstanceFunction<TTarget, T0, T1, TR>(string methodName)
+        public static InstanceFunction<TInstance, T0, T1, TR> CreateInstanceFunction<TInstance, T0, T1, TR>(string methodName)
         {
-            var info = GetInstanceMethodInfo<TTarget>(methodName, typeof(T0), typeof(T1));
-            return info.CreateInstanceFunction<TTarget, T0, T1, TR>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1));
+            return info.CreateInstanceFunction<TInstance, T0, T1, TR>();
         }
 
-        public static InstanceFunction<TTarget, T0, T1, T2, TR> CreateInstanceFunction<TTarget, T0, T1, T2, TR>(string methodName)
+        public static InstanceFunction<TInstance, T0, T1, T2, TR> CreateInstanceFunction<TInstance, T0, T1, T2, TR>(string methodName)
         {
-            var info = GetInstanceMethodInfo<TTarget>(methodName, typeof(T0), typeof(T1), typeof(T2));
-            return info.CreateInstanceFunction<TTarget, T0, T1, T2, TR>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2));
+            return info.CreateInstanceFunction<TInstance, T0, T1, T2, TR>();
         }
 
-        public static InstanceFunction<TTarget, T0, T1, T2, T3, TR> CreateInstanceFunction<TTarget, T0, T1, T2, T3, TR>(string methodName)
+        public static InstanceFunction<TInstance, T0, T1, T2, T3, TR> CreateInstanceFunction<TInstance, T0, T1, T2, T3, TR>(string methodName)
         {
-            var info = GetInstanceMethodInfo<TTarget>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
-            return info.CreateInstanceFunction<TTarget, T0, T1, T2, T3, TR>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            return info.CreateInstanceFunction<TInstance, T0, T1, T2, T3, TR>();
         }
 
-        public static InstanceFunction<TTarget, T0, T1, T2, T3, T4, TR> CreateInstanceFunction<TTarget, T0, T1, T2, T3, T4, TR>(string methodName)
+        public static InstanceFunction<TInstance, T0, T1, T2, T3, T4, TR> CreateInstanceFunction<TInstance, T0, T1, T2, T3, T4, TR>(string methodName)
         {
-            var info = GetInstanceMethodInfo<TTarget>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
-            return info.CreateInstanceFunction<TTarget, T0, T1, T2, T3, T4, TR>();
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            return info.CreateInstanceFunction<TInstance, T0, T1, T2, T3, T4, TR>();
         }
+
+
+        public static InstanceFunctionTA<TInstance, T0> CreateInstanceFunctionTA<TInstance, T0>(string methodName)
+        {
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0));
+            return info.CreateInstanceFunctionTA<TInstance, T0>();
+        }
+
+        public static InstanceFunctionTA<TInstance, T0, T1> CreateInstanceFunctionTA<TInstance, T0, T1>(string methodName)
+        {
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1));
+            return info.CreateInstanceFunctionTA<TInstance, T0, T1>();
+        }
+
+        public static InstanceFunctionTA<TInstance, T0, T1, T2> CreateInstanceFunctionTA<TInstance, T0, T1, T2>(string methodName)
+        {
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2));
+            return info.CreateInstanceFunctionTA<TInstance, T0, T1, T2>();
+        }
+
+        public static InstanceFunctionTA<TInstance, T0, T1, T2, T3> CreateInstanceFunctionTA<TInstance, T0, T1, T2, T3>(string methodName)
+        {
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            return info.CreateInstanceFunctionTA<TInstance, T0, T1, T2, T3>();
+        }
+
+        public static InstanceFunctionTA<TInstance, T0, T1, T2, T3, T4> CreateInstanceFunctionTA<TInstance, T0, T1, T2, T3, T4>(string methodName)
+        {
+            var info = GetInstanceMethodInfo<TInstance>(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            return info.CreateInstanceFunctionTA<TInstance, T0, T1, T2, T3, T4>();
+        }
+        
 
         #endregion
 

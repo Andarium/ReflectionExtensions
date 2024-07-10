@@ -93,6 +93,36 @@ namespace ReflectionExtensions
             return instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4)).CreateInstanceFunctionA<T0, T1, T2, T3, T4>();
         }
 
+        public static InstanceFunctionAR<T0, TR> CreateInstanceFunctionAR<T0, TR>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0));
+            return info.CreateInstanceFunctionAR<T0, TR>();
+        }
+
+        public static InstanceFunctionAR<T0, T1, TR> CreateInstanceFunctionAR<T0, T1, TR>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1));
+            return info.CreateInstanceFunctionAR<T0, T1, TR>();
+        }
+
+        public static InstanceFunctionAR<T0, T1, T2, TR> CreateInstanceFunctionAR<T0, T1, T2, TR>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
+            return info.CreateInstanceFunctionAR<T0, T1, T2, TR>();
+        }
+
+        public static InstanceFunctionAR<T0, T1, T2, T3, TR> CreateInstanceFunctionAR<T0, T1, T2, T3, TR>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            return info.CreateInstanceFunctionAR<T0, T1, T2, T3, TR>();
+        }
+
+        public static InstanceFunctionAR<T0, T1, T2, T3, T4, TR> CreateInstanceFunctionAR<T0, T1, T2, T3, T4, TR>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            return info.CreateInstanceFunctionAR<T0, T1, T2, T3, T4, TR>();
+        }
+
         ///////////////////////////////////////////////////////////
         //////////     Const Instance Functions T/R/X    //////////
         ///////////////////////////////////////////////////////////
