@@ -68,6 +68,61 @@ namespace ReflectionExtensions
             return instanceType.GetInstanceMethodInfo(methodName, argTypes).CreateInstanceFunctionX();
         }
 
+        public static InstanceFunctionA<T0> CreateInstanceFunctionA<T0>(this Type instanceType, string methodName)
+        {
+            return instanceType.GetInstanceMethodInfo(methodName, typeof(T0)).CreateInstanceFunctionA<T0>();
+        }
+
+        public static InstanceFunctionA<T0, T1> CreateInstanceFunctionA<T0, T1>(this Type instanceType, string methodName)
+        {
+            return instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1)).CreateInstanceFunctionA<T0, T1>();
+        }
+
+        public static InstanceFunctionA<T0, T1, T2> CreateInstanceFunctionA<T0, T1, T2>(this Type instanceType, string methodName)
+        {
+            return instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2)).CreateInstanceFunctionA<T0, T1, T2>();
+        }
+
+        public static InstanceFunctionA<T0, T1, T2, T3> CreateInstanceFunctionA<T0, T1, T2, T3>(this Type instanceType, string methodName)
+        {
+            return instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3)).CreateInstanceFunctionA<T0, T1, T2, T3>();
+        }
+
+        public static InstanceFunctionA<T0, T1, T2, T3, T4> CreateInstanceFunctionA<T0, T1, T2, T3, T4>(this Type instanceType, string methodName)
+        {
+            return instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4)).CreateInstanceFunctionA<T0, T1, T2, T3, T4>();
+        }
+
+        public static InstanceFunctionAR<T0, TR> CreateInstanceFunctionAR<T0, TR>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0));
+            return info.CreateInstanceFunctionAR<T0, TR>();
+        }
+
+        public static InstanceFunctionAR<T0, T1, TR> CreateInstanceFunctionAR<T0, T1, TR>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1));
+            return info.CreateInstanceFunctionAR<T0, T1, TR>();
+        }
+
+        public static InstanceFunctionAR<T0, T1, T2, TR> CreateInstanceFunctionAR<T0, T1, T2, TR>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
+            return info.CreateInstanceFunctionAR<T0, T1, T2, TR>();
+        }
+
+        public static InstanceFunctionAR<T0, T1, T2, T3, TR> CreateInstanceFunctionAR<T0, T1, T2, T3, TR>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            return info.CreateInstanceFunctionAR<T0, T1, T2, T3, TR>();
+        }
+
+        public static InstanceFunctionAR<T0, T1, T2, T3, T4, TR> CreateInstanceFunctionAR<T0, T1, T2, T3, T4, TR>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            return info.CreateInstanceFunctionAR<T0, T1, T2, T3, T4, TR>();
+        }
+
         ///////////////////////////////////////////////////////////
         //////////     Const Instance Functions T/R/X    //////////
         ///////////////////////////////////////////////////////////
@@ -84,28 +139,58 @@ namespace ReflectionExtensions
             return instanceType.GetInstanceMethodInfo(methodName, argTypes).CreateConstInstanceFunctionX(constInstance);
         }
 
+        public static ConstFunctionA<T0> CreateConstInstanceFunctionA<T0>(this object constInstance, string methodName)
+        {
+            var info = constInstance.GetType().GetInstanceMethodInfo(methodName, typeof(T0));
+            return info.CreateConstInstanceFunctionA<T0>(constInstance);
+        }
+
+        public static ConstFunctionA<T0, T1> CreateConstInstanceFunctionA<T0, T1>(this object constInstance, string methodName)
+        {
+            var info = constInstance.GetType().GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1));
+            return info.CreateConstInstanceFunctionA<T0, T1>(constInstance);
+        }
+
+        public static ConstFunctionA<T0, T1, T2> CreateConstInstanceFunctionA<T0, T1, T2>(this object constInstance, string methodName)
+        {
+            var info = constInstance.GetType().GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
+            return info.CreateConstInstanceFunctionA<T0, T1, T2>(constInstance);
+        }
+
+        public static ConstFunctionA<T0, T1, T2, T3> CreateConstInstanceFunctionA<T0, T1, T2, T3>(this object constInstance, string methodName)
+        {
+            var info = constInstance.GetType().GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            return info.CreateConstInstanceFunctionA<T0, T1, T2, T3>(constInstance);
+        }
+
+        public static ConstFunctionA<T0, T1, T2, T3, T4> CreateConstInstanceFunctionA<T0, T1, T2, T3, T4>(this object constInstance, string methodName)
+        {
+            var info = constInstance.GetType().GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            return info.CreateConstInstanceFunctionA<T0, T1, T2, T3, T4>(constInstance);
+        }
+
         ////////////////////////////////////////////////////
         //////////     Static Functions T/R/X    ///////////
         ////////////////////////////////////////////////////
 
         public static ConstFunctionX CreateStaticFunctionT<TTarget>(string methodName, params Type[] argTypes)
         {
-            return GetInstanceMethodInfo<TTarget>(methodName, argTypes).CreateStaticFunctionX();
+            return GetStaticMethodInfo<TTarget>(methodName, argTypes).CreateStaticFunctionX();
         }
 
         public static ConstFunctionR<TResult> CreateStaticFunctionR<TResult>(this Type targetType, string methodName, params Type[] argTypes)
         {
-            return targetType.GetInstanceMethodInfo(methodName, argTypes).CreateStaticFunctionR<TResult>();
+            return targetType.GetStaticMethodInfo(methodName, argTypes).CreateStaticFunctionR<TResult>();
         }
 
         public static ConstFunctionR<TResult> CreateStaticFunctionTR<TTarget, TResult>(string methodName, params Type[] argTypes)
         {
-            return GetInstanceMethodInfo<TTarget>(methodName, argTypes).CreateStaticFunctionR<TResult>();
+            return GetStaticMethodInfo<TTarget>(methodName, argTypes).CreateStaticFunctionR<TResult>();
         }
 
         public static ConstFunctionX CreateStaticFunctionX(this Type targetType, string methodName, params Type[] argTypes)
         {
-            return targetType.GetInstanceMethodInfo(methodName, argTypes).CreateStaticFunctionX();
+            return targetType.GetStaticMethodInfo(methodName, argTypes).CreateStaticFunctionX();
         }
     }
 }

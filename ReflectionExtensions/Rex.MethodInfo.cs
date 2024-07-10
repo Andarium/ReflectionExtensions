@@ -52,6 +52,30 @@ namespace ReflectionExtensions
             return argList;
         }
 
+        // call site instance obj => target method instance DeclaringType
+        private static void CreateArgumentsIA(MethodInfo methodInfo, out Expression callTargetExp, out IEnumerable<Expression> callArgs, out IEnumerable<ParameterExpression> lambdaArgs)
+        {
+            var lambdaTargetExp = Expression.Parameter(typeof(object), "target");
+            callTargetExp = lambdaTargetExp.Cast(methodInfo.DeclaringType!);
+            var args = CreateArgumentsA(methodInfo);
+            lambdaArgs = args.Prepend(lambdaTargetExp);
+            callArgs = args;
+        }
+
+        // call site instance DeclaringType => target method instance DeclaringType
+        private static void CreateArgumentsITA(MethodInfo methodInfo, out ParameterExpression callTargetExp, out IEnumerable<Expression> callArgs, out IEnumerable<ParameterExpression> lambdaArgs)
+        {
+            callTargetExp = Expression.Parameter(methodInfo.DeclaringType!, "target");
+            var args = CreateArgumentsA(methodInfo);
+            lambdaArgs = args.Prepend(callTargetExp);
+            callArgs = args;
+        }
+
+        private static List<ParameterExpression> CreateArgumentsA(MethodInfo methodInfo)
+        {
+            return methodInfo.GetArgs().Select((x, i) => Expression.Parameter(x, $"arg{i}")).ToList();
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Expression BoxCall(Expression? instance, MethodInfo info, IEnumerable<Expression> args)
         {

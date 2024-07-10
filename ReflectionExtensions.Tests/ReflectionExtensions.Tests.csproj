@@ -17,6 +17,12 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\ReflectionExtensions.Tests.Generators\ReflectionExtensions.Tests.Generators.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
         <PackageReference Include="NUnit" Version="4.1.0" />
         <PackageReference Include="NUnit.Analyzers" Version="4.2.0">
@@ -24,5 +30,4 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-
 </Project>
