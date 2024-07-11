@@ -92,7 +92,7 @@ public sealed class StubMethodsGenerator(string typeName, bool generateProcedure
 
         if (args is 0)
         {
-            Append("default");
+            Append($"default({pTypeName})");
         }
 
         for (var i = 0; i < args; i++)

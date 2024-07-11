@@ -61,9 +61,15 @@ public abstract class GeneratorBase : IGenerator
 
     protected void AppendTypeOf<T>(int count, bool hasPrev = true)
     {
-        if (hasPrev && count > 0)
+        if (hasPrev)
         {
             Append(", ");
+        }
+
+        if (count is 0)
+        {
+            Append(NewArrayScope<Type>.GetEmptyArray());
+            return;
         }
 
         AppendSequence(count, _ => $"typeof({typeof(T).Name})", AppendType.Comma);
@@ -246,9 +252,14 @@ public abstract class GeneratorBase : IGenerator
         return _temp.ToString();
     }
 
-    protected TestMethodScope WithTestMethodScope<T>(string methodName)
+    protected TestMethodScope WithTestMethodScope(string methodName)
     {
         return new TestMethodScope(this, methodName);
+    }
+
+    protected NewArrayScope<T> WithNewArrayScope<T>()
+    {
+        return new NewArrayScope<T>(this);
     }
 
     protected readonly struct TestMethodScope : IDisposable
@@ -269,6 +280,29 @@ public abstract class GeneratorBase : IGenerator
         public void Dispose()
         {
             _generator.AppendOffsetLine("}");
+        }
+    }
+
+    protected readonly struct NewArrayScope<T> : IDisposable
+    {
+        private readonly GeneratorBase _generator;
+
+        public NewArrayScope(GeneratorBase generator)
+        {
+            _generator = generator;
+            _generator.Append("new ");
+            _generator.Append(typeof(T).Name);
+            _generator.Append("[] {");
+        }
+
+        public void Dispose()
+        {
+            _generator.Append(" }");
+        }
+
+        public static string GetEmptyArray()
+        {
+            return $"new {typeof(T).Name}[] {{ }}";
         }
     }
 }

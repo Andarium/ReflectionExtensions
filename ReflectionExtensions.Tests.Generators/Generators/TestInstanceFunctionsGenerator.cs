@@ -49,7 +49,7 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
 
         var testMethodNameBase = "Test_" + GenerateFunName<T>(args, false, isPublic);
 
-        using (WithTestMethodScope<T>(testMethodNameBase + "_Generic"))
+        using (WithTestMethodScope(testMethodNameBase + "_Generic"))
         {
             // full generics
             AppendOffset2Line($"var instance = new {targetClass}();");
@@ -63,9 +63,9 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
 
         AppendLine();
 
-        using (WithTestMethodScope<T>(testMethodNameBase + "_A"))
+        using (WithTestMethodScope(testMethodNameBase + "_A"))
         {
-            // generics except type
+            // A
             AppendOffset2Line($"var instance = new {targetClass}();");
             AppendOffset2($"var f = typeof({targetClass}).{extensionName}A");
             AppendGenerics<T>(args);
@@ -77,9 +77,9 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
 
         AppendLine();
 
-        using (WithTestMethodScope<T>(testMethodNameBase + "_AR"))
+        using (WithTestMethodScope(testMethodNameBase + "_AR"))
         {
-            // generics except type
+            // AR
             AppendOffset2Line($"var instance = new {targetClass}();");
             AppendOffset2($"var f = typeof({targetClass}).{extensionName}AR");
             AppendGenerics<T>(args + 1);
@@ -91,9 +91,9 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
 
         AppendLine();
 
-        using (WithTestMethodScope<T>(testMethodNameBase + "_TA"))
+        using (WithTestMethodScope(testMethodNameBase + "_TA"))
         {
-            // generics except type
+            // TA
             AppendOffset2Line($"var instance = new {targetClass}();");
             AppendOffset2($"var f = {extensionName}TA");
             AppendGenerics<T>(args, targetClass);
@@ -105,9 +105,9 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
 
         AppendLine();
 
-        using (WithTestMethodScope<T>(testMethodNameBase + "_T"))
+        using (WithTestMethodScope(testMethodNameBase + "_T"))
         {
-            // full generics
+            // T
             AppendOffset2Line($"var instance = new {targetClass}();");
             AppendOffset2($"var f = {extensionName}T");
             AppendGenerics<T>(0, targetClass); // +1 for return type
@@ -120,7 +120,7 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
 
         AppendLine();
 
-        using (WithTestMethodScope<T>(testMethodNameBase + "_R"))
+        using (WithTestMethodScope(testMethodNameBase + "_R"))
         {
             // R
             AppendOffset2Line($"var instance = new {targetClass}();");
@@ -135,7 +135,7 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
 
         AppendLine();
 
-        using (WithTestMethodScope<T>(testMethodNameBase + "_TR"))
+        using (WithTestMethodScope(testMethodNameBase + "_TR"))
         {
             // TR
             AppendOffset2Line($"var instance = new {targetClass}();");
@@ -150,7 +150,7 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
 
         AppendLine();
 
-        using (WithTestMethodScope<T>(testMethodNameBase + "_X"))
+        using (WithTestMethodScope(testMethodNameBase + "_X"))
         {
             // X
             AppendOffset2Line($"var instance = new {targetClass}();");

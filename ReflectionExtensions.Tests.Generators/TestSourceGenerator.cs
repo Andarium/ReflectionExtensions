@@ -17,8 +17,11 @@ public class TestSourceGenerator : IIncrementalGenerator
             new StubMethodsGenerator("StubFunctions", false),
             new StubMethodsGenerator("StubProcedures", true),
             new TestStaticFunctionsGenerator(),
+            new TestInstanceFunctionsGenerator(),
             new TestConstInstanceFunctionsGenerator(),
-            new TestInstanceFunctionsGenerator()
+            new TestStaticProceduresGenerator(),
+            new TestInstanceProceduresGenerator(),
+            new TestConstInstanceProceduresGenerator(),
         ];
 
         AddGenerators(ctx, generators);

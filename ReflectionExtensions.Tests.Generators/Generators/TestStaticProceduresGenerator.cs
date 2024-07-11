@@ -3,9 +3,9 @@ using static ReflectionExtensions.ReflectionExtensions;
 
 namespace ReflectionExtensions.Tests.Generators;
 
-public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
+public sealed class TestStaticProceduresGenerator : GeneratorBase
 {
-    protected override string TypeName => "TestConstInstanceFunctions";
+    protected override string TypeName => "TestStaticProcedures";
 
     protected override void GenerateInternal()
     {
@@ -40,21 +40,20 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
         InvokeSequence(upToArgs + 1, i => AppendConstInstance<T>(i, isPublic), AppendType.NewLine);
     }
 
-    private void AppendFunName<T>(int args, bool isPublic) => AppendFunName<T>(args, false, isPublic, true);
+    private void AppendFunName<T>(int args, bool isPublic) => AppendFunName<T>(args, true, isPublic, true);
 
     private void AppendConstInstance<T>(int args, bool isPublic)
     {
-        const string targetClass = "StubFunctions";
-        const string extensionName = nameof(ReflectionExtensions.CreateConstInstanceFunction);
+        const string targetClass = "StubProcedures";
+        const string extensionName = nameof(ReflectionExtensions.CreateStaticProcedure);
 
-        var testMethodNameBase = "Test_" + GenerateFunName<T>(args, false, isPublic);
+        var testMethodNameBase = "Test_" + GenerateFunName<T>(args, true, isPublic);
 
         using (WithTestMethodScope(testMethodNameBase + "_Generic"))
         {
             // full generics
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = instance.{extensionName}");
-            AppendGenerics<T>(args + 1); // +1 for return type
+            AppendOffset2($"var f = {extensionName}");
+            AppendGenerics<T>(args, targetClass);
             Append("(");
             AppendFunName<T>(args, isPublic);
             AppendLine(");");
@@ -66,8 +65,7 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_A"))
         {
             // A
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = instance.{extensionName}A");
+            AppendOffset2($"var f = typeof({targetClass}).{extensionName}");
             AppendGenerics<T>(args);
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -75,14 +73,11 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
             AppendInvokeAndAssert<T>(args);
         }
 
-        AppendLine();
-
-        using (WithTestMethodScope(testMethodNameBase + "_R"))
+        using (WithTestMethodScope(testMethodNameBase + "_T"))
         {
-            // R
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = instance.{extensionName}R");
-            AppendGenerics<T>(1);
+            // T
+            AppendOffset2($"var f = {extensionName}");
+            AppendGenerics<T>(0, targetClass);
             Append("(");
             AppendFunName<T>(args, isPublic);
             AppendTypeOf<T>(args);
@@ -95,8 +90,7 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_X"))
         {
             // X
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = instance.{extensionName}");
+            AppendOffset2($"var f = typeof({targetClass}).{extensionName}");
             Append("(");
             AppendFunName<T>(args, isPublic);
             AppendTypeOf<T>(args);
@@ -108,7 +102,7 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
     private void AppendInvokeAndAssert<T>(int args)
     {
         // Invoke
-        AppendOffset2("var a = f(");
+        AppendOffset2("f(");
         AppendParameterValues<T>(args);
         AppendLine(");");
 
@@ -117,17 +111,17 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
         {
             if (args is 0)
             {
-                AppendOffset2Line($"Assert.That(a, Is.Null);");
+                AppendOffset2Line($"Assert.That(StubProcedures.Result, Is.Null);");
                 return;
             }
 
             var expected = string.Join("", Enumerable.Range(1, args));
-            AppendOffset2Line($"Assert.That(a, Is.EqualTo(\"{expected}\"));");
+            AppendOffset2Line($"Assert.That(StubProcedures.Result, Is.EqualTo(\"{expected}\"));");
         }
         else
         {
             var expected = args * (args + 1) / 2;
-            AppendOffset2Line($"Assert.That(a, Is.EqualTo({expected}));");
+            AppendOffset2Line($"Assert.That(StubProcedures.Result, Is.EqualTo({expected}));");
         }
     }
 }
