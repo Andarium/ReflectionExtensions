@@ -90,9 +90,9 @@ public abstract class GeneratorBase : IGenerator
         }
     }
 
-    protected void InvokeSequence(int count, Action<int> f, AppendType append = AppendType.None)
+    protected void InvokeSequence(int count, Action<int> f, AppendType append = AppendType.None, int startIndex = 0)
     {
-        for (var i = 0; i < count; i++)
+        for (var i = startIndex; i < count; i++)
         {
             f.Invoke(i);
 
@@ -236,20 +236,36 @@ public abstract class GeneratorBase : IGenerator
     protected string GenerateFunName<T>(int args, bool isStatic, bool isPublic, bool wrap = false)
     {
         _temp.Clear();
-        if (wrap)
+
+        using (WithWrapScope(wrap, '"', _temp))
         {
-            _temp.Append('"');
+            _temp.Append(isPublic ? "Public_" : "Private_");
+            _temp.Append(isStatic ? "Static_" : "Instance_");
+            _temp.Append("Sum");
+            _temp.Append(args);
+            _temp.Append('_');
+            _temp.Append(typeof(T).Name);
         }
 
-        _temp.Append(isPublic ? "Public_" : "Private_");
-        _temp.Append(isStatic ? "Static_" : "Instance_");
-        _temp.Append("Sum");
-        _temp.Append(args);
-        _temp.Append('_');
-        _temp.Append(typeof(T).Name);
-        if (wrap)
+        return _temp.ToString();
+    }
+
+    protected void AppendConstructorName<T>(string baseName, int args, bool wrap = true)
+    {
+        Append(GenerateConstructorName<T>(baseName, args, wrap));
+    }
+
+    protected string GenerateConstructorName<T>(string baseName, int args, bool wrap = true)
+    {
+        _temp.Clear();
+
+        using (WithWrapScope(wrap, '"', _temp))
         {
-            _temp.Append('"');
+            _temp.Append(baseName);
+            _temp.Append('_');
+            _temp.Append(typeof(T).Name);
+            _temp.Append('_');
+            _temp.Append(args);
         }
 
         return _temp.ToString();
@@ -277,6 +293,26 @@ public abstract class GeneratorBase : IGenerator
     protected NewArrayScope<T> WithNewArrayScope<T>()
     {
         return new NewArrayScope<T>(this);
+    }
+
+    protected IDisposable WithWrapScope(bool wrap, string s, StringBuilder? sb = default)
+    {
+        if (!wrap)
+        {
+            return new DummyScope();
+        }
+
+        return new WrapScope(sb ?? _s, s);
+    }
+
+    protected IDisposable WithWrapScope(bool wrap, char c, StringBuilder? sb = default)
+    {
+        if (!wrap)
+        {
+            return new DummyScope();
+        }
+
+        return new WrapScope(sb ?? _s, c.ToString());
     }
 
     protected readonly struct TestMethodScope : IDisposable
@@ -320,6 +356,31 @@ public abstract class GeneratorBase : IGenerator
         public static string GetEmptyArray()
         {
             return $"new {typeof(T).Name}[] {{ }}";
+        }
+    }
+
+    protected readonly struct WrapScope : IDisposable
+    {
+        private readonly StringBuilder _sb;
+        private readonly string _s;
+
+        public WrapScope(StringBuilder stringBuilder, string s)
+        {
+            _sb = stringBuilder;
+            _s = s;
+            _sb.Append(_s);
+        }
+
+        public void Dispose()
+        {
+            _sb.Append(_s);
+        }
+    }
+
+    private readonly struct DummyScope : IDisposable
+    {
+        public void Dispose()
+        {
         }
     }
 }

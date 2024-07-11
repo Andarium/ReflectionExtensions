@@ -37,19 +37,19 @@ namespace ReflectionExtensions
             return CreateArgumentsX(out arrayArgsExp, argTypes);
         }
 
-        private static List<Expression> CreateArgumentsX(out ParameterExpression arrayArgsExp, params Type[] argTypes)
+        private static List<Expression> CreateArgumentsX(out ParameterExpression lambdaArgs, params Type[] argTypes)
         {
-            arrayArgsExp = Expression.Parameter(typeof(object[]), "args");
-            var argList = new List<Expression>();
+            lambdaArgs = Expression.Parameter(typeof(object[]), "args");
+            var callArgs = new List<Expression>();
 
             for (var i = 0; i < argTypes.Length; i++)
             {
-                var arg = Expression.ArrayIndex(arrayArgsExp, Expression.Constant(i));
+                var arg = Expression.ArrayIndex(lambdaArgs, Expression.Constant(i));
                 var argCast = arg.Cast(argTypes[i]);
-                argList.Add(argCast);
+                callArgs.Add(argCast);
             }
 
-            return argList;
+            return callArgs;
         }
 
         // ReSharper disable once InconsistentNaming
@@ -73,9 +73,29 @@ namespace ReflectionExtensions
             callArgs = args;
         }
 
-        private static List<ParameterExpression> CreateArgumentsA(MethodInfo methodInfo)
+        private static void CreateArgumentsA(ConstructorInfo constructorInfo, out List<ParameterExpression> argList)
         {
-            return methodInfo.GetArgs().Select((x, i) => Expression.Parameter(x, $"arg{i}")).ToList();
+            argList = CreateArgumentsA(constructorInfo);
+        }
+
+        private static void CreateArgumentsX(ConstructorInfo constructorInfo, out List<Expression> callArgs, out ParameterExpression lambdaArgs)
+        {
+            var argTypes = constructorInfo.GetArgs();
+
+            lambdaArgs = Expression.Parameter(typeof(object[]), "args");
+            callArgs = new List<Expression>();
+
+            for (var i = 0; i < argTypes.Length; i++)
+            {
+                var arg = Expression.ArrayIndex(lambdaArgs, Expression.Constant(i));
+                var argCast = arg.Cast(argTypes[i]);
+                callArgs.Add(argCast);
+            }
+        }
+
+        private static List<ParameterExpression> CreateArgumentsA(MethodBase info)
+        {
+            return info.GetArgs().Select((x, i) => Expression.Parameter(x, $"arg{i}")).ToList();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
