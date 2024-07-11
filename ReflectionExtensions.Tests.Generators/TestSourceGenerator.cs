@@ -14,8 +14,8 @@ public class TestSourceGenerator : IIncrementalGenerator
     {
         IGenerator[] generators =
         [
-            new StubMethodsGenerator("StubFunctions", false),
-            new StubMethodsGenerator("StubProcedures", true),
+            new StubMethodsGenerator(false),
+            new StubMethodsGenerator(true),
             new TestStaticFunctionsGenerator(),
             new TestInstanceFunctionsGenerator(),
             new TestConstInstanceFunctionsGenerator(),

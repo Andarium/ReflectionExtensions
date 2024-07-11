@@ -85,14 +85,7 @@ public abstract class GeneratorBase : IGenerator
 
             if (i < count - 1)
             {
-                if (append is AppendType.Comma)
-                {
-                    Append(", ");
-                }
-                else if (append is AppendType.NewLine)
-                {
-                    AppendLine();
-                }
+                Append(append);
             }
         }
     }
@@ -105,15 +98,24 @@ public abstract class GeneratorBase : IGenerator
 
             if (i < count - 1)
             {
-                if (append is AppendType.Comma)
-                {
-                    Append(", ");
-                }
-                else if (append is AppendType.NewLine)
-                {
-                    AppendLine();
-                }
+                Append(append);
             }
+        }
+    }
+
+    private void Append(AppendType append)
+    {
+        switch (append)
+        {
+            case AppendType.Comma:
+                Append(", ");
+                break;
+            case AppendType.Plus:
+                Append(" + ");
+                break;
+            case AppendType.NewLine:
+                AppendLine();
+                break;
         }
     }
 
@@ -121,7 +123,8 @@ public abstract class GeneratorBase : IGenerator
     {
         None,
         Comma,
-        NewLine
+        NewLine,
+        Plus
     }
 
     protected void AppendParameterValues<T>(int args)
@@ -252,6 +255,20 @@ public abstract class GeneratorBase : IGenerator
         return _temp.ToString();
     }
 
+    protected void AppendNewArray<T>(int count, Func<int, string> onElement)
+    {
+        if (count is 0)
+        {
+            Append(NewArrayScope<T>.GetEmptyArray());
+            return;
+        }
+
+        using (WithNewArrayScope<T>())
+        {
+            AppendSequence(count, onElement, AppendType.Comma);
+        }
+    }
+
     protected TestMethodScope WithTestMethodScope(string methodName)
     {
         return new TestMethodScope(this, methodName);
@@ -292,7 +309,7 @@ public abstract class GeneratorBase : IGenerator
             _generator = generator;
             _generator.Append("new ");
             _generator.Append(typeof(T).Name);
-            _generator.Append("[] {");
+            _generator.Append("[] { ");
         }
 
         public void Dispose()

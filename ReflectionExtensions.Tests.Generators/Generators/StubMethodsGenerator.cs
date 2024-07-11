@@ -1,8 +1,8 @@
 ﻿namespace ReflectionExtensions.Tests.Generators;
 
-public sealed class StubMethodsGenerator(string typeName, bool generateProcedures) : GeneratorBase
+public sealed class StubMethodsGenerator(bool generateProcedures) : GeneratorBase
 {
-    protected override string TypeName => typeName;
+    protected override string TypeName => generateProcedures ? "StubProcedures" : "StubFunctions";
 
     protected override void GenerateInternal()
     {
@@ -11,13 +11,12 @@ public sealed class StubMethodsGenerator(string typeName, bool generateProcedure
         AppendLine();
         AppendLine("namespace ReflectionExtensions.Tests;");
         AppendLine();
-        AppendLine($"public sealed class {typeName}");
+        AppendLine($"public sealed class {TypeName}");
         AppendLine("{");
 
         if (generateProcedures)
         {
-            Append(Offset);
-            AppendLine("public static object Result;");
+            AppendOffsetLine("public static object Result;");
             AppendLine();
         }
 
@@ -58,8 +57,7 @@ public sealed class StubMethodsGenerator(string typeName, bool generateProcedure
     {
         var pTypeName = typeof(T).Name;
 
-        Append(Offset);
-        Append(isPublic ? "public " : "private ");
+        AppendOffset(isPublic ? "public " : "private ");
         Append(isStatic ? "static " : "");
         Append(generateProcedures ? "void" : pTypeName);
         Append(' ');
@@ -71,43 +69,22 @@ public sealed class StubMethodsGenerator(string typeName, bool generateProcedure
         Append(pTypeName);
         Append('(');
 
-        for (var i = 0; i < args; i++)
-        {
-            Append(pTypeName);
-            Append($" arg{i}");
-
-            if (i < args - 1)
-            {
-                Append(", ");
-            }
-        }
+        AppendSequence(args, i => $"{pTypeName} arg{i}", AppendType.Comma);
 
         AppendLine(")");
-        Append(Offset);
-        AppendLine("{");
-        Append(Offset);
-        Append(Offset);
-
-        Append(generateProcedures ? "Result = " : "return ");
+        AppendOffsetLine("{");
+        AppendOffset2(generateProcedures ? "Result = " : "return ");
 
         if (args is 0)
         {
             Append($"default({pTypeName})");
         }
-
-        for (var i = 0; i < args; i++)
+        else
         {
-            Append($"arg{i}");
-
-            if (i < args - 1)
-            {
-                Append(" + ");
-            }
+            AppendSequence(args, i => $"arg{i}", AppendType.Plus);
         }
 
-        Append(';');
-        AppendLine();
-        Append(Offset);
-        AppendLine("}");
+        AppendLine(';');
+        AppendOffsetLine("}");
     }
 }
