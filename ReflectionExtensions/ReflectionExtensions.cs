@@ -105,9 +105,6 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void AssertInstance<T>([NotNull] object? instance, string memberName, MemberType memberType) => AssertInstance<T>(instance, out _, memberName, memberType);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void AssertInstance([NotNull] object? instance, out Type instanceType, string memberName, MemberType memberType)
         {
             AssertInstance(instance, memberName, memberType);
@@ -151,7 +148,7 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Type AssertConstructor<T>([NotNull] this ConstructorInfo? info)
+        private static void AssertConstructor<T>([NotNull] this ConstructorInfo? info)
         {
             if (info is null)
             {
@@ -169,8 +166,6 @@ namespace ReflectionExtensions
             {
                 throw new ArgumentException($"Type mismatch. {type.AssemblyQualifiedName} != {typeof(T).AssemblyQualifiedName}");
             }
-
-            return type;
         }
 
         private static T[] FetchUpToRootBase<T>(this Type type, Func<Type, IEnumerable<T>> fetch)
