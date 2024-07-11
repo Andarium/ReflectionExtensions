@@ -208,17 +208,12 @@ namespace ReflectionExtensions
             {
                 get
                 {
-                    if (_info is FieldInfo f)
+                    return _info switch
                     {
-                        return f.FieldType;
-                    }
-
-                    if (_info is PropertyInfo p)
-                    {
-                        return p.PropertyType;
-                    }
-
-                    throw new InvalidOperationException();
+                        FieldInfo f => f.FieldType,
+                        PropertyInfo p => p.PropertyType,
+                        _ => throw new InvalidOperationException()
+                    };
                 }
             }
 
@@ -228,34 +223,27 @@ namespace ReflectionExtensions
 
             public object GetValue(object? instance)
             {
-                if (_info is FieldInfo f)
+                return _info switch
                 {
-                    return f.GetValue(instance);
-                }
-
-                if (_info is PropertyInfo p)
-                {
-                    return p.GetValue(instance);
-                }
-
-                throw new InvalidOperationException();
+                    FieldInfo f => f.GetValue(instance),
+                    PropertyInfo p => p.GetValue(instance),
+                    _ => throw new InvalidOperationException()
+                };
             }
 
             public void SetValue(object? instance, object? value)
             {
-                if (_info is FieldInfo f)
+                switch (_info)
                 {
-                    f.SetValue(instance, value);
-                    return;
+                    case FieldInfo f:
+                        f.SetValue(instance, value);
+                        return;
+                    case PropertyInfo p:
+                        p.SetValue(instance, value);
+                        return;
+                    default:
+                        throw new InvalidOperationException();
                 }
-
-                if (_info is PropertyInfo p)
-                {
-                    p.SetValue(instance, value);
-                    return;
-                }
-
-                throw new InvalidOperationException();
             }
 
             public static implicit operator FieldOrProp(FieldInfo field) => new(field);
