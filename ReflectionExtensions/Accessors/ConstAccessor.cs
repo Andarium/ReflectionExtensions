@@ -1,4 +1,5 @@
 // ReSharper disable CheckNamespace
+// ReSharper disable UnusedMember.Global
 using System;
 
 namespace ReflectionExtensions
