@@ -1,4 +1,5 @@
-﻿namespace ReflectionExtensions
+﻿// ReSharper disable once CheckNamespace
+namespace ReflectionExtensions
 {
     public delegate void ConstProcedureX(params object[] args);
 
