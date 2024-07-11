@@ -13,7 +13,7 @@ namespace ReflectionExtensions
     {
         private static void CreateArguments<TTarget>(
             out ParameterExpression target,
-            out ParameterExpression[] arguments,
+            out List<ParameterExpression> arguments,
             params Type[] argumentTypes
         )
         {
@@ -22,13 +22,13 @@ namespace ReflectionExtensions
         }
 
         private static void CreateArguments(
-            out ParameterExpression[] arguments,
+            out List<ParameterExpression> arguments,
             params Type[] argumentTypes
         )
         {
             arguments = argumentTypes
                 .Select((type, i) => Expression.Parameter(type, $"arg{i}"))
-                .ToArray();
+                .ToList();
         }
 
         private static List<Expression> CreateArgumentsX(out ParameterExpression targetExp, out ParameterExpression arrayArgsExp, params Type[] argTypes)
@@ -52,6 +52,7 @@ namespace ReflectionExtensions
             return argList;
         }
 
+        // ReSharper disable once InconsistentNaming
         // call site instance obj => target method instance DeclaringType
         private static void CreateArgumentsIA(MethodInfo methodInfo, out Expression callTargetExp, out IEnumerable<Expression> callArgs, out IEnumerable<ParameterExpression> lambdaArgs)
         {
@@ -62,6 +63,7 @@ namespace ReflectionExtensions
             callArgs = args;
         }
 
+        // ReSharper disable once InconsistentNaming
         // call site instance DeclaringType => target method instance DeclaringType
         private static void CreateArgumentsITA(MethodInfo methodInfo, out ParameterExpression callTargetExp, out IEnumerable<Expression> callArgs, out IEnumerable<ParameterExpression> lambdaArgs)
         {
