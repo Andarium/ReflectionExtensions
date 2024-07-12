@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using static ReflectionExtensions.ReflectionExtensions;
 
 namespace ReflectionExtensions.Tests.Generators;
 
@@ -27,14 +26,14 @@ public sealed class TestInstanceProceduresGenerator : GeneratorBase
         InvokeSequence(upToArgs + 1, i => AppendConstInstance<T>(i, isPublic), AppendType.NewLine);
     }
 
-    private void AppendFunName<T>(int args, bool isPublic) => AppendFunName<T>(args, false, isPublic, true);
+    private void AppendFunName<T>(int args, bool isPublic) => AppendMethodName<T>(args, false, isPublic, true);
 
     private void AppendConstInstance<T>(int args, bool isPublic)
     {
         const string targetClass = "StubProcedures";
         const string extensionName = nameof(ReflectionExtensions.CreateInstanceProcedure);
 
-        var testMethodNameBase = "Test_" + GenerateFunName<T>(args, false, isPublic);
+        var testMethodNameBase = "Test_" + GenerateMethodName<T>(args, false, isPublic);
 
     using (WithTestMethodScope(testMethodNameBase + "_Generic"))
         {

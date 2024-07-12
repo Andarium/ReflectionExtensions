@@ -18,6 +18,7 @@ public sealed class StubMethodsGenerator(bool generateProcedures) : GeneratorBas
         {
             AppendOffsetLine("public static object Result;");
             AppendLine();
+            AppendOffsetLine("public static void Clear() => Result = null;");
         }
 
         GenerateSumFunctions<int>(5, true, false);

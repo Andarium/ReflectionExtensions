@@ -27,14 +27,14 @@ public sealed class TestStaticProceduresGenerator : GeneratorBase
         InvokeSequence(upToArgs + 1, i => AppendConstInstance<T>(i, isPublic), AppendType.NewLine);
     }
 
-    private void AppendFunName<T>(int args, bool isPublic) => AppendFunName<T>(args, true, isPublic, true);
+    private void AppendFunName<T>(int args, bool isPublic) => AppendMethodName<T>(args, true, isPublic, true);
 
     private void AppendConstInstance<T>(int args, bool isPublic)
     {
         const string targetClass = "StubProcedures";
         const string extensionName = nameof(ReflectionExtensions.CreateStaticProcedure);
 
-        var testMethodNameBase = "Test_" + GenerateFunName<T>(args, true, isPublic);
+        var testMethodNameBase = "Test_" + GenerateMethodName<T>(args, true, isPublic);
 
         using (WithTestMethodScope(testMethodNameBase + "_Generic"))
         {

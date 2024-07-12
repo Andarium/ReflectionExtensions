@@ -22,27 +22,27 @@ public abstract class GeneratorBase : IGenerator
 
     protected abstract void GenerateInternal();
 
-    protected void AppendLine() => _s.AppendLine();
+    internal void AppendLine() => _s.AppendLine();
 
-    protected void AppendOffset() => _s.Append(Offset);
-    protected void AppendOffset2() => _s.Append(Offset).Append(Offset);
+    internal void AppendOffset() => _s.Append(Offset);
+    internal void AppendOffset2() => _s.Append(Offset).Append(Offset);
 
-    protected void AppendOffset(string value) => _s.Append(Offset).Append(value);
-    protected void AppendOffset2(string value) => _s.Append(Offset).Append(Offset).Append(value);
+    internal void AppendOffset(string value) => _s.Append(Offset).Append(value);
+    internal void AppendOffset2(string value) => _s.Append(Offset).Append(Offset).Append(value);
 
-    protected void AppendOffsetLine() => _s.Append(Offset).AppendLine();
-    protected void AppendOffset2Line() => _s.Append(Offset).Append(Offset).AppendLine();
+    internal void AppendOffsetLine() => _s.Append(Offset).AppendLine();
+    internal void AppendOffset2Line() => _s.Append(Offset).Append(Offset).AppendLine();
 
-    protected void AppendOffsetLine(string value) => _s.Append(Offset).AppendLine(value);
-    protected void AppendOffset2Line(string value) => _s.Append(Offset).Append(Offset).AppendLine(value);
+    internal void AppendOffsetLine(string value) => _s.Append(Offset).AppendLine(value);
+    internal void AppendOffset2Line(string value) => _s.Append(Offset).Append(Offset).AppendLine(value);
 
-    protected void AppendLine<T>(T value)
+    internal void AppendLine<T>(T value)
     {
         Append(value);
         AppendLine();
     }
 
-    protected void AppendWrap<T>(T value, bool wrap, char c = '"')
+    internal void AppendWrap<T>(T value, bool wrap, char c = '"')
     {
         if (wrap)
         {
@@ -56,11 +56,11 @@ public abstract class GeneratorBase : IGenerator
         }
     }
 
-    protected void AppendWrap<T>(T value, char c = '"') => AppendWrap(value, true, c);
+    internal void AppendWrap<T>(T value, char c = '"') => AppendWrap(value, true, c);
 
-    protected void AppendName<T>() => Append(typeof(T).Name);
+    internal void AppendName<T>() => Append(typeof(T).Name);
 
-    protected void AppendTypeOf<T>(int count, bool hasPrev = true)
+    internal void AppendTypeOf<T>(int count, bool hasPrev = true)
     {
         if (hasPrev)
         {
@@ -76,9 +76,9 @@ public abstract class GeneratorBase : IGenerator
         AppendSequence(count, _ => $"typeof({typeof(T).Name})", AppendType.Comma);
     }
 
-    protected void AppendTypes<T>(int count) => AppendSequence(count, _ => typeof(T).Name, AppendType.Comma);
+    internal void AppendTypes<T>(int count) => AppendSequence(count, _ => typeof(T).Name, AppendType.Comma);
 
-    protected void AppendSequence(int count, Func<int, string> f, AppendType append = AppendType.None)
+    internal void AppendSequence(int count, Func<int, string> f, AppendType append = AppendType.None)
     {
         for (var i = 0; i < count; i++)
         {
@@ -91,7 +91,7 @@ public abstract class GeneratorBase : IGenerator
         }
     }
 
-    protected void InvokeSequence(int count, Action<int> f, AppendType append = AppendType.None, int startIndex = 0)
+    internal void InvokeSequence(int count, Action<int> f, AppendType append = AppendType.None, int startIndex = 0)
     {
         for (var i = startIndex; i < count; i++)
         {
@@ -120,7 +120,7 @@ public abstract class GeneratorBase : IGenerator
         }
     }
 
-    protected enum AppendType
+    internal enum AppendType
     {
         None,
         Comma,
@@ -128,12 +128,17 @@ public abstract class GeneratorBase : IGenerator
         Plus
     }
 
-    protected void AppendParameterValues<T>(int args)
+    internal void AppendParameterValues<T>(int args, bool hasPrev = false)
     {
+        if (hasPrev)
+        {
+            Append(", ");
+        }
+
         InvokeSequence(args, i => AppendWrap(i + 1, typeof(string) == typeof(T)), AppendType.Comma);
     }
 
-    protected void AppendGenerics<T>(int args, string? prependTargetClass = null)
+    internal void AppendGenerics<T>(int args, string? prependTargetClass = null)
     {
         var totalArgs = args + (prependTargetClass is null ? 0 : 1);
         if (totalArgs is 0)
@@ -157,7 +162,7 @@ public abstract class GeneratorBase : IGenerator
         Append('>');
     }
 
-    protected void Append<T>(T value)
+    internal void Append<T>(T value)
     {
         switch (value)
         {
@@ -229,12 +234,12 @@ public abstract class GeneratorBase : IGenerator
         }
     }
 
-    protected void AppendFunName<T>(int args, bool isStatic, bool isPublic, bool wrap = false)
+    internal void AppendMethodName<T>(int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null)
     {
-        Append(GenerateFunName<T>(args, isStatic, isPublic, wrap));
+        Append(GenerateMethodName<T>(args, isStatic, isPublic, wrap, isProcedure));
     }
 
-    protected string GenerateFunName<T>(int args, bool isStatic, bool isPublic, bool wrap = false)
+    internal string GenerateMethodName<T>(int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null)
     {
         _temp.Clear();
 
@@ -246,17 +251,25 @@ public abstract class GeneratorBase : IGenerator
             _temp.Append(args);
             _temp.Append('_');
             _temp.Append(typeof(T).Name);
+            if (isProcedure is true)
+            {
+                _temp.Append("_Procedure");
+            }
+            else if (isProcedure is false)
+            {
+                _temp.Append("_Function");
+            }
         }
 
         return _temp.ToString();
     }
 
-    protected void AppendConstructorName<T>(string baseName, int args, bool wrap = true)
+    internal void AppendConstructorName<T>(string baseName, int args, bool wrap = true)
     {
         Append(GenerateConstructorName<T>(baseName, args, wrap));
     }
 
-    protected string GenerateConstructorName<T>(string baseName, int args, bool wrap = true)
+    internal string GenerateConstructorName<T>(string baseName, int args, bool wrap = true)
     {
         _temp.Clear();
 
@@ -272,7 +285,7 @@ public abstract class GeneratorBase : IGenerator
         return _temp.ToString();
     }
 
-    protected void AppendNewArray<T>(int count, Func<int, string> onElement)
+    internal void AppendNewArray<T>(int count, Func<int, string> onElement)
     {
         if (count is 0)
         {
@@ -286,7 +299,7 @@ public abstract class GeneratorBase : IGenerator
         }
     }
 
-    protected void AppendTestFileStart()
+    internal void AppendTestFileStart()
     {
         AppendLine("// <auto-generated/>");
         AppendLine("using System;");
@@ -298,23 +311,27 @@ public abstract class GeneratorBase : IGenerator
         AppendLine("[TestFixture]");
         AppendLine($"public sealed class {TypeName}");
         AppendLine("{");
-        
+
         AppendOffsetLine("[SetUp]");
         AppendOffsetLine("public void Setup()");
         AppendOffsetLine("{");
         AppendOffset2Line($"{nameof(ReflectionExtensions)}.{nameof(ClearCache)}();");
-        AppendOffset2Line("StubFunctions.Clear();");
         AppendOffset2Line("StubProcedures.Clear();");
         AppendOffsetLine("}");
         AppendLine();
     }
 
-    protected TestMethodScope WithTestMethodScope(string methodName)
+    protected IDisposable WithMethodResultScope(bool isProcedure, string resultName = "actual")
+    {
+        return new MethodResultScope(this, isProcedure, resultName);
+    }
+
+    protected IDisposable WithTestMethodScope(string methodName)
     {
         return new TestMethodScope(this, methodName);
     }
 
-    protected NewArrayScope<T> WithNewArrayScope<T>()
+    protected IDisposable WithNewArrayScope<T>()
     {
         return new NewArrayScope<T>(this);
     }
@@ -337,68 +354,6 @@ public abstract class GeneratorBase : IGenerator
         }
 
         return new WrapScope(sb ?? _s, c.ToString());
-    }
-
-    protected readonly struct TestMethodScope : IDisposable
-    {
-        private readonly GeneratorBase _generator;
-
-        public TestMethodScope(GeneratorBase generator, string methodName)
-        {
-            _generator = generator;
-
-            _generator.AppendOffsetLine("[Test]");
-            _generator.AppendOffset("public void ");
-            _generator.Append(methodName);
-            _generator.AppendLine("()");
-            _generator.AppendOffsetLine("{");
-        }
-
-        public void Dispose()
-        {
-            _generator.AppendOffsetLine("}");
-        }
-    }
-
-    protected readonly struct NewArrayScope<T> : IDisposable
-    {
-        private readonly GeneratorBase _generator;
-
-        public NewArrayScope(GeneratorBase generator)
-        {
-            _generator = generator;
-            _generator.Append("new ");
-            _generator.Append(typeof(T).Name);
-            _generator.Append("[] { ");
-        }
-
-        public void Dispose()
-        {
-            _generator.Append(" }");
-        }
-
-        public static string GetEmptyArray()
-        {
-            return $"new {typeof(T).Name}[] {{ }}";
-        }
-    }
-
-    protected readonly struct WrapScope : IDisposable
-    {
-        private readonly StringBuilder _sb;
-        private readonly string _s;
-
-        public WrapScope(StringBuilder stringBuilder, string s)
-        {
-            _sb = stringBuilder;
-            _s = s;
-            _sb.Append(_s);
-        }
-
-        public void Dispose()
-        {
-            _sb.Append(_s);
-        }
     }
 
     private readonly struct DummyScope : IDisposable
