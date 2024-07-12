@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ReflectionExtensions.Tests.Generators.Scopes;
 
@@ -282,6 +283,27 @@ public abstract class GeneratorBase : IGenerator
         }
 
         return _temp.ToString();
+    }
+
+    protected void AppendSumAssert<T>(int args)
+    {
+        // Assert
+        if (typeof(T) == typeof(string))
+        {
+            if (args is 0)
+            {
+                AppendLine("Assert.That(actual, Is.Null);");
+                return;
+            }
+
+            var expected = string.Join("", Enumerable.Range(1, args));
+            AppendLine($"Assert.That(actual, Is.EqualTo(\"{expected}\"));");
+        }
+        else
+        {
+            var expected = args * (args + 1) / 2;
+            AppendLine($"Assert.That(actual, Is.EqualTo({expected}));");
+        }
     }
 
     internal void AppendNewArray<T>(int count, Func<int, string> onElement)

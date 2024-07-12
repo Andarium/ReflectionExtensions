@@ -26,7 +26,8 @@ public class TestSourceGenerator : IIncrementalGenerator
             new TestExpressionProceduresConstInstanceGenerator(),
             new TestExpressionConstructorsGenerator(true),
             new TestExpressionConstructorsGenerator(false),
-            new TestCallMethodGenerator(),
+            new TestCallMethodInstanceGenerator(),
+            new TestCallMethodStaticGenerator(),
         ];
 
         AddGenerators(ctx, generators);
