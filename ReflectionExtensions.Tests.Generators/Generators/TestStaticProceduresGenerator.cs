@@ -32,7 +32,7 @@ public sealed class TestStaticProceduresGenerator : GeneratorBase
     private void AppendConstInstance<T>(int args, bool isPublic)
     {
         const string targetClass = "StubProcedures";
-        const string extensionName = nameof(ReflectionExtensions.CreateStaticProcedure);
+        const string extensionName = nameof(CreateStaticProcedure);
 
         var testMethodNameBase = "Test_" + GenerateMethodName<T>(args, true, isPublic);
 

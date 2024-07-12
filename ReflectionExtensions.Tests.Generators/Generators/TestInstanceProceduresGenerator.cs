@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using static ReflectionExtensions.ReflectionExtensions;
 
 namespace ReflectionExtensions.Tests.Generators;
 
@@ -31,7 +32,7 @@ public sealed class TestInstanceProceduresGenerator : GeneratorBase
     private void AppendConstInstance<T>(int args, bool isPublic)
     {
         const string targetClass = "StubProcedures";
-        const string extensionName = nameof(ReflectionExtensions.CreateInstanceProcedure);
+        const string extensionName = nameof(CreateInstanceProcedure);
 
         var testMethodNameBase = "Test_" + GenerateMethodName<T>(args, false, isPublic);
 

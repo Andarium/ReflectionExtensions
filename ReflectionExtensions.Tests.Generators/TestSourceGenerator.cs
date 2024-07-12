@@ -26,6 +26,7 @@ public class TestSourceGenerator : IIncrementalGenerator
             new TestConstInstanceProceduresGenerator(),
             new TestConstructorsGenerator(true),
             new TestConstructorsGenerator(false),
+            new TestCallMethodGenerator(),
         ];
 
         AddGenerators(ctx, generators);

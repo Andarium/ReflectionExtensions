@@ -321,9 +321,9 @@ public abstract class GeneratorBase : IGenerator
         AppendLine();
     }
 
-    protected IDisposable WithMethodResultScope(bool isProcedure, string resultName = "actual")
+    protected IDisposable WithMethodResultScope(bool isStatic, bool isProcedure, string resultName = "actual")
     {
-        return new MethodResultScope(this, isProcedure, resultName);
+        return new MethodResultScope(this, isStatic, isProcedure, resultName);
     }
 
     protected IDisposable WithTestMethodScope(string methodName)

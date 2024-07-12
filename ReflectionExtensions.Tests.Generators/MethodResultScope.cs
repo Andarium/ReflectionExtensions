@@ -9,7 +9,7 @@ public readonly struct MethodResultScope : IDisposable
     private readonly GeneratorBase _generator;
     private readonly string _targetClass;
 
-    public MethodResultScope(GeneratorBase generator, bool isProcedure, string resultName = "actual")
+    public MethodResultScope(GeneratorBase generator, bool isStatic, bool isProcedure, string resultName = "actual")
     {
         _targetClass = isProcedure ? "StubProcedures" : "StubFunctions";
 
@@ -17,8 +17,10 @@ public readonly struct MethodResultScope : IDisposable
         _resultName = resultName;
         _isProcedure = isProcedure;
 
-        // R
-        _generator.AppendOffset2Line($"var instance = new {_targetClass}();");
+        if (!isStatic)
+        {
+            _generator.AppendOffset2Line($"var instance = new {_targetClass}();");
+        }
 
         if (isProcedure)
         {

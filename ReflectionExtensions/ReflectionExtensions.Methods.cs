@@ -109,24 +109,39 @@ namespace ReflectionExtensions
 
         #endregion
 
-        public static TR CallInstanceMethod<T, TR>(this T instance, string methodName, Args args = default) => (TR) CallInstanceMethod(instance, methodName, args);
-
-        public static object CallInstanceMethod<T>(this T instance, string methodName, Args args = default)
+        public static TResult CallInstanceMethod<TResult>(this object instance, string methodName, Args args = default)
         {
-            var instanceType = typeof(T);
-            AssertInstanceAndType(instance, ref instanceType, methodName, MemberType.Method);
-            var method = GetInstanceMethodInfo(instanceType, methodName, args.Types);
-            return method.Invoke(instance, args.Values);
+            return (TResult) CallInstanceMethod(instance, methodName, args);
         }
 
-        public static TR CallStaticMethod<TR>(this Type type, string methodName, Args args = default)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object CallInstanceMethod(this object instance, string methodName, Args args = default)
         {
-            return (TR) CallStaticMethod(type, methodName, args);
+            AssertInstance(instance, out var instanceType, methodName, MemberType.Method);
+            return GetInstanceMethodInfo(instanceType, methodName, args.Types).Invoke(instance, args.Values);
         }
 
+        public static TResult CallStaticMethod<TResult>(this Type type, string methodName, Args args = default)
+        {
+            return (TResult) CallStaticMethod(type, methodName, args);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object CallStaticMethod(this Type type, string methodName, Args args = default)
         {
             var method = GetStaticMethodInfo(type, methodName, args.Types);
+            return method.Invoke(null, args.Values);
+        }
+        
+        public static TResult CallStaticMethod<TTarget, TResult>(string methodName, Args args = default)
+        {
+            return (TResult) CallStaticMethod<TTarget>(methodName, args);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object CallStaticMethod<TTarget>(string methodName, Args args = default)
+        {
+            var method = GetStaticMethodInfo(typeof(TTarget), methodName, args.Types);
             return method.Invoke(null, args.Values);
         }
     }
