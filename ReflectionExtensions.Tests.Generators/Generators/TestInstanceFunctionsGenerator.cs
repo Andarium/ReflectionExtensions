@@ -9,17 +9,16 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
 
     protected override void GenerateInternal()
     {
-        AppendTestFileStart();
-
-        AppendMethods<int>(5, true);
-        AppendLine();
-        AppendMethods<string>(5, true);
-        AppendLine();
-        AppendMethods<int>(5, false);
-        AppendLine();
-        AppendMethods<string>(5, false);
-
-        Append("}");
+        using (WithTestFile(TypeName))
+        {
+            AppendMethods<int>(5, true);
+            AppendLine();
+            AppendMethods<string>(5, true);
+            AppendLine();
+            AppendMethods<int>(5, false);
+            AppendLine();
+            AppendMethods<string>(5, false);
+        }
     }
 
     private void AppendMethods<T>(int upToArgs, bool isPublic)
@@ -39,8 +38,8 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_Generic"))
         {
             // full generics
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = {extensionName}");
+            AppendLine($"var instance = new {targetClass}();");
+            Append($"var f = {extensionName}");
             AppendGenerics<T>(args + 1, targetClass); // +1 for return type
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -53,8 +52,8 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_A"))
         {
             // A
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = typeof({targetClass}).{extensionName}A");
+            AppendLine($"var instance = new {targetClass}();");
+            Append($"var f = typeof({targetClass}).{extensionName}A");
             AppendGenerics<T>(args);
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -67,8 +66,8 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_AR"))
         {
             // AR
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = typeof({targetClass}).{extensionName}AR");
+            AppendLine($"var instance = new {targetClass}();");
+            Append($"var f = typeof({targetClass}).{extensionName}AR");
             AppendGenerics<T>(args + 1);
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -81,8 +80,8 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_TA"))
         {
             // TA
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = {extensionName}TA");
+            AppendLine($"var instance = new {targetClass}();");
+            Append($"var f = {extensionName}TA");
             AppendGenerics<T>(args, targetClass);
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -95,8 +94,8 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_T"))
         {
             // T
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = {extensionName}T");
+            AppendLine($"var instance = new {targetClass}();");
+            Append($"var f = {extensionName}T");
             AppendGenerics<T>(0, targetClass); // +1 for return type
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -110,8 +109,8 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_R"))
         {
             // R
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = typeof({targetClass}).{extensionName}R");
+            AppendLine($"var instance = new {targetClass}();");
+            Append($"var f = typeof({targetClass}).{extensionName}R");
             AppendGenerics<T>(1);
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -125,8 +124,8 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_TR"))
         {
             // TR
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = {extensionName}TR");
+            AppendLine($"var instance = new {targetClass}();");
+            Append($"var f = {extensionName}TR");
             AppendGenerics<T>(1, targetClass); // +1 for return type
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -140,8 +139,8 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_X"))
         {
             // X
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = typeof({targetClass}).{extensionName}X");
+            AppendLine($"var instance = new {targetClass}();");
+            Append($"var f = typeof({targetClass}).{extensionName}X");
             Append("(");
             AppendFunName<T>(args, isPublic);
             AppendTypeOf<T>(args);
@@ -153,7 +152,7 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
     private void AppendInvokeAndAssert<T>(int args)
     {
         // Invoke
-        AppendOffset2("var a = f(instance");
+        Append("var a = f(instance");
         if (args > 0)
         {
             Append(", ");
@@ -167,17 +166,17 @@ public sealed class TestInstanceFunctionsGenerator : GeneratorBase
         {
             if (args is 0)
             {
-                AppendOffset2Line($"Assert.That(a, Is.Null);");
+                AppendLine($"Assert.That(a, Is.Null);");
                 return;
             }
 
             var expected = string.Join("", Enumerable.Range(1, args));
-            AppendOffset2Line($"Assert.That(a, Is.EqualTo(\"{expected}\"));");
+            AppendLine($"Assert.That(a, Is.EqualTo(\"{expected}\"));");
         }
         else
         {
             var expected = args * (args + 1) / 2;
-            AppendOffset2Line($"Assert.That(a, Is.EqualTo({expected}));");
+            AppendLine($"Assert.That(a, Is.EqualTo({expected}));");
         }
     }
 }

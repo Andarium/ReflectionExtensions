@@ -10,13 +10,12 @@ public sealed class TestConstructorsGenerator(bool isPublic) : GeneratorBase
 
     protected override void GenerateInternal()
     {
-        AppendTestFileStart();
-
-        AppendConstructors<int>(5, false);
-        AppendLine();
-        AppendConstructors<string>(5, true);
-
-        Append("}");
+        using (WithTestFile(TypeName))
+        {
+            AppendConstructors<int>(5, false);
+            AppendLine();
+            AppendConstructors<string>(5, true);
+        }
     }
 
     private void AppendConstructors<T>(int upToArgs, bool skipFirst)
@@ -33,7 +32,7 @@ public sealed class TestConstructorsGenerator(bool isPublic) : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_Generic"))
         {
             // full generics
-            AppendOffset2($"var f = {extensionName}");
+            Append($"var f = {extensionName}");
             AppendGenerics<T>(args, TargetClass);
             Append("(");
             AppendLine(");");
@@ -45,7 +44,7 @@ public sealed class TestConstructorsGenerator(bool isPublic) : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_A"))
         {
             // A
-            AppendOffset2($"var f = typeof({TargetClass}).{extensionName}A");
+            Append($"var f = typeof({TargetClass}).{extensionName}A");
             AppendGenerics<T>(args);
             Append("(");
             AppendLine(");");
@@ -57,7 +56,7 @@ public sealed class TestConstructorsGenerator(bool isPublic) : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_T"))
         {
             // T = TR
-            AppendOffset2($"var f = {extensionName}T");
+            Append($"var f = {extensionName}T");
             AppendGenerics<T>(0, TargetClass);
             Append("(");
             AppendTypeOf<T>(args, false);
@@ -70,7 +69,7 @@ public sealed class TestConstructorsGenerator(bool isPublic) : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_X"))
         {
             // X
-            AppendOffset2($"var f = typeof({TargetClass}).{extensionName}X");
+            Append($"var f = typeof({TargetClass}).{extensionName}X");
             Append("(");
             AppendTypeOf<T>(args, false);
             AppendLine(");");
@@ -81,7 +80,7 @@ public sealed class TestConstructorsGenerator(bool isPublic) : GeneratorBase
     private void AppendInvokeAndAssert<T>(int args, bool cast = false)
     {
         // Invoke
-        AppendOffset2("var instance = f(");
+        Append("var instance = f(");
         AppendParameterValues<T>(args);
         Append(')');
 
@@ -92,16 +91,16 @@ public sealed class TestConstructorsGenerator(bool isPublic) : GeneratorBase
 
         AppendLine(';');
 
-        AppendOffset2Line("Assert.That(instance, Is.Not.Null);");
-        AppendOffset2Line($"Assert.That(instance, Is.TypeOf<{TargetClass}>());");
+        AppendLine("Assert.That(instance, Is.Not.Null);");
+        AppendLine($"Assert.That(instance, Is.TypeOf<{TargetClass}>());");
 
         var isString = typeof(T) == typeof(string);
-        AppendOffset2("var expected = ");
+        Append("var expected = ");
         AppendNewArray<T>(args, i => isString ? $"\"{i + 1}\"" : $"{i + 1}");
         AppendLine(';');
 
-        AppendOffset2Line("var actual = instance.Result;");
-        AppendOffset2Line("Assert.That(actual, Is.EqualTo(expected));");
-        AppendOffset2Line("Assert.That(actual.GetType(), Is.EqualTo(expected.GetType()));");
+        AppendLine("var actual = instance.Result;");
+        AppendLine("Assert.That(actual, Is.EqualTo(expected));");
+        AppendLine("Assert.That(actual.GetType(), Is.EqualTo(expected.GetType()));");
     }
 }

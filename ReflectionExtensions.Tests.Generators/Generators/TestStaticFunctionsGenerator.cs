@@ -9,17 +9,16 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
 
     protected override void GenerateInternal()
     {
-        AppendTestFileStart();
-
-        AppendMethods<int>(5, true);
-        AppendLine();
-        AppendMethods<string>(5, true);
-        AppendLine();
-        AppendMethods<int>(5, false);
-        AppendLine();
-        AppendMethods<string>(5, false);
-
-        Append("}");
+        using (WithTestFile(TypeName))
+        {
+            AppendMethods<int>(5, true);
+            AppendLine();
+            AppendMethods<string>(5, true);
+            AppendLine();
+            AppendMethods<int>(5, false);
+            AppendLine();
+            AppendMethods<string>(5, false);
+        }
     }
 
     private void AppendMethods<T>(int upToArgs, bool isPublic)
@@ -39,7 +38,7 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_Generic"))
         {
             // full generics
-            AppendOffset2($"var f = {extensionName}");
+            Append($"var f = {extensionName}");
             AppendGenerics<T>(args + 1, targetClass); // +1 for return type
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -52,7 +51,7 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_A"))
         {
             // A
-            AppendOffset2($"var f = typeof({targetClass}).{extensionName}A");
+            Append($"var f = typeof({targetClass}).{extensionName}A");
             AppendGenerics<T>(args);
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -63,7 +62,7 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_AR"))
         {
             // AR
-            AppendOffset2($"var f = typeof({targetClass}).{extensionName}");
+            Append($"var f = typeof({targetClass}).{extensionName}");
             AppendGenerics<T>(args + 1);
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -76,7 +75,7 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_T"))
         {
             // T
-            AppendOffset2($"var f = {extensionName}T");
+            Append($"var f = {extensionName}T");
             AppendGenerics<T>(0, targetClass);
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -90,7 +89,7 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_R"))
         {
             // R
-            AppendOffset2($"var f = typeof({targetClass}).{extensionName}R");
+            Append($"var f = typeof({targetClass}).{extensionName}R");
             AppendGenerics<T>(1);
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -104,7 +103,7 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_TR"))
         {
             // TR
-            AppendOffset2($"var f = {extensionName}TR");
+            Append($"var f = {extensionName}TR");
             AppendGenerics<T>(1, targetClass); // +1 for return type
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -118,7 +117,7 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_X"))
         {
             // X
-            AppendOffset2($"var f = typeof({targetClass}).{extensionName}X");
+            Append($"var f = typeof({targetClass}).{extensionName}X");
             Append("(");
             AppendFunName<T>(args, isPublic);
             AppendTypeOf<T>(args);
@@ -130,7 +129,7 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
     private void AppendInvokeAndAssert<T>(int args)
     {
         // Invoke
-        AppendOffset2("var a = f(");
+        Append("var a = f(");
         AppendParameterValues<T>(args);
         AppendLine(");");
 
@@ -139,17 +138,17 @@ public sealed class TestStaticFunctionsGenerator : GeneratorBase
         {
             if (args is 0)
             {
-                AppendOffset2Line($"Assert.That(a, Is.Null);");
+                AppendLine($"Assert.That(a, Is.Null);");
                 return;
             }
 
             var expected = string.Join("", Enumerable.Range(1, args));
-            AppendOffset2Line($"Assert.That(a, Is.EqualTo(\"{expected}\"));");
+            AppendLine($"Assert.That(a, Is.EqualTo(\"{expected}\"));");
         }
         else
         {
             var expected = args * (args + 1) / 2;
-            AppendOffset2Line($"Assert.That(a, Is.EqualTo({expected}));");
+            AppendLine($"Assert.That(a, Is.EqualTo({expected}));");
         }
     }
 }

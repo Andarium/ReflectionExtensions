@@ -1,6 +1,6 @@
 using System;
 
-namespace ReflectionExtensions.Tests.Generators;
+namespace ReflectionExtensions.Tests.Generators.Scopes;
 
 public readonly struct MethodResultScope : IDisposable
 {
@@ -19,31 +19,20 @@ public readonly struct MethodResultScope : IDisposable
 
         if (!isStatic)
         {
-            _generator.AppendOffset2Line($"var instance = new {_targetClass}();");
+            _generator.AppendLine($"var instance = new {_targetClass}();");
         }
 
-        if (isProcedure)
+        if (!isProcedure)
         {
-            _generator.AppendOffset2();
+            _generator.Append($"var {_resultName} = ");
         }
-        else
-        {
-            _generator.AppendOffset2($"var {_resultName} = "); //
-        }
-
-        //instance.{extensionName}");
-        // _generator.AppendGenerics<T>(1);
-        // _generator.Append("(");
-        // _generator.AppendFunName<T>(args, isStatic, isPublic, true);
-        // _generator.AppendLine(");");
-        // _generator.AppendInvokeAndAssert<T>(args);
     }
 
     public void Dispose()
     {
         if (_isProcedure)
         {
-            _generator.AppendOffset2Line($"var {_resultName} = {_targetClass}.Result;");
+            _generator.AppendLine($"var {_resultName} = {_targetClass}.Result;");
         }
     }
 }

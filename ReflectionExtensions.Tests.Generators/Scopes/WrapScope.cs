@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace ReflectionExtensions.Tests.Generators;
+namespace ReflectionExtensions.Tests.Generators.Scopes;
 
 internal readonly struct WrapScope : IDisposable
 {

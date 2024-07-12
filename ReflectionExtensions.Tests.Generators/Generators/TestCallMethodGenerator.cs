@@ -8,43 +8,42 @@ public sealed class TestCallMethodGenerator : GeneratorBase
 
     protected override void GenerateInternal()
     {
-        AppendTestFileStart();
+        using (WithTestFile(TypeName))
+        {
+            AppendMethodsGroup<int>(5, false, true, false);
+            AppendLine();
+            AppendMethodsGroup<string>(5, false, true, false);
+            AppendLine();
+            AppendMethodsGroup<int>(5, false, false, false);
+            AppendLine();
+            AppendMethodsGroup<string>(5, false, false, false);
+            AppendLine();
+            AppendMethodsGroup<int>(5, false, true, true);
+            AppendLine();
+            AppendMethodsGroup<string>(5, false, true, true);
+            AppendLine();
+            AppendMethodsGroup<int>(5, false, false, true);
+            AppendLine();
+            AppendMethodsGroup<string>(5, false, false, true);
 
-        AppendMethodsGroup<int>(5, false, true, false);
-        AppendLine();
-        AppendMethodsGroup<string>(5, false, true, false);
-        AppendLine();
-        AppendMethodsGroup<int>(5, false, false, false);
-        AppendLine();
-        AppendMethodsGroup<string>(5, false, false, false);
-        AppendLine();
-        AppendMethodsGroup<int>(5, false, true, true);
-        AppendLine();
-        AppendMethodsGroup<string>(5, false, true, true);
-        AppendLine();
-        AppendMethodsGroup<int>(5, false, false, true);
-        AppendLine();
-        AppendMethodsGroup<string>(5, false, false, true);
+            AppendLine();
 
-        AppendLine();
-
-        AppendMethodsGroup<int>(5, true, true, false);
-        AppendLine();
-        AppendMethodsGroup<string>(5, true, true, false);
-        AppendLine();
-        AppendMethodsGroup<int>(5, true, false, false);
-        AppendLine();
-        AppendMethodsGroup<string>(5, true, false, false);
-        AppendLine();
-        AppendMethodsGroup<int>(5, true, true, true);
-        AppendLine();
-        AppendMethodsGroup<string>(5, true, true, true);
-        AppendLine();
-        AppendMethodsGroup<int>(5, true, false, true);
-        AppendLine();
-        AppendMethodsGroup<string>(5, true, false, true);
-
-        Append("}");
+            AppendMethodsGroup<int>(5, true, true, false);
+            AppendLine();
+            AppendMethodsGroup<string>(5, true, true, false);
+            AppendLine();
+            AppendMethodsGroup<int>(5, true, false, false);
+            AppendLine();
+            AppendMethodsGroup<string>(5, true, false, false);
+            AppendLine();
+            AppendMethodsGroup<int>(5, true, true, true);
+            AppendLine();
+            AppendMethodsGroup<string>(5, true, true, true);
+            AppendLine();
+            AppendMethodsGroup<int>(5, true, false, true);
+            AppendLine();
+            AppendMethodsGroup<string>(5, true, false, true);
+        }
     }
 
     private void AppendMethodsGroup<T>(int upToArgs, bool isStatic, bool isPublic, bool isProcedure)
@@ -195,17 +194,17 @@ public sealed class TestCallMethodGenerator : GeneratorBase
         {
             if (args is 0)
             {
-                AppendOffset2Line("Assert.That(actual, Is.Null);");
+                AppendLine("Assert.That(actual, Is.Null);");
                 return;
             }
 
             var expected = string.Join("", Enumerable.Range(1, args));
-            AppendOffset2Line($"Assert.That(actual, Is.EqualTo(\"{expected}\"));");
+            AppendLine($"Assert.That(actual, Is.EqualTo(\"{expected}\"));");
         }
         else
         {
             var expected = args * (args + 1) / 2;
-            AppendOffset2Line($"Assert.That(actual, Is.EqualTo({expected}));");
+            AppendLine($"Assert.That(actual, Is.EqualTo({expected}));");
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace ReflectionExtensions.Tests.Generators;
+namespace ReflectionExtensions.Tests.Generators.Scopes;
 
 internal readonly struct NewArrayScope<T> : IDisposable
 {

@@ -8,17 +8,16 @@ public sealed class TestConstInstanceProceduresGenerator : GeneratorBase
 
     protected override void GenerateInternal()
     {
-        AppendTestFileStart();
-
-        AppendMethods<int>(5, true);
-        AppendLine();
-        AppendMethods<string>(5, true);
-        AppendLine();
-        AppendMethods<int>(5, false);
-        AppendLine();
-        AppendMethods<string>(5, false);
-
-        Append("}");
+        using (WithTestFile(TypeName))
+        {
+            AppendMethods<int>(5, true);
+            AppendLine();
+            AppendMethods<string>(5, true);
+            AppendLine();
+            AppendMethods<int>(5, false);
+            AppendLine();
+            AppendMethods<string>(5, false);
+        }
     }
 
     private void AppendMethods<T>(int upToArgs, bool isPublic)
@@ -38,8 +37,8 @@ public sealed class TestConstInstanceProceduresGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_Generic"))
         {
             // full generics
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = instance.{extensionName}");
+            AppendLine($"var instance = new {targetClass}();");
+            Append($"var f = instance.{extensionName}");
             AppendGenerics<T>(args);
             Append("(");
             AppendFunName<T>(args, isPublic);
@@ -52,8 +51,8 @@ public sealed class TestConstInstanceProceduresGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_X"))
         {
             // X
-            AppendOffset2Line($"var instance = new {targetClass}();");
-            AppendOffset2($"var f = instance.{extensionName}");
+            AppendLine($"var instance = new {targetClass}();");
+            Append($"var f = instance.{extensionName}");
             Append("(");
             AppendFunName<T>(args, isPublic);
             AppendTypeOf<T>(args);
@@ -65,7 +64,7 @@ public sealed class TestConstInstanceProceduresGenerator : GeneratorBase
     private void AppendInvokeAndAssert<T>(int args)
     {
         // Invoke
-        AppendOffset2("f(");
+        Append("f(");
         AppendParameterValues<T>(args);
         AppendLine(");");
 
@@ -74,17 +73,17 @@ public sealed class TestConstInstanceProceduresGenerator : GeneratorBase
         {
             if (args is 0)
             {
-                AppendOffset2Line($"Assert.That(StubProcedures.Result, Is.Null);");
+                AppendLine("Assert.That(StubProcedures.Result, Is.Null);");
                 return;
             }
 
             var expected = string.Join("", Enumerable.Range(1, args));
-            AppendOffset2Line($"Assert.That(StubProcedures.Result, Is.EqualTo(\"{expected}\"));");
+            AppendLine($"Assert.That(StubProcedures.Result, Is.EqualTo(\"{expected}\"));");
         }
         else
         {
             var expected = args * (args + 1) / 2;
-            AppendOffset2Line($"Assert.That(StubProcedures.Result, Is.EqualTo({expected}));");
+            AppendLine($"Assert.That(StubProcedures.Result, Is.EqualTo({expected}));");
         }
     }
 }
