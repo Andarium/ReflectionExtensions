@@ -3,9 +3,9 @@ using static ReflectionExtensions.ReflectionExtensions;
 
 namespace ReflectionExtensions.Tests.Generators;
 
-public sealed class TestInstanceProceduresGenerator : GeneratorBase
+public sealed class TestExpressionProceduresInstanceGenerator : GeneratorBase
 {
-    protected override string TypeName => "TestInstanceProcedures";
+    protected override string TypeName => "TestExpressionProceduresInstance";
 
     protected override void GenerateInternal()
     {

@@ -2,9 +2,9 @@
 
 namespace ReflectionExtensions.Tests.Generators;
 
-public sealed class TestConstInstanceProceduresGenerator : GeneratorBase
+public sealed class TestExpressionProceduresConstInstanceGenerator : GeneratorBase
 {
-    protected override string TypeName => "TestConstInstanceProcedures";
+    protected override string TypeName => "TestExpressionProceduresConstInstance";
 
     protected override void GenerateInternal()
     {

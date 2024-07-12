@@ -2,9 +2,9 @@
 
 namespace ReflectionExtensions.Tests.Generators;
 
-public sealed class TestConstructorsGenerator(bool isPublic) : GeneratorBase
+public sealed class TestExpressionConstructorsGenerator(bool isPublic) : GeneratorBase
 {
-    protected override string TypeName => isPublic ? "TestPublicConstructors" : "TestPrivateConstructors";
+    protected override string TypeName => isPublic ? "TestExpressionConstructorsPublic" : "TestExpressionConstructorsPrivate";
 
     private string TargetClass => isPublic ? "StubPublicConstructors" : "StubPrivateConstructors";
 

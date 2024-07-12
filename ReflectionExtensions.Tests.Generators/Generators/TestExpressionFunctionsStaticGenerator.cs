@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using static ReflectionExtensions.ReflectionExtensions;
 
 namespace ReflectionExtensions.Tests.Generators;
 
-public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
+public sealed class TestExpressionFunctionsStaticGenerator : GeneratorBase
 {
-    protected override string TypeName => "TestConstInstanceFunctions";
+    protected override string TypeName => "TestExpressionFunctionsStatic";
 
     protected override void GenerateInternal()
     {
@@ -22,24 +23,23 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
 
     private void AppendMethods<T>(int upToArgs, bool isPublic)
     {
-        InvokeSequence(upToArgs + 1, i => AppendConstInstance<T>(i, isPublic), AppendType.NewLine);
+        InvokeSequence(upToArgs + 1, i => AppendStatic<T>(i, isPublic), AppendType.NewLine);
     }
 
-    private void AppendFunName<T>(int args, bool isPublic) => AppendMethodName<T>(args, false, isPublic, true);
+    private void AppendFunName<T>(int args, bool isPublic) => AppendMethodName<T>(args, true, isPublic, true);
 
-    private void AppendConstInstance<T>(int args, bool isPublic)
+    private void AppendStatic<T>(int args, bool isPublic)
     {
         const string targetClass = "StubFunctions";
-        const string extensionName = nameof(ReflectionExtensions.CreateConstInstanceFunction);
+        const string extensionName = nameof(CreateStaticFunction);
 
-        var testMethodNameBase = "Test_" + GenerateMethodName<T>(args, false, isPublic);
+        var testMethodNameBase = "Test_" + GenerateMethodName<T>(args, true, isPublic);
 
         using (WithTestMethodScope(testMethodNameBase + "_Generic"))
         {
             // full generics
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = instance.{extensionName}");
-            AppendGenerics<T>(args + 1); // +1 for return type
+            Append($"var f = {extensionName}");
+            AppendGenerics<T>(args + 1, targetClass); // +1 for return type
             Append("(");
             AppendFunName<T>(args, isPublic);
             AppendLine(");");
@@ -51,11 +51,35 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_A"))
         {
             // A
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = instance.{extensionName}A");
+            Append($"var f = typeof({targetClass}).{extensionName}A");
             AppendGenerics<T>(args);
             Append("(");
             AppendFunName<T>(args, isPublic);
+            AppendLine(");");
+            AppendInvokeAndAssert<T>(args);
+        }
+
+        using (WithTestMethodScope(testMethodNameBase + "_AR"))
+        {
+            // AR
+            Append($"var f = typeof({targetClass}).{extensionName}");
+            AppendGenerics<T>(args + 1);
+            Append("(");
+            AppendFunName<T>(args, isPublic);
+            AppendLine(");");
+            AppendInvokeAndAssert<T>(args);
+        }
+
+        AppendLine();
+
+        using (WithTestMethodScope(testMethodNameBase + "_T"))
+        {
+            // T
+            Append($"var f = {extensionName}T");
+            AppendGenerics<T>(0, targetClass);
+            Append("(");
+            AppendFunName<T>(args, isPublic);
+            AppendTypeOf<T>(args);
             AppendLine(");");
             AppendInvokeAndAssert<T>(args);
         }
@@ -65,9 +89,22 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_R"))
         {
             // R
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = instance.{extensionName}R");
+            Append($"var f = typeof({targetClass}).{extensionName}R");
             AppendGenerics<T>(1);
+            Append("(");
+            AppendFunName<T>(args, isPublic);
+            AppendTypeOf<T>(args);
+            AppendLine(");");
+            AppendInvokeAndAssert<T>(args);
+        }
+
+        AppendLine();
+
+        using (WithTestMethodScope(testMethodNameBase + "_TR"))
+        {
+            // TR
+            Append($"var f = {extensionName}TR");
+            AppendGenerics<T>(1, targetClass); // +1 for return type
             Append("(");
             AppendFunName<T>(args, isPublic);
             AppendTypeOf<T>(args);
@@ -80,8 +117,7 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
         using (WithTestMethodScope(testMethodNameBase + "_X"))
         {
             // X
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = instance.{extensionName}");
+            Append($"var f = typeof({targetClass}).{extensionName}X");
             Append("(");
             AppendFunName<T>(args, isPublic);
             AppendTypeOf<T>(args);
@@ -102,7 +138,7 @@ public sealed class TestConstInstanceFunctionsGenerator : GeneratorBase
         {
             if (args is 0)
             {
-                AppendLine("Assert.That(a, Is.Null);");
+                AppendLine($"Assert.That(a, Is.Null);");
                 return;
             }
 
