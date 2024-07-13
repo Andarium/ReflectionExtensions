@@ -13,7 +13,7 @@ namespace ReflectionExtensions
     {
         private static void CreateArguments<TTarget>(
             out ParameterExpression target,
-            out ParameterExpression[] arguments,
+            out List<ParameterExpression> arguments,
             params Type[] argumentTypes
         )
         {
@@ -22,13 +22,13 @@ namespace ReflectionExtensions
         }
 
         private static void CreateArguments(
-            out ParameterExpression[] arguments,
+            out List<ParameterExpression> arguments,
             params Type[] argumentTypes
         )
         {
             arguments = argumentTypes
                 .Select((type, i) => Expression.Parameter(type, $"arg{i}"))
-                .ToArray();
+                .ToList();
         }
 
         private static List<Expression> CreateArgumentsX(out ParameterExpression targetExp, out ParameterExpression arrayArgsExp, params Type[] argTypes)
@@ -37,21 +37,22 @@ namespace ReflectionExtensions
             return CreateArgumentsX(out arrayArgsExp, argTypes);
         }
 
-        private static List<Expression> CreateArgumentsX(out ParameterExpression arrayArgsExp, params Type[] argTypes)
+        private static List<Expression> CreateArgumentsX(out ParameterExpression lambdaArgs, params Type[] argTypes)
         {
-            arrayArgsExp = Expression.Parameter(typeof(object[]), "args");
-            var argList = new List<Expression>();
+            lambdaArgs = Expression.Parameter(typeof(object[]), "args");
+            var callArgs = new List<Expression>();
 
             for (var i = 0; i < argTypes.Length; i++)
             {
-                var arg = Expression.ArrayIndex(arrayArgsExp, Expression.Constant(i));
+                var arg = Expression.ArrayIndex(lambdaArgs, Expression.Constant(i));
                 var argCast = arg.Cast(argTypes[i]);
-                argList.Add(argCast);
+                callArgs.Add(argCast);
             }
 
-            return argList;
+            return callArgs;
         }
 
+        // ReSharper disable once InconsistentNaming
         // call site instance obj => target method instance DeclaringType
         private static void CreateArgumentsIA(MethodInfo methodInfo, out Expression callTargetExp, out IEnumerable<Expression> callArgs, out IEnumerable<ParameterExpression> lambdaArgs)
         {
@@ -62,6 +63,7 @@ namespace ReflectionExtensions
             callArgs = args;
         }
 
+        // ReSharper disable once InconsistentNaming
         // call site instance DeclaringType => target method instance DeclaringType
         private static void CreateArgumentsITA(MethodInfo methodInfo, out ParameterExpression callTargetExp, out IEnumerable<Expression> callArgs, out IEnumerable<ParameterExpression> lambdaArgs)
         {
@@ -71,9 +73,29 @@ namespace ReflectionExtensions
             callArgs = args;
         }
 
-        private static List<ParameterExpression> CreateArgumentsA(MethodInfo methodInfo)
+        private static void CreateArgumentsA(ConstructorInfo constructorInfo, out List<ParameterExpression> argList)
         {
-            return methodInfo.GetArgs().Select((x, i) => Expression.Parameter(x, $"arg{i}")).ToList();
+            argList = CreateArgumentsA(constructorInfo);
+        }
+
+        private static void CreateArgumentsX(ConstructorInfo constructorInfo, out List<Expression> callArgs, out ParameterExpression lambdaArgs)
+        {
+            var argTypes = constructorInfo.GetArgs();
+
+            lambdaArgs = Expression.Parameter(typeof(object[]), "args");
+            callArgs = new List<Expression>();
+
+            for (var i = 0; i < argTypes.Length; i++)
+            {
+                var arg = Expression.ArrayIndex(lambdaArgs, Expression.Constant(i));
+                var argCast = arg.Cast(argTypes[i]);
+                callArgs.Add(argCast);
+            }
+        }
+
+        private static List<ParameterExpression> CreateArgumentsA(MethodBase info)
+        {
+            return info.GetArgs().Select((x, i) => Expression.Parameter(x, $"arg{i}")).ToList();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

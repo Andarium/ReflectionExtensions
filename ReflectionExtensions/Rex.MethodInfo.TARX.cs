@@ -3,23 +3,22 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace ReflectionExtensions
 {
     public static partial class ReflectionExtensions
     {
-        //////////////////////////////////////////////////////
-        //////////     Instance Procedures T/R/X    //////////
-        //////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////
+        //////////     Instance Procedures T/A/R/X    //////////
+        ////////////////////////////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static InstanceProcedureT<TInstance> CreateInstanceProcedureT<TInstance>(this MethodInfo methodInfo)
         {
             var argList = CreateArgumentsX(out var arrayArgsExp, methodInfo.GetArgs());
             var targetExp = Expression.Parameter(typeof(TInstance), "target");
-            var callExp = BoxCall(targetExp, methodInfo, argList);
+            var callExp = Expression.Call(targetExp, methodInfo, argList);
             return Expression.Lambda<InstanceProcedureT<TInstance>>(callExp, targetExp, arrayArgsExp).LogAndCompile();
         }
 
@@ -32,9 +31,57 @@ namespace ReflectionExtensions
             return Expression.Lambda<InstanceProcedureX>(callExp, targetExp, arrayArgsExp).LogAndCompile();
         }
 
-        ////////////////////////////////////////////////////////////
-        //////////     Const Instance Procedures T/R/X    //////////
-        ////////////////////////////////////////////////////////////
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceProcedureA CreateInstanceProcedureA(this MethodInfo methodInfo)
+        {
+            CreateArgumentsIA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
+            var callExp = Expression.Call(targetExp, methodInfo, callArgs);
+            return Expression.Lambda<InstanceProcedureA>(callExp, lambdaArgs).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceProcedureA<T0> CreateInstanceProcedureA<T0>(this MethodInfo methodInfo)
+        {
+            CreateArgumentsIA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
+            var callExp = Expression.Call(targetExp, methodInfo, callArgs);
+            return Expression.Lambda<InstanceProcedureA<T0>>(callExp, lambdaArgs).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceProcedureA<T0, T1> CreateInstanceProcedureA<T0, T1>(this MethodInfo methodInfo)
+        {
+            CreateArgumentsIA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
+            var callExp = Expression.Call(targetExp, methodInfo, callArgs);
+            return Expression.Lambda<InstanceProcedureA<T0, T1>>(callExp, lambdaArgs).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceProcedureA<T0, T1, T2> CreateInstanceProcedureA<T0, T1, T2>(this MethodInfo methodInfo)
+        {
+            CreateArgumentsIA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
+            var callExp = Expression.Call(targetExp, methodInfo, callArgs);
+            return Expression.Lambda<InstanceProcedureA<T0, T1, T2>>(callExp, lambdaArgs).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceProcedureA<T0, T1, T2, T3> CreateInstanceProcedureA<T0, T1, T2, T3>(this MethodInfo methodInfo)
+        {
+            CreateArgumentsIA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
+            var callExp = Expression.Call(targetExp, methodInfo, callArgs);
+            return Expression.Lambda<InstanceProcedureA<T0, T1, T2, T3>>(callExp, lambdaArgs).LogAndCompile();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static InstanceProcedureA<T0, T1, T2, T3, T4> CreateInstanceProcedureA<T0, T1, T2, T3, T4>(this MethodInfo methodInfo)
+        {
+            CreateArgumentsIA(methodInfo, out var targetExp, out var callArgs, out var lambdaArgs);
+            var callExp = Expression.Call(targetExp, methodInfo, callArgs);
+            return Expression.Lambda<InstanceProcedureA<T0, T1, T2, T3, T4>>(callExp, lambdaArgs).LogAndCompile();
+        }
+
+        //////////////////////////////////////////////////////////////
+        //////////     Const Instance Procedures T/A/R/X    //////////
+        //////////////////////////////////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConstProcedureX CreateConstInstanceProcedureX(this MethodInfo methodInfo, object constInstance)
@@ -46,9 +93,9 @@ namespace ReflectionExtensions
             return Expression.Lambda<ConstProcedureX>(callExp, arrayArgsExp).LogAndCompile();
         }
 
-        ////////////////////////////////////////////////////
-        //////////     Static Procedures T/R/X    //////////
-        ////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////
+        //////////     Static Procedures T/A/R/X    //////////
+        //////////////////////////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConstProcedureX CreateStaticProcedureX(this MethodInfo methodInfo, params Type[] argTypes)
@@ -58,9 +105,9 @@ namespace ReflectionExtensions
             return Expression.Lambda<ConstProcedureX>(callExp, arrayArgsExp).LogAndCompile();
         }
 
-        /////////////////////////////////////////////////////
-        //////////     Instance Functions T/R/X    //////////
-        /////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////
+        //////////     Instance Functions T/A/R/X    //////////
+        ///////////////////////////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static InstanceFunctionT<TInstance> CreateInstanceFunctionT<TInstance>(this MethodInfo methodInfo)
@@ -242,9 +289,9 @@ namespace ReflectionExtensions
             return Expression.Lambda<InstanceFunctionTA<TInstance, T0, T1, T2, T3, T4>>(callExp, lambdaArgs).LogAndCompile();
         }
 
-        ///////////////////////////////////////////////////////////
-        //////////     Const Instance Functions T/R/X    //////////
-        ///////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////
+        //////////     Const Instance Functions T/A/R/X    //////////
+        /////////////////////////////////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConstFunctionR<TResult> CreateConstInstanceFunctionR<TResult>(this MethodInfo methodInfo, object constInstance)
@@ -326,9 +373,9 @@ namespace ReflectionExtensions
             return Expression.Lambda<ConstFunctionA<T0, T1, T2, T3, T4>>(callExp, argList).LogAndCompile();
         }
 
-        ////////////////////////////////////////////////////
-        //////////     Static Functions T/R/X    ///////////
-        ////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////
+        //////////     Static Functions T/A/R/X    ///////////
+        //////////////////////////////////////////////////////
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConstFunctionX CreateStaticFunctionX(this MethodInfo methodInfo)

@@ -1,4 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
+// ReSharper disable once CheckNamespace
 namespace ReflectionExtensions
 {
     public delegate object InstanceFunctionX(object instance, params object[] args);

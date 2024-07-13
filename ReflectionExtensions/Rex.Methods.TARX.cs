@@ -6,9 +6,9 @@ namespace ReflectionExtensions
 {
     public static partial class ReflectionExtensions
     {
-        //////////////////////////////////////////////////////
-        //////////     Instance Procedures T/R/X    //////////
-        //////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////
+        //////////     Instance Procedures T/A/R/X    //////////
+        ////////////////////////////////////////////////////////
 
         public static InstanceProcedureT<TInstance> CreateInstanceProcedureT<TInstance>(string methodName, params Type[] argTypes)
         {
@@ -20,9 +20,45 @@ namespace ReflectionExtensions
             return instanceType.GetInstanceMethodInfo(methodName, argTypes).CreateInstanceProcedureX();
         }
 
-        ////////////////////////////////////////////////////////////
-        //////////     Const Instance Procedures T/R/X    //////////
-        ////////////////////////////////////////////////////////////
+        public static InstanceProcedureA CreateInstanceProcedureA(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName);
+            return info.CreateInstanceProcedureA();
+        }
+
+        public static InstanceProcedureA<T0> CreateInstanceProcedureA<T0>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0));
+            return info.CreateInstanceProcedureA<T0>();
+        }
+
+        public static InstanceProcedureA<T0, T1> CreateInstanceProcedureA<T0, T1>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1));
+            return info.CreateInstanceProcedureA<T0, T1>();
+        }
+
+        public static InstanceProcedureA<T0, T1, T2> CreateInstanceProcedureA<T0, T1, T2>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
+            return info.CreateInstanceProcedureA<T0, T1, T2>();
+        }
+
+        public static InstanceProcedureA<T0, T1, T2, T3> CreateInstanceProcedureA<T0, T1, T2, T3>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            return info.CreateInstanceProcedureA<T0, T1, T2, T3>();
+        }
+
+        public static InstanceProcedureA<T0, T1, T2, T3, T4> CreateInstanceProcedureA<T0, T1, T2, T3, T4>(this Type instanceType, string methodName)
+        {
+            var info = instanceType.GetInstanceMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            return info.CreateInstanceProcedureA<T0, T1, T2, T3, T4>();
+        }
+
+        //////////////////////////////////////////////////////////////
+        //////////     Const Instance Procedures T/A/R/X    //////////
+        //////////////////////////////////////////////////////////////
 
         public static ConstProcedureX CreateConstInstanceProcedure(this object constInstance, string methodName, params Type[] argTypes)
         {
@@ -30,23 +66,23 @@ namespace ReflectionExtensions
             return instanceType.GetInstanceMethodInfo(methodName, argTypes).CreateConstInstanceProcedureX(constInstance);
         }
 
-        ////////////////////////////////////////////////////
-        //////////     Static Procedures T/R/X    //////////
-        ////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////
+        //////////     Static Procedures T/A/R/X    //////////
+        //////////////////////////////////////////////////////
 
-        public static ConstProcedureX CreateStaticProcedureT<TTarget>(string methodName, params Type[] argTypes)
+        public static ConstProcedureX CreateStaticProcedure<TTarget>(string methodName, params Type[] argTypes)
         {
-            return GetInstanceMethodInfo<TTarget>(methodName, argTypes).CreateStaticProcedureX(argTypes);
+            return GetStaticMethodInfo<TTarget>(methodName, argTypes).CreateStaticProcedureX(argTypes);
         }
 
-        public static ConstProcedureX CreateStaticProcedureX(this Type targetType, string methodName, params Type[] argTypes)
+        public static ConstProcedureX CreateStaticProcedure(this Type targetType, string methodName, params Type[] argTypes)
         {
-            return targetType.GetInstanceMethodInfo(methodName, argTypes).CreateStaticProcedureX(argTypes);
+            return targetType.GetStaticMethodInfo(methodName, argTypes).CreateStaticProcedureX(argTypes);
         }
 
-        /////////////////////////////////////////////////////
-        //////////     Instance Functions T/R/X    //////////
-        /////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////
+        //////////     Instance Functions T/A/R/X    //////////
+        ///////////////////////////////////////////////////////
 
         public static InstanceFunctionT<TInstance> CreateInstanceFunctionT<TInstance>(string methodName, params Type[] argTypes)
         {
@@ -170,9 +206,9 @@ namespace ReflectionExtensions
             return info.CreateInstanceFunctionTA<TInstance, T0, T1, T2, T3, T4>();
         }
 
-        ///////////////////////////////////////////////////////////
-        //////////     Const Instance Functions T/R/X    //////////
-        ///////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////
+        //////////     Const Instance Functions T/A/R/X    //////////
+        /////////////////////////////////////////////////////////////
 
         public static ConstFunctionR<TResult> CreateConstInstanceFunctionR<TResult>(this object constInstance, string methodName, params Type[] argTypes)
         {
@@ -222,9 +258,9 @@ namespace ReflectionExtensions
             return info.CreateConstInstanceFunctionA<T0, T1, T2, T3, T4>(constInstance);
         }
 
-        ////////////////////////////////////////////////////
-        //////////     Static Functions T/R/X    ///////////
-        ////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////
+        //////////     Static Functions T/A/R/X    ///////////
+        //////////////////////////////////////////////////////
 
         public static ConstFunctionX CreateStaticFunctionT<TTarget>(string methodName, params Type[] argTypes)
         {

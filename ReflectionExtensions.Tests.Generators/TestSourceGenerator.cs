@@ -14,11 +14,20 @@ public class TestSourceGenerator : IIncrementalGenerator
     {
         IGenerator[] generators =
         [
-            new StubMethodsGenerator("StubFunctions", false),
-            new StubMethodsGenerator("StubProcedures", true),
-            new TestStaticFunctionsGenerator(),
-            new TestConstInstanceFunctionsGenerator(),
-            new TestInstanceFunctionsGenerator()
+            new StubMethodsGenerator(false),
+            new StubMethodsGenerator(true),
+            new StubConstructorsGenerator(true),
+            new StubConstructorsGenerator(false),
+            new TestExpressionFunctionsStaticGenerator(),
+            new TestExpressionFunctionsInstanceGenerator(),
+            new TestExpressionFunctionsConstInstanceGenerator(),
+            new TestExpressionProceduresStaticGenerator(),
+            new TestExpressionProceduresInstanceGenerator(),
+            new TestExpressionProceduresConstInstanceGenerator(),
+            new TestExpressionConstructorsGenerator(true),
+            new TestExpressionConstructorsGenerator(false),
+            new TestCallMethodInstanceGenerator(),
+            new TestCallMethodStaticGenerator(),
         ];
 
         AddGenerators(ctx, generators);

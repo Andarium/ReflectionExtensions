@@ -1,3 +1,4 @@
+// ReSharper disable CheckNamespace
 using System;
 
 namespace ReflectionExtensions

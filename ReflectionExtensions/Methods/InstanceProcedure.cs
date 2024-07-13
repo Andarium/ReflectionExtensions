@@ -1,9 +1,11 @@
 ﻿// ReSharper disable InconsistentNaming
+// ReSharper disable once CheckNamespace
 namespace ReflectionExtensions
 {
     public delegate void InstanceProcedureX(object instance, params object[] args);
     public delegate void InstanceProcedureT<in TInstance>(TInstance instance, params object[] args);
 
+    public delegate void InstanceProcedureA(object instance);
     public delegate void InstanceProcedureA<in T0>(object instance, T0 arg0);
     public delegate void InstanceProcedureA<in T0, in T1>(object instance, T0 arg0, T1 arg1);
     public delegate void InstanceProcedureA<in T0, in T1, in T2>(object instance, T0 arg0, T1 arg1, T2 arg2);
