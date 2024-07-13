@@ -95,30 +95,11 @@ public sealed class TestExpressionProceduresInstanceGenerator : GeneratorBase
     {
         // Invoke
         Append("f(instance");
-        if (args > 0)
-        {
-            Append(", ");
-        }
-
-        AppendParameterValues<T>(args);
+        AppendParameterValues<T>(args, true);
         AppendLine(");");
+        AppendLine("var actual = StubProcedures.Result;");
 
         // Assert
-        if (typeof(T) == typeof(string))
-        {
-            if (args is 0)
-            {
-                AppendLine($"Assert.That(StubProcedures.Result, Is.Null);");
-                return;
-            }
-
-            var expected = string.Join("", Enumerable.Range(1, args));
-            AppendLine($"Assert.That(StubProcedures.Result, Is.EqualTo(\"{expected}\"));");
-        }
-        else
-        {
-            var expected = args * (args + 1) / 2;
-            AppendLine($"Assert.That(StubProcedures.Result, Is.EqualTo({expected}));");
-        }
+        AppendSumAssert<T>(args);
     }
 }

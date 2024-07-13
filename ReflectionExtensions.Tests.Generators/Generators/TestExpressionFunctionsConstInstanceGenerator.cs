@@ -93,26 +93,11 @@ public sealed class TestExpressionFunctionsConstInstanceGenerator : GeneratorBas
     private void AppendInvokeAndAssert<T>(int args)
     {
         // Invoke
-        Append("var a = f(");
+        Append("var actual = f(");
         AppendParameterValues<T>(args);
         AppendLine(");");
 
         // Assert
-        if (typeof(T) == typeof(string))
-        {
-            if (args is 0)
-            {
-                AppendLine("Assert.That(a, Is.Null);");
-                return;
-            }
-
-            var expected = string.Join("", Enumerable.Range(1, args));
-            AppendLine($"Assert.That(a, Is.EqualTo(\"{expected}\"));");
-        }
-        else
-        {
-            var expected = args * (args + 1) / 2;
-            AppendLine($"Assert.That(a, Is.EqualTo({expected}));");
-        }
+        AppendSumAssert<T>(args);
     }
 }

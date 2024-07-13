@@ -129,7 +129,7 @@ public abstract class GeneratorBase : IGenerator
 
     internal void AppendParameterValues<T>(int args, bool hasPrev = false)
     {
-        if (hasPrev)
+        if (hasPrev && args > 0)
         {
             Append(", ");
         }
