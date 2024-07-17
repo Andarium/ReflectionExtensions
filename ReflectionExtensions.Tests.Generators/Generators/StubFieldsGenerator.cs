@@ -42,8 +42,8 @@ public sealed class StubFieldsGenerator : GeneratorBase
         Append(pTypeName);
         Append(" ");
         Append(GenerateFieldName(isPublic, isStatic, isReadonly, type));
-        // Append(" = ");
-        // AppendWrap(Value, type == typeof(string));
+        Append(" = ");
+        AppendWrap(Value, type == typeof(string));
         AppendLine(';');
     }
 
@@ -60,8 +60,6 @@ public sealed class StubFieldsGenerator : GeneratorBase
         Append(GenerateFieldName(isPublic, isStatic, isReadonly, type));
         AppendLine(';');
     }
-
-    public static string GenerateFieldName<T>(bool isPublic, bool isStatic, bool isReadonly) => GenerateFieldName(isPublic, isStatic, isReadonly, typeof(T));
 
     public static string GenerateFieldName(bool isPublic, bool isStatic, bool isReadonly, Type type)
     {
