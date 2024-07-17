@@ -2,13 +2,13 @@ using System;
 
 namespace ReflectionExtensions.Tests.Generators.Scopes;
 
-internal readonly struct TestMethodScope : IDisposable
+internal readonly struct AttributeMethodScope : IDisposable
 {
     private readonly IndentBracesScope _indentScope;
 
-    public TestMethodScope(GeneratorBase generator, string methodName)
+    public AttributeMethodScope(GeneratorBase generator, string methodName, string attribute = "Test")
     {
-        generator.AppendLine("[Test]");
+        generator.AppendLine($"[{attribute}]");
         generator.AppendLine($"public void {methodName}()");
 
         _indentScope = new IndentBracesScope(generator);
