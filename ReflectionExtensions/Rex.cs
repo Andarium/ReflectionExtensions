@@ -194,7 +194,7 @@ namespace ReflectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConstAccessorX CreateConstInstanceAccessorX([NotNull] this object? constInstance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
+        public static ConstAccessorX CreateConstInstanceAccessor([NotNull] this object? constInstance, string memberName, AccessorTarget accessor = AccessorTarget.FieldOrProperty)
         {
             if (TryGetConstInstanceAccessors<object, object, ConstGetter, ConstSetter>(constInstance, memberName, accessor, out var getter, out var setter))
             {
