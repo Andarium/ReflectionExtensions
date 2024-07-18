@@ -1,4 +1,6 @@
-﻿namespace ReflectionExtensions.Tests.Generators;
+﻿using System;
+
+namespace ReflectionExtensions.Tests.Generators;
 
 public sealed class StubMethodsGenerator(bool generateProcedures) : GeneratorBase
 {
@@ -12,44 +14,17 @@ public sealed class StubMethodsGenerator(bool generateProcedures) : GeneratorBas
             {
                 AppendLine("public static object Result;");
                 AppendLine();
-                AppendLine("public static void Clear() => Result = null;");
-            }
-
-            GenerateSumFunctions<int>(5, true, false);
-            AppendLine();
-            GenerateSumFunctions<int>(5, false, false);
-            AppendLine();
-            GenerateSumFunctions<int>(5, true, true);
-            AppendLine();
-            GenerateSumFunctions<int>(5, false, true);
-            AppendLine();
-
-            GenerateSumFunctions<string>(5, true, false);
-            AppendLine();
-            GenerateSumFunctions<string>(5, false, false);
-            AppendLine();
-            GenerateSumFunctions<string>(5, true, true);
-            AppendLine();
-            GenerateSumFunctions<string>(5, false, true);
-        }
-    }
-
-    private void GenerateSumFunctions<T>(int upToArgs, bool isPublic, bool isStatic)
-    {
-        for (var args = 0; args <= upToArgs; args++)
-        {
-            GenerateSumFunction<T>(args, isPublic, isStatic);
-
-            if (args < upToArgs)
-            {
+                AppendLine("public static void Reset() => Result = null;");
                 AppendLine();
             }
+
+            PermutationUtil.PermutateCall<int, Type, bool, bool>(GenerateSumFunction, AppendLine);
         }
     }
 
-    private void GenerateSumFunction<T>(int args, bool isPublic, bool isStatic)
+    private void GenerateSumFunction(int args, Type type, bool isStatic, bool isPublic)
     {
-        var pTypeName = typeof(T).Name;
+        var pTypeName = type.Name;
 
         Append(isPublic ? "public " : "private ");
         Append(isStatic ? "static " : "");

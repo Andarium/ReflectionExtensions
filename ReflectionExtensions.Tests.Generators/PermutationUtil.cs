@@ -6,25 +6,31 @@ namespace ReflectionExtensions.Tests.Generators;
 
 public static class PermutationUtil
 {
+    private static readonly int[] Ints = [0, 1, 2, 3, 4, 5];
     private static readonly bool[] Bools = [false, true];
     private static readonly Type[] Types = [typeof(int), typeof(string)];
 
     private static T[] GetOptionsDefault<T>()
     {
         var type = typeof(T);
+        if (type.IsEnum)
+        {
+            return Enum.GetValues(type).Cast<T>().ToArray();
+        }
+
         if (type == typeof(bool))
         {
             return (Bools as T[])!;
         }
 
+        if (type == typeof(int))
+        {
+            return (Ints as T[])!;
+        }
+
         if (type == typeof(Type))
         {
             return (Types as T[])!;
-        }
-
-        if (type.IsEnum)
-        {
-            return Enum.GetValues(type).Cast<T>().ToArray();
         }
 
         return default!;

@@ -77,7 +77,9 @@ public abstract class GeneratorBase : IGenerator
     internal void AppendTypeOf(Type type) => Append($"typeof({type.Name})");
     internal void AppendTypeOf(string typeName) => Append($"typeof({typeName})");
 
-    internal void AppendTypeOf<T>(int count, bool hasPrev = true)
+    internal void AppendTypeOf<T>(int count, bool hasPrev = true) => AppendTypeOf(typeof(T), count, hasPrev);
+
+    internal void AppendTypeOf(Type type, int count, bool hasPrev = true)
     {
         if (hasPrev)
         {
@@ -90,7 +92,7 @@ public abstract class GeneratorBase : IGenerator
             return;
         }
 
-        AppendSequence(count, _ => $"typeof({typeof(T).Name})", AppendType.Comma);
+        AppendSequence(count, _ => $"typeof({type.Name})", AppendType.Comma);
     }
 
     internal void AppendTypes<T>(int count) => AppendTypes(typeof(T), count);
@@ -162,14 +164,16 @@ public abstract class GeneratorBase : IGenerator
         Plus
     }
 
-    internal void AppendParameterValues<T>(int args, bool hasPrev = false)
+    internal void AppendParameterValues<T>(int args, bool hasPrev = false) => AppendParameterValues(typeof(T), args, hasPrev);
+
+    internal void AppendParameterValues(Type type, int args, bool hasPrev = false)
     {
         if (hasPrev && args > 0)
         {
             Append(", ");
         }
 
-        InvokeSequence(args, i => AppendWrap(i + 1, typeof(string) == typeof(T)), AppendType.Comma);
+        InvokeSequence(args, i => AppendWrap(i + 1, typeof(string) == type), AppendType.Comma);
     }
 
     internal void AppendGenerics(params object[] args)
@@ -299,12 +303,16 @@ public abstract class GeneratorBase : IGenerator
         }
     }
 
-    internal void AppendMethodName<T>(int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null)
+    internal void AppendMethodName<T>(int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null) => AppendMethodName(typeof(T), args, isStatic, isPublic, wrap, isProcedure);
+
+    internal void AppendMethodName(Type type, int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null)
     {
-        Append(GenerateMethodName<T>(args, isStatic, isPublic, wrap, isProcedure));
+        Append(GenerateMethodName(type, args, isStatic, isPublic, wrap, isProcedure));
     }
 
-    internal string GenerateMethodName<T>(int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null)
+    internal string GenerateMethodName<T>(int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null) => GenerateMethodName(typeof(T), args, isStatic, isPublic, wrap, isProcedure);
+
+    internal string GenerateMethodName(Type type, int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null)
     {
         _temp.Clear();
 
@@ -315,7 +323,7 @@ public abstract class GeneratorBase : IGenerator
             _temp.Append("Sum");
             _temp.Append(args);
             _temp.Append('_');
-            _temp.Append(typeof(T).Name);
+            _temp.Append(type.Name);
             if (isProcedure is true)
             {
                 _temp.Append("_Procedure");
@@ -350,10 +358,12 @@ public abstract class GeneratorBase : IGenerator
         return _temp.ToString();
     }
 
-    protected void AppendSumAssert<T>(int args)
+    protected void AppendSumAssert<T>(int args) => AppendSumAssert(typeof(T), args);
+
+    protected void AppendSumAssert(Type type, int args)
     {
         // Assert
-        if (typeof(T) == typeof(string))
+        if (type == typeof(string))
         {
             if (args is 0)
             {
