@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ReflectionExtensions.Tests.Generators;
@@ -7,152 +8,8 @@ public static class PermutationUtil
 {
     private static readonly bool[] Bools = [false, true];
     private static readonly Type[] Types = [typeof(int), typeof(string)];
-    // private static readonly StaticAccessorType[] StaticAccessorTypes = Enum.GetValues(typeof(StaticAccessorType)).Cast<StaticAccessorType>().ToArray();
 
-    public static void Permutate<T1>(Action<T1> call, Params parameters = default)
-    {
-        var options = GetOptions<T1>();
-        for (var i = 0; i < options.Length; i++)
-        {
-            var last = i == options.Length - 1;
-            var option = options[i];
-            call.Invoke(option);
-            if (!last || !parameters.SkipLastIteration)
-            {
-                parameters.AfterIteration?.Invoke();
-            }
-        }
-    }
-
-    public static void Permutate<T1, T2>(Action<T1, T2> call, Params parameters = default)
-    {
-        if (parameters.LastToFirst)
-        {
-            var options = GetOptions<T2>();
-            for (var i = 0; i < options.Length; i++)
-            {
-                var o2 = options[i];
-                var last = i == options.Length - 1;
-                Permutate<T1>(o1 => call.Invoke(o1, o2), parameters.ToSub(true));
-                if (!last || !parameters.SkipLastIteration)
-                {
-                    parameters.AfterIteration?.Invoke();
-                }
-            }
-        }
-        else
-        {
-            var options = GetOptions<T1>();
-            for (var i = 0; i < options.Length; i++)
-            {
-                var o1 = options[i];
-                var last = i == options.Length - 1;
-                Permutate<T2>(o2 => call.Invoke(o1, o2), parameters.ToSub(true));
-                if (!last || !parameters.SkipLastIteration)
-                {
-                    parameters.AfterIteration?.Invoke();
-                }
-            }
-        }
-    }
-
-    public static void Permutate<T1, T2, T3>(Action<T1, T2, T3> call, Params parameters = default)
-    {
-        if (parameters.LastToFirst)
-        {
-            var options = GetOptions<T3>();
-            for (var i = 0; i < options.Length; i++)
-            {
-                var o3 = options[i];
-                var last = i == options.Length - 1;
-                Permutate<T1, T2>((o1, o2) => call.Invoke(o1, o2, o3), parameters.ToSub(true));
-                if (!last || !parameters.SkipLastIteration)
-                {
-                    parameters.AfterIteration?.Invoke();
-                }
-            }
-        }
-        else
-        {
-            var options = GetOptions<T1>();
-            for (var i = 0; i < options.Length; i++)
-            {
-                var o1 = options[i];
-                var last = i == options.Length - 1;
-                Permutate<T2, T3>((o2, o3) => call.Invoke(o1, o2, o3), parameters.ToSub(true));
-                if (!last || !parameters.SkipLastIteration)
-                {
-                    parameters.AfterIteration?.Invoke();
-                }
-            }
-        }
-    }
-
-    public static void Permutate<T1, T2, T3, T4>(Action<T1, T2, T3, T4> call, Params parameters = default)
-    {
-        if (parameters.LastToFirst)
-        {
-            var options = GetOptions<T4>();
-            for (var i = 0; i < options.Length; i++)
-            {
-                var o4 = options[i];
-                var last = i == options.Length - 1;
-                Permutate<T1, T2, T3>((o1, o2, o3) => call.Invoke(o1, o2, o3, o4), parameters.ToSub(true));
-                if (!last || !parameters.SkipLastIteration)
-                {
-                    parameters.AfterIteration?.Invoke();
-                }
-            }
-        }
-        else
-        {
-            var options = GetOptions<T1>();
-            for (var i = 0; i < options.Length; i++)
-            {
-                var o1 = options[i];
-                var last = i == options.Length - 1;
-                Permutate<T2, T3, T4>((o2, o3, o4) => call.Invoke(o1, o2, o3, o4), parameters.ToSub(true));
-                if (!last || !parameters.SkipLastIteration)
-                {
-                    parameters.AfterIteration?.Invoke();
-                }
-            }
-        }
-    }
-
-    public static void Permutate<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> call, Params parameters = default)
-    {
-        if (parameters.LastToFirst)
-        {
-            var options = GetOptions<T5>();
-            for (var i = 0; i < options.Length; i++)
-            {
-                var o5 = options[i];
-                var last = i == options.Length - 1;
-                Permutate<T1, T2, T3, T4>((o1, o2, o3, o4) => call.Invoke(o1, o2, o3, o4, o5), parameters.ToSub(true));
-                if (!last || !parameters.SkipLastIteration)
-                {
-                    parameters.AfterIteration?.Invoke();
-                }
-            }
-        }
-        else
-        {
-            var options = GetOptions<T1>();
-            for (var i = 0; i < options.Length; i++)
-            {
-                var o1 = options[i];
-                var last = i == options.Length - 1;
-                Permutate<T2, T3, T4, T5>((o2, o3, o4, o5) => call.Invoke(o1, o2, o3, o4, o5), parameters.ToSub(true));
-                if (!last || !parameters.SkipLastIteration)
-                {
-                    parameters.AfterIteration?.Invoke();
-                }
-            }
-        }
-    }
-
-    private static T[] GetOptions<T>()
+    private static T[] GetOptionsDefault<T>()
     {
         var type = typeof(T);
         if (type == typeof(bool))
@@ -164,7 +21,7 @@ public static class PermutationUtil
         {
             return (Types as T[])!;
         }
-        
+
         if (type.IsEnum)
         {
             return Enum.GetValues(type).Cast<T>().ToArray();
@@ -173,16 +30,165 @@ public static class PermutationUtil
         return default!;
     }
 
-    public readonly struct Params(Action? afterIteration = null, bool skipLastIteration = false, bool lastToFirst = false, GeneratorBase? generatorBase = default)
+    public static void PermutateCall<T1>(Action<T1> method, Action? afterIteration = null, bool skipLastIteration = true)
     {
-        public readonly Action? AfterIteration = afterIteration;
-        public readonly bool SkipLastIteration = skipLastIteration;
-        public readonly bool LastToFirst = lastToFirst;
-        public readonly GeneratorBase? GeneratorBase = generatorBase;
+        var options = GeneratePermutations<T1>();
+        Call(method, options.ToList(), afterIteration, skipLastIteration);
+    }
 
-        public Params ToSub(bool skipLast)
+    public static void PermutateCall<T1, T2>(Action<T1, T2> method, Action? afterIteration = null, bool skipLastIteration = true)
+    {
+        var options = GeneratePermutations<T1, T2>();
+        Call(method, options.ToList(), afterIteration, skipLastIteration);
+    }
+
+    public static void PermutateCall<T1, T2, T3>(Action<T1, T2, T3> method, Action? afterIteration = null, bool skipLastIteration = true)
+    {
+        var options = GeneratePermutations<T1, T2, T3>();
+        Call(method, options.ToList(), afterIteration, skipLastIteration);
+    }
+
+    public static void PermutateCall<T1, T2, T3, T4>(Action<T1, T2, T3, T4> method, Action? afterIteration = null, bool skipLastIteration = true)
+    {
+        var options = GeneratePermutations<T1, T2, T3, T4>();
+        Call(method, options.ToList(), afterIteration, skipLastIteration);
+    }
+
+    public static void PermutateCall<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> method, Action? afterIteration = null, bool skipLastIteration = true)
+    {
+        var options = GeneratePermutations<T1, T2, T3, T4, T5>();
+        Call(method, options.ToList(), afterIteration, skipLastIteration);
+    }
+
+    public static IEnumerable<T1> GeneratePermutations<T1>()
+    {
+        return GetOptionsDefault<T1>();
+    }
+
+    public static IEnumerable<(T1, T2)> GeneratePermutations<T1, T2>()
+    {
+        var t2Options = GetOptionsDefault<T2>();
+        var t1Options = GeneratePermutations<T1>();
+
+        foreach (var t1 in t1Options)
         {
-            return new Params(AfterIteration, skipLast, LastToFirst, GeneratorBase);
+            foreach (var t2 in t2Options)
+            {
+                yield return (t1, t2);
+            }
+        }
+    }
+
+    public static IEnumerable<(T1, T2, T3)> GeneratePermutations<T1, T2, T3>()
+    {
+        var t23Options = GeneratePermutations<T2, T3>().ToList();
+        var t1Options = GeneratePermutations<T1>();
+
+        foreach (var t1 in t1Options)
+        {
+            foreach (var (t2, t3) in t23Options)
+            {
+                yield return (t1, t2, t3);
+            }
+        }
+    }
+
+    public static IEnumerable<(T1, T2, T3, T4)> GeneratePermutations<T1, T2, T3, T4>()
+    {
+        var t234Options = GeneratePermutations<T2, T3, T4>().ToList();
+        var t1Options = GeneratePermutations<T1>();
+
+        foreach (var t1 in t1Options)
+        {
+            foreach (var (t2, t3, t4) in t234Options)
+            {
+                yield return (t1, t2, t3, t4);
+            }
+        }
+    }
+
+    public static IEnumerable<(T1, T2, T3, T4, T5)> GeneratePermutations<T1, T2, T3, T4, T5>()
+    {
+        var t234Options = GeneratePermutations<T2, T3, T4, T5>().ToList();
+        var t1Options = GeneratePermutations<T1>();
+
+        foreach (var t1 in t1Options)
+        {
+            foreach (var (t2, t3, t4, t5) in t234Options)
+            {
+                yield return (t1, t2, t3, t4, t5);
+            }
+        }
+    }
+
+    public static void Call<T1>(Action<T1> method, IList<T1> argSets, Action? afterIteration = null, bool skipLastIteration = false)
+    {
+        var count = argSets.Count;
+        for (var i = 0; i < count; i++)
+        {
+            var args = argSets[i];
+            method.Invoke(args);
+            if (i < count - 1 || !skipLastIteration)
+            {
+                afterIteration?.Invoke();
+            }
+        }
+    }
+
+    public static void Call<T1, T2>(Action<T1, T2> method, IList<(T1, T2)> argSets, Action? afterIteration = null, bool skipLastIteration = false)
+    {
+        var count = argSets.Count;
+        for (var i = 0; i < count; i++)
+        {
+            var args = argSets[i];
+            method.Invoke(args.Item1, args.Item2);
+            if (i < count - 1 || !skipLastIteration)
+            {
+                afterIteration?.Invoke();
+            }
+        }
+    }
+
+    public static void Call<T1, T2, T3>(Action<T1, T2, T3> method, IList<(T1, T2, T3)> argSets, Action? afterIteration = null, bool skipLastIteration = false)
+    {
+        var count = argSets.Count;
+        for (var i = 0; i < count; i++)
+        {
+            var args = argSets[i];
+            method.Invoke(args.Item1, args.Item2, args.Item3);
+            if (i < count - 1 || !skipLastIteration)
+            {
+                afterIteration?.Invoke();
+            }
+        }
+    }
+
+    public static void Call<T1, T2, T3, T4>(Action<T1, T2, T3, T4> method, IList<(T1, T2, T3, T4)> argSets, Action? afterIteration = null, bool skipLastIteration = false)
+    {
+        var count = argSets.Count;
+        for (var i = 0; i < count; i++)
+        {
+            var args = argSets[i];
+            method.Invoke(args.Item1, args.Item2, args.Item3, args.Item4);
+            if (i < count - 1 || !skipLastIteration)
+            {
+                afterIteration?.Invoke();
+            }
+        }
+    }
+
+    public static void Call<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> method, IList<(T1, T2, T3, T4, T5)> argSets, Action? afterIteration = null, bool skipLastIteration = false)
+    {
+        var count = argSets.Count;
+        for (var i = 0; i < count; i++)
+        {
+            var args = argSets[i];
+            method.Invoke(args.Item1, args.Item2, args.Item3, args.Item4, args.Item5);
+
+            if (i < count - 1 || !skipLastIteration)
+            {
+                afterIteration?.Invoke();
+            }
         }
     }
 }

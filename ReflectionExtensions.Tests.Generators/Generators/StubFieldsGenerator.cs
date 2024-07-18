@@ -11,15 +11,15 @@ public sealed class StubFieldsGenerator : GeneratorBase
     {
         using (WithStubFile(TypeName, "#pragma warning disable CS0169", "#pragma warning disable CS0649", ""))
         {
-            PermutationUtil.Permutate<bool, bool, bool, Type>(GenerateField);
+            PermutationUtil.PermutateCall<bool, bool, bool, Type>(GenerateField);
             AppendCommentBlock("Encapsulation");
-            PermutationUtil.Permutate<bool, bool, bool, Type>(GenerateEncapsulation);
+            PermutationUtil.PermutateCall<bool, bool, bool, Type>(GenerateEncapsulation);
 
             AppendLine();
 
-            using (WithIndentBraces($"public static void Reset()"))
+            using (WithIndentBraces("public static void Reset()"))
             {
-                PermutationUtil.Permutate<bool, Type>(SetField);
+                PermutationUtil.PermutateCall<bool, Type>(SetField);
             }
         }
     }

@@ -15,13 +15,13 @@ public sealed class TestFieldAccessorsGenerator : GeneratorBase
             AppendSetupReset(StubClass);
 
             AppendCommentBlock("Instance");
-            PermutationUtil.Permutate<bool, bool, Type, InstanceAccessorType>(GenerateInstanceTestCase, new PermutationUtil.Params(AppendLine, skipLastIteration: true));
+            PermutationUtil.PermutateCall<bool, bool, Type, InstanceAccessorType>(GenerateInstanceTestCase, AppendLine);
 
             AppendCommentBlock("Const Instance");
-            PermutationUtil.Permutate<bool, bool, Type, bool>(GenerateConstInstanceTestCase, new PermutationUtil.Params(AppendLine, skipLastIteration: true));
+            PermutationUtil.PermutateCall<bool, bool, Type, bool>(GenerateConstInstanceTestCase, AppendLine);
 
             AppendCommentBlock("Static");
-            PermutationUtil.Permutate<bool, bool, Type, StaticAccessorType>(GenerateStaticTestCase, new PermutationUtil.Params(AppendLine, skipLastIteration: true));
+            PermutationUtil.PermutateCall<bool, bool, Type, StaticAccessorType>(GenerateStaticTestCase, AppendLine);
         }
     }
 
