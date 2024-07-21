@@ -14,6 +14,8 @@ public class TestSourceGenerator : IIncrementalGenerator
     {
         IGenerator[] generators =
         [
+            new StubFieldsGenerator(),
+            new StubPropertiesGenerator(),
             new StubMethodsGenerator(false),
             new StubMethodsGenerator(true),
             new StubConstructorsGenerator(true),
@@ -28,6 +30,8 @@ public class TestSourceGenerator : IIncrementalGenerator
             new TestExpressionConstructorsGenerator(false),
             new TestCallMethodInstanceGenerator(),
             new TestCallMethodStaticGenerator(),
+            new TestFieldAccessorsGenerator(),
+            new TestPropertyAccessorsGenerator(),
         ];
 
         AddGenerators(ctx, generators);

@@ -33,6 +33,16 @@ public abstract class GeneratorBase : IGenerator
 
     protected abstract void GenerateInternal();
 
+    internal void AppendCommentBlock(string name)
+    {
+        var s = new string('/', name.Length + 26);
+        AppendLine();
+        AppendLine(s);
+        AppendLine($"//////////   {name}   //////////");
+        AppendLine(s);
+        AppendLine();
+    }
+
     internal void AppendLine()
     {
         _s.AppendLine();
@@ -45,13 +55,18 @@ public abstract class GeneratorBase : IGenerator
         AppendLine();
     }
 
-    internal void AppendWrap<T>(T value, bool wrap, char c = '"')
+    internal void AppendWrap<T>(T value, char c = '"') => AppendWrap(value, true, c, c);
+    internal void AppendWrap<T>(T value, string c = "\"") => AppendWrap(value, true, c, c);
+    internal void AppendWrap<T>(T value, bool wrap, char start, char end) => AppendWrap(value, wrap, start.ToString(), end.ToString());
+    internal void AppendWrap<T>(T value, string start, string end) => AppendWrap(value, true, start, end);
+
+    internal void AppendWrap<T>(T value, bool wrap, string start = "\"", string end = "\"")
     {
         if (wrap)
         {
-            Append(c);
+            Append(start);
             Append(value);
-            Append(c);
+            Append(end);
         }
         else
         {
@@ -59,7 +74,12 @@ public abstract class GeneratorBase : IGenerator
         }
     }
 
-    internal void AppendTypeOf<T>(int count, bool hasPrev = true)
+    internal void AppendTypeOf(Type type) => Append($"typeof({type.Name})");
+    internal void AppendTypeOf(string typeName) => Append($"typeof({typeName})");
+
+    internal void AppendTypeOf<T>(int count, bool hasPrev = true) => AppendTypeOf(typeof(T), count, hasPrev);
+
+    internal void AppendTypeOf(Type type, int count, bool hasPrev = true)
     {
         if (hasPrev)
         {
@@ -72,10 +92,27 @@ public abstract class GeneratorBase : IGenerator
             return;
         }
 
-        AppendSequence(count, _ => $"typeof({typeof(T).Name})", AppendType.Comma);
+        AppendSequence(count, _ => $"typeof({type.Name})", AppendType.Comma);
     }
 
-    internal void AppendTypes<T>(int count) => AppendSequence(count, _ => typeof(T).Name, AppendType.Comma);
+    internal void AppendTypes<T>(int count) => AppendTypes(typeof(T), count);
+    internal void AppendTypes(Type type, int count) => AppendSequence(count, _ => type.Name, AppendType.Comma);
+
+    internal void AppendSequence(ICollection<string> values, AppendType append = AppendType.None)
+    {
+        var i = 0;
+        var count = values.Count;
+        foreach (var value in values)
+        {
+            Append(value);
+            if (i < count - 1)
+            {
+                Append(append);
+            }
+
+            i++;
+        }
+    }
 
     internal void AppendSequence(int count, Func<int, string> f, AppendType append = AppendType.None)
     {
@@ -127,17 +164,45 @@ public abstract class GeneratorBase : IGenerator
         Plus
     }
 
-    internal void AppendParameterValues<T>(int args, bool hasPrev = false)
+    internal void AppendParameterValues<T>(int args, bool hasPrev = false) => AppendParameterValues(typeof(T), args, hasPrev);
+
+    internal void AppendParameterValues(Type type, int args, bool hasPrev = false)
     {
         if (hasPrev && args > 0)
         {
             Append(", ");
         }
 
-        InvokeSequence(args, i => AppendWrap(i + 1, typeof(string) == typeof(T)), AppendType.Comma);
+        InvokeSequence(args, i => AppendWrap(i + 1, typeof(string) == type), AppendType.Comma);
     }
 
-    internal void AppendGenerics<T>(int args, string? prependTargetClass = null)
+    internal void AppendGenerics(params object[] args)
+    {
+        if (args.Length is 0)
+        {
+            return;
+        }
+
+        var strings = args
+            .Select(x =>
+            {
+                return x switch
+                {
+                    Type type => type.Name,
+                    string s => s,
+                    _ => x.ToString()
+                };
+            })
+            .ToList();
+
+        Append('<');
+        AppendSequence(strings, AppendType.Comma);
+        Append('>');
+    }
+
+    internal void AppendGenerics<T>(int args, string? prependTargetClass = null) => AppendGenerics(typeof(T), args, prependTargetClass);
+
+    internal void AppendGenerics(Type type, int args, string? prependTargetClass = null)
     {
         var totalArgs = args + (prependTargetClass is null ? 0 : 1);
         if (totalArgs is 0)
@@ -156,7 +221,7 @@ public abstract class GeneratorBase : IGenerator
             }
         }
 
-        AppendTypes<T>(args);
+        AppendTypes(type, args);
 
         Append('>');
     }
@@ -178,7 +243,11 @@ public abstract class GeneratorBase : IGenerator
             }
             case string c:
             {
-                _s.Append(c);
+                if (c.Length is not 0)
+                {
+                    _s.Append(c);
+                }
+
                 break;
             }
             case bool c:
@@ -234,12 +303,16 @@ public abstract class GeneratorBase : IGenerator
         }
     }
 
-    internal void AppendMethodName<T>(int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null)
+    internal void AppendMethodName<T>(int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null) => AppendMethodName(typeof(T), args, isStatic, isPublic, wrap, isProcedure);
+
+    internal void AppendMethodName(Type type, int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null)
     {
-        Append(GenerateMethodName<T>(args, isStatic, isPublic, wrap, isProcedure));
+        Append(GenerateMethodName(type, args, isStatic, isPublic, wrap, isProcedure));
     }
 
-    internal string GenerateMethodName<T>(int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null)
+    internal string GenerateMethodName<T>(int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null) => GenerateMethodName(typeof(T), args, isStatic, isPublic, wrap, isProcedure);
+
+    internal string GenerateMethodName(Type type, int args, bool isStatic, bool isPublic, bool wrap = false, bool? isProcedure = null)
     {
         _temp.Clear();
 
@@ -250,7 +323,7 @@ public abstract class GeneratorBase : IGenerator
             _temp.Append("Sum");
             _temp.Append(args);
             _temp.Append('_');
-            _temp.Append(typeof(T).Name);
+            _temp.Append(type.Name);
             if (isProcedure is true)
             {
                 _temp.Append("_Procedure");
@@ -285,10 +358,12 @@ public abstract class GeneratorBase : IGenerator
         return _temp.ToString();
     }
 
-    protected void AppendSumAssert<T>(int args)
+    protected void AppendSumAssert<T>(int args) => AppendSumAssert(typeof(T), args);
+
+    protected void AppendSumAssert(Type type, int args)
     {
         // Assert
-        if (typeof(T) == typeof(string))
+        if (type == typeof(string))
         {
             if (args is 0)
             {
@@ -320,6 +395,12 @@ public abstract class GeneratorBase : IGenerator
         }
     }
 
+    internal void AppendSetupReset(string targetClass)
+    {
+        AppendLine($"[SetUp]");
+        AppendLine($"public void Setup() => {targetClass}.Reset();");
+    }
+
     internal IDisposable WithTestFile(string typeName)
     {
         AppendLine("// <auto-generated/>");
@@ -333,10 +414,15 @@ public abstract class GeneratorBase : IGenerator
 
         return new IndentBracesScope(this, $"public sealed class {typeName}");
     }
-    
-    internal IDisposable WithStubFile(string typeName)
+
+    internal IDisposable WithStubFile(string typeName, params string[] prefixes)
     {
         AppendLine("// <auto-generated/>");
+        foreach (var prefix in prefixes)
+        {
+            AppendLine(prefix);
+        }
+
         AppendLine("using System;");
         AppendLine();
         AppendLine("namespace ReflectionExtensions.Tests;");
@@ -344,7 +430,7 @@ public abstract class GeneratorBase : IGenerator
 
         return new IndentBracesScope(this, $"public sealed class {typeName}");
     }
-    
+
     internal IDisposable WithIndentBraces(string? title = null)
     {
         return new IndentBracesScope(this, title);
@@ -355,9 +441,9 @@ public abstract class GeneratorBase : IGenerator
         return new MethodResultScope(this, isStatic, isProcedure, resultName);
     }
 
-    protected IDisposable WithTestMethodScope(string methodName)
+    protected IDisposable WithTestMethodScope(string methodName, string attribute = "Test")
     {
-        return new TestMethodScope(this, methodName);
+        return new AttributeMethodScope(this, methodName, attribute);
     }
 
     protected IDisposable WithNewArrayScope<T>()
@@ -383,6 +469,11 @@ public abstract class GeneratorBase : IGenerator
         }
 
         return new WrapScope(sb ?? _s, c.ToString());
+    }
+
+    protected IDisposable WithThrowsScope<T>() where T : Exception
+    {
+        return new TestThrowsScope<T>(this);
     }
 
     private readonly struct DummyScope : IDisposable

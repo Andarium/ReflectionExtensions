@@ -317,5 +317,41 @@ namespace ReflectionExtensions
             var info = targetType.GetStaticMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
             return info.CreateStaticFunctionA<T0, T1, T2, T3, T4>();
         }
+
+        public static ConstFunctionA CreateStaticFunctionTA<TTarget>(string methodName)
+        {
+            var info = typeof(TTarget).GetStaticMethodInfo(methodName);
+            return info.CreateStaticFunctionA();
+        }
+
+        public static ConstFunctionA<T0> CreateStaticFunctionTA<TTarget, T0>(string methodName)
+        {
+            var info = typeof(TTarget).GetStaticMethodInfo(methodName, typeof(T0));
+            return info.CreateStaticFunctionA<T0>();
+        }
+
+        public static ConstFunctionA<T0, T1> CreateStaticFunctionTA<TTarget, T0, T1>(string methodName)
+        {
+            var info = typeof(TTarget).GetStaticMethodInfo(methodName, typeof(T0), typeof(T1));
+            return info.CreateStaticFunctionA<T0, T1>();
+        }
+
+        public static ConstFunctionA<T0, T1, T2> CreateStaticFunctionTA<TTarget, T0, T1, T2>(string methodName)
+        {
+            var info = typeof(TTarget).GetStaticMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2));
+            return info.CreateStaticFunctionA<T0, T1, T2>();
+        }
+
+        public static ConstFunctionA<T0, T1, T2, T3> CreateStaticFunctionTA<TTarget, T0, T1, T2, T3>(string methodName)
+        {
+            var info = typeof(TTarget).GetStaticMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3));
+            return info.CreateStaticFunctionA<T0, T1, T2, T3>();
+        }
+
+        public static ConstFunctionA<T0, T1, T2, T3, T4> CreateStaticFunctionTA<TTarget, T0, T1, T2, T3, T4>(string methodName)
+        {
+            var info = typeof(TTarget).GetStaticMethodInfo(methodName, typeof(T0), typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+            return info.CreateStaticFunctionA<T0, T1, T2, T3, T4>();
+        }
     }
 }

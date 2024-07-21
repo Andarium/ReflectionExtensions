@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using static ReflectionExtensions.ReflectionExtensions;
+﻿using System;
 
 namespace ReflectionExtensions.Tests.Generators;
 
@@ -11,152 +10,72 @@ public sealed class TestExpressionFunctionsInstanceGenerator : GeneratorBase
     {
         using (WithTestFile(TypeName))
         {
-            AppendMethods<int>(5, true);
-            AppendLine();
-            AppendMethods<string>(5, true);
-            AppendLine();
-            AppendMethods<int>(5, false);
-            AppendLine();
-            AppendMethods<string>(5, false);
+            PermutationUtil.PermutateCall<Type, int, bool, FunctionType>(AppendTestMethod, AppendLine);
         }
     }
 
-    private void AppendMethods<T>(int upToArgs, bool isPublic)
-    {
-        InvokeSequence(upToArgs + 1, i => AppendInstance<T>(i, isPublic), AppendType.NewLine);
-    }
-
-    private void AppendFunName<T>(int args, bool isPublic) => AppendMethodName<T>(args, false, isPublic, true);
-
-    private void AppendInstance<T>(int args, bool isPublic)
+    private void AppendTestMethod(Type type, int args, bool isPublic, FunctionType functionType)
     {
         const string targetClass = "StubFunctions";
-        const string extensionName = nameof(CreateInstanceFunction);
 
-        var testMethodNameBase = "Test_" + GenerateMethodName<T>(args, false, isPublic);
+        var methodName = "Test_" + GenerateMethodName(type, args, false, isPublic) + "_" + functionType;
 
-        using (WithTestMethodScope(testMethodNameBase + "_Generic"))
+        using (WithTestMethodScope(methodName))
         {
-            // full generics
             AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = {extensionName}");
-            AppendGenerics<T>(args + 1, targetClass); // +1 for return type
+
+            var target = functionType.HasEnumFlag(FunctionType.T) ? "" : $"typeof({targetClass}).";
+
+            Append($"var f = {target}{functionType.GetExtensionName()}");
+
+            var genericArgs = 0;
+            if (functionType.HasEnumFlag(FunctionType.A))
+            {
+                genericArgs += args;
+            }
+
+            if (functionType.HasEnumFlag(FunctionType.R))
+            {
+                genericArgs++;
+            }
+
+            var t = functionType.HasEnumFlag(FunctionType.T) ? targetClass : null;
+
+            AppendGenerics(type, genericArgs, t);
+
             Append("(");
-            AppendFunName<T>(args, isPublic);
+            AppendMethodName(type, args, false, isPublic, true);
+            if (!functionType.HasEnumFlag(FunctionType.A))
+            {
+                AppendTypeOf(type, args);
+            }
+
             AppendLine(");");
-            AppendInvokeAndAssert<T>(args);
-        }
-
-        AppendLine();
-
-        using (WithTestMethodScope(testMethodNameBase + "_A"))
-        {
-            // A
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = typeof({targetClass}).{extensionName}A");
-            AppendGenerics<T>(args);
-            Append("(");
-            AppendFunName<T>(args, isPublic);
-            AppendLine(");");
-            AppendInvokeAndAssert<T>(args);
-        }
-
-        AppendLine();
-
-        using (WithTestMethodScope(testMethodNameBase + "_AR"))
-        {
-            // AR
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = typeof({targetClass}).{extensionName}AR");
-            AppendGenerics<T>(args + 1);
-            Append("(");
-            AppendFunName<T>(args, isPublic);
-            AppendLine(");");
-            AppendInvokeAndAssert<T>(args);
-        }
-
-        AppendLine();
-
-        using (WithTestMethodScope(testMethodNameBase + "_TA"))
-        {
-            // TA
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = {extensionName}TA");
-            AppendGenerics<T>(args, targetClass);
-            Append("(");
-            AppendFunName<T>(args, isPublic);
-            AppendLine(");");
-            AppendInvokeAndAssert<T>(args);
-        }
-
-        AppendLine();
-
-        using (WithTestMethodScope(testMethodNameBase + "_T"))
-        {
-            // T
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = {extensionName}T");
-            AppendGenerics<T>(0, targetClass); // +1 for return type
-            Append("(");
-            AppendFunName<T>(args, isPublic);
-            AppendTypeOf<T>(args);
-            AppendLine(");");
-            AppendInvokeAndAssert<T>(args);
-        }
-
-        AppendLine();
-
-        using (WithTestMethodScope(testMethodNameBase + "_R"))
-        {
-            // R
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = typeof({targetClass}).{extensionName}R");
-            AppendGenerics<T>(1);
-            Append("(");
-            AppendFunName<T>(args, isPublic);
-            AppendTypeOf<T>(args);
-            AppendLine(");");
-            AppendInvokeAndAssert<T>(args);
-        }
-
-        AppendLine();
-
-        using (WithTestMethodScope(testMethodNameBase + "_TR"))
-        {
-            // TR
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = {extensionName}TR");
-            AppendGenerics<T>(1, targetClass); // +1 for return type
-            Append("(");
-            AppendFunName<T>(args, isPublic);
-            AppendTypeOf<T>(args);
-            AppendLine(");");
-            AppendInvokeAndAssert<T>(args);
-        }
-
-        AppendLine();
-
-        using (WithTestMethodScope(testMethodNameBase + "_X"))
-        {
-            // X
-            AppendLine($"var instance = new {targetClass}();");
-            Append($"var f = typeof({targetClass}).{extensionName}X");
-            Append("(");
-            AppendFunName<T>(args, isPublic);
-            AppendTypeOf<T>(args);
-            AppendLine(");");
-            AppendInvokeAndAssert<T>(args);
+            AppendInvokeAndAssert(type, args);
         }
     }
 
-    private void AppendInvokeAndAssert<T>(int args)
+    private void AppendInvokeAndAssert(Type type, int args)
     {
         // Invoke
         Append("var actual = f(instance");
-        AppendParameterValues<T>(args, true);
+        AppendParameterValues(type, args, true);
         AppendLine(");");
 
         // Assert
-        AppendSumAssert<T>(args);
+        AppendSumAssert(type, args);
     }
+}
+
+[Flags]
+public enum FunctionType
+{
+    X = 0,
+    T = 1,
+    A = 2,
+    R = 4,
+    TA = T | A,
+    TR = T | R,
+    AR = A | R,
+    Generic = T | A | R,
 }

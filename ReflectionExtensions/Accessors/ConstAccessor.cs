@@ -1,5 +1,6 @@
 // ReSharper disable CheckNamespace
 // ReSharper disable UnusedMember.Global
+
 using System;
 
 namespace ReflectionExtensions
@@ -23,6 +24,8 @@ namespace ReflectionExtensions
             get => _getter.Invoke();
             set => _setter.Invoke(value);
         }
+
+        public static implicit operator TValue(ConstAccessor<TValue> a) => a.Value;
     }
 
     public readonly struct ConstAccessorX
